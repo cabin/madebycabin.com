@@ -1,0 +1,7 @@
+*.py[cod]
+.DS_Store
+instance
+
+*/static/gen/*
+.sass-cache
+.webassets-cache
