@@ -1,0 +1,19 @@
+// Set width and height at once.
+size(w, h = w)
+  width: unit(w, px)
+  height: unit(h, px)
+
+// TODO document
+inline-list(spacing = 20px)
+  margin: 0
+  padding: 0
+  li
+    float: left
+    margin-right: spacing
+    list-style-type: none
+  li:last-child
+    margin-right: 0
+
+// Light text on a dark background looks much better antialiased.
+light-text()
+  -webkit-font-smoothing: antialiased
