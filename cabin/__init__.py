@@ -39,6 +39,7 @@ def register_assets(app):
     assets.register(
         'vendor.js',
         'vendor/jquery-1.9.0b1.js',
+        'vendor/jquery.backstretch-2.0.3.js',
         filters='uglifyjs', output='gen/vendor.js')
 
     #assets.register(
