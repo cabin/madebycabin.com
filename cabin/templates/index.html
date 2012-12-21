@@ -1,3 +1,74 @@
 {% extends 'base.html' %}
 
-{% block content %}/{% endblock %}
+{% block content %}
+
+{#
+<div style="width: 200px; height: 2px; background: green"></div>
+#}
+
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+/*
+  $(function () {
+    $('body').css('min-height', 3000);
+    setTimeout(function () {
+      window.scrollTo(0, 0);
+    }, 0);
+  });
+  */
+
+
+  var el = $('#splash').backstretch('/static/test-bg.jpg');
+  // var nav = $('nav');
+  var body = $(document.body);
+  $(window).on('click touchstart', function (event) {
+    event.preventDefault();
+    if (body.toggleClass('splash-visible').hasClass('splash-visible')) {
+      $('.content').css('transform', 'translateY(' + (el.height() - 90) + 'px)');
+      // nav.css({top: el.height()});
+    }
+    else {
+      $('.content').css('transform', 'translateY(0)');
+      // nav.css({top: 0});
+    }
+  });
+  /* XXX noodling
+  var TRANSITION_END = 'webkitTransitionEnd transitionend msTransitionEnd oTransitionEnd';
+  var splash = false;
+  var el = $('#splash').backstretch('/static/test-bg.webp');
+  var nav = $('nav');
+  $(window).on('click', function (event) {
+    splash = !splash;
+    $(document.body).toggleClass('splash-visible', splash);
+    console.log(splash, el.height());
+
+    if (splash) {
+      nav.css('top', el.height());
+      nav.one(TRANSITION_END, function (event) {
+        nav
+          .addClass('no-transition')
+          .css({top: 'auto', bottom: 0})
+        setTimeout(function () { nav.removeClass('no-transition'); }, 0);
+      });
+    }
+    else {
+      nav
+        .addClass('no-transition')
+        .css({top: el.height(), bottom: 'auto'});
+      setTimeout(function () { nav.removeClass('no-transition').css({top: 0});
+      }, 0);
+    }
+  });
+  */
+</script>
+{% endblock %}
