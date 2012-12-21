@@ -43,15 +43,13 @@ def register_assets(app):
         'vendor/underscore-1.4.3.js',
         filters='uglifyjs', output='gen/vendor.js')
 
-    #assets.register(
-    #    'site.js',
+    assets.register(
+        'site.js',
     #    Bundle(
     #        '../templates/js/*',
     #        depends='dummy',  # TODO: remove this once webassets fix is in
     #        filters='handlebars', output='gen/templates.js'),
-    #    Bundle(
-    #        '../script/support.coffee',
-    #        '../script/bb.coffee',
-    #        #'../script/drop.coffee',
-    #        filters='coffeescript', output='gen/coffee.js'),
-    #    filters='uglifyjs', output='gen/site.js')
+        Bundle(
+            '../script/splash.coffee',
+            filters='coffeescript', output='gen/coffee.js'),
+        filters='uglifyjs', output='gen/site.js')

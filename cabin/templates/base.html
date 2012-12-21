@@ -6,7 +6,7 @@
   <title>{% if title %}{{ title }} &middot; {% endif %}Cabin</title>
   <meta name="description" content="We are makers. We design and build experiences for people and projects we love.">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="initial-scale=1.0">
   <meta name="apple-mobile-web-app-capable" content="yes">
 
   {% assets 'screen.css' -%}
@@ -17,48 +17,38 @@
   {% block extra_head %}{% endblock %}
 </head>
 <body>
-  <div id="splash"></div>
+  <header>
+    <h1>Cabin</h1>
+    <h2>Crafting experiences for people &amp; places we love.</h2>
+  </header>
 
-  {# XXX
   <nav>
-    <a href="{{ url_for('main.index') }}" class="logo">Cabin</a>
-    <ol>
-      <li><a href="{{ url_for('main.work') }}">Work</a></li>
-      <li><a href="{{ url_for('main.about') }}">About</a></li>
-      <li><a href="{{ url_for('main.lab') }}">Lab</a></li>
-    </ol>
+    <div class="logo"><a href="{{ url_for('main.index') }}">Cabin</a></div>
+    <a href="{{ url_for('main.work') }}"><hr>Work</a>
+    <a href="{{ url_for('main.about') }}"><hr>About</a>
+    <a href="{{ url_for('main.lab') }}"><hr>Lab</a>
   </nav>
-  #}
 
-  <div class="content">
-    <header>
-      <h1><a href="{{ url_for('main.index') }}" class="logo">Cabin</a></h1>
-      <a href="{{ url_for('main.work') }}"><hr>Work</a>
-      <a href="{{ url_for('main.about') }}"><hr>About</a>
-      <a href="{{ url_for('main.lab') }}"><hr>Lab</a>
-    </header>
-
+  <div class="main">
     {% block content %}{% endblock %}
 
+    <footer>
+      Studio
+      4216 N Mississippi Ave #315
+      Portland, OR 97217
 
-  <footer>
-  Studio
-  4216 N Mississippi Ave #315
-  Portland, OR 97217
+      Contact
+      <a href="mailto:connect@madebycabin.com">connect@madebycabin.com</a>
+      +1 415 255 5473
 
-  Contact
-  <a href="mailto:connect@madebycabin.com">connect@madebycabin.com</a>
-  +1 415 255 5473
+      SOCIAL JUNK
 
-  SOCIAL JUNK
-
-  &copy; Cabin 2013
-  x.o.
-  </footer>
-
+      &copy; Cabin 2013
+      x.o.
+    </footer>
   </div>
 
-  {% assets 'vendor.js' %}
+  {% assets 'vendor.js', 'site.js' %}
     <script src="{{ ASSET_URL }}"></script>
   {%- endassets %}
   {% block scripts %}{% endblock %}

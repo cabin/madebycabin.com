@@ -8,100 +8,136 @@ cabin_grey_med = #d2d2d2
 cabin_grey_light = #f2f2f2
 cabin_mustard = #edbc13
 
-// Common
+
+// Common  ///////////////////////////////////////////////////////////////////
 
 body
   color: cabin_black
-  font: 13px/16px Helvetica Neue, Helvetica, sans-serif;
+  font: 13px/16px Helvetica Neue, Helvetica, sans-serif
 
 a
   text-decoration: none
 
-header
+
+// Common nav/splash goodies  ////////////////////////////////////////////////
+
+body > header
+  absolute: top left
+  right: 0
+  display: none
+
+nav
   fixed: top left
   right: 0
   z-index: 2
-  h1, > a
-    font-size: 13px
+  > a
     font-weight: bold
     text-transform: uppercase
-  .logo
+  .logo a
     hide-text()
     display: inline-block
 
-#splash
-  display: none
-  fixed: top left
-  right: 0
+// Make sure the main content is tall enough to cover the splash during
+// transitions, and set up its initial position so animation works.
+html, body
+  height: 100%
+.main
+  background: #fff
+  min-height: 100%
+  relative: top
 
-.splash-visible
-  /*
-  header
-    top: auto
-    bottom: 0
-  */
-  #splash
+body.splash
+  // Avoid page-width jump.
+  overflow-y: scroll
+
+  > header
     display: block
+  nav
+    absolute: bottom 0
+    top: auto
+  .main
+    display: none
+
+body.splash-transition
+  // Show everyone while transitioning.
+  header, .main
+    display: block
+  nav, .main
+    transition-property: top, bottom
+    transition-duration: 500ms
 
 
-.content
-  transition: transform 2s
+// iPhone 5 landscape and smaller  ///////////////////////////////////////////
 
-
-// iPhone 5 landscape and smaller.
 @media only screen and (max-width: 568px)
-  header_height = 40px
-  header
+  nav_height = 40px
+
+  nav
     background: cabin_black
     display: table
     width: 100%
-    line-height: header_height
-    h1, > a
+    height: nav_height
+    line-height: @height
+
+    .logo, > a
       light-text()
       color: #fff
       display: table-cell
       text-align: center
       width: 25%
-    > a
-      border-left: 1px solid black
-      hr
-        display: none
-    .logo
+    .logo a
       src = 'symbol-white.png'
       s = image-size(src)
       background-image: url(src)
       background-size: s[0] s[1]
       size: s[0] s[1]
       vertical-align: text-bottom
+    > a
+      border-left: 1px solid black
+      hr
+        display: none
 
-  #splash
-    bottom: header_height
-  .content
-    margin-top: header_height
+  body > header
+    bottom: nav_height
+  .main
+    margin-top: nav_height
 
   footer
     display: none
 
 
-// Larger than iPhone 5 landscape.
+// Larger than iPhone 5 landscape  ///////////////////////////////////////////
+
 @media only screen and (min-width: 569px)
-  header_height = 90px
-  header
+  nav_height = 90px
+
+  nav
     background: #fff
     border-bottom: 1px solid cabin_grey_light
-    line-height: (header_height / 3)
-    padding: @line-height
+    height: (nav_height / 3)
+    line-height: @height
+    padding: @height
     text-align: right
-    h1, > a
+
+    .logo
+      src = 'symbol-black.png'
+      s = image-size(src)
+      float: left
+      // Size is for Firefox, which was adding 10px to height for some reason.
+      size: s[0] s[1]
+      a
+        background-image: url(src)
+        background-size: s[0] s[1]
+        size: s[0] s[1]
+        &:hover
+          background-image: url('symbol-hover.png')
+
+    > a
       color: cabin_black
       display: inline-block
-    h1
-      float: left
-      margin: 0
-    > a
       margin-left: 10px
-      position: relative
       padding: 0 10px
+      position: relative
       hr
         absolute: top left
         background: cabin_black
@@ -111,19 +147,11 @@ header
         transition: width 200ms
       &:hover hr
         width: 100%
-    .logo
-      src = 'symbol-black.png'
-      s = image-size(src)
-      background-image: url(src)
-      background-size: s[0] s[1]
-      size: s[0] s[1]
-    .logo:hover
-      background-image: url('symbol-hover.png')
 
-  #splash
-    bottom: header_height
-  .content
-    margin-top: header_height
+  body > header
+    bottom: nav_height
+  .main
+    margin-top: nav_height
 
   footer
     background: cabin_black
@@ -136,74 +164,17 @@ header
     a:hover
       color: cabin_mustard
       transition: none
-    fixed: bottom left
-    right: 0
 
-
-
-/*
-nav
-  background: cabin_grey
-  line-height: 30px
-  .logo
-    hide-text()
-    image: 'logo.png'
-    size: image-size('logo.png')[0] image-size('logo.png')[1]
-    display: inline-block
-  ol
-    margin: 0
-    padding: 0
-    float: right
-    width: 75%
-    outline: 2px solid white
-    display: table
-
-    li
-      outline: 1px dashed black
-      display: table-cell
-      float: none
-      text-align: center
-      width: 33%
-    a
-      outline: 1px solid red
-      display: block
-      color: #fff
-      width: 100%
-*/
-
-/*
-nav
-  background: #fff
-  line-height: 30px
-  padding: 30px
-  transition: all 1s
-  fixed: top left
-  right: 0
-  a
-    color: cabin_grey
-    display: inline-block
-    font-weight: bold
-    text-decoration: none
-    text-transform: uppercase
-  ol
-    inline-list()
-    float: right
-*/
-
-
-// Helper for temporarily disabling transitions.
-.no-transition
-  transition: none !important
 
 
 // Neither CSS nor Stylus reliably supports nested media queries, so here we go
 // with Retina images.  XXX it works if you use a & immediately inside the nest
 @media only screen and (max-width: 568px) and (-webkit-min-device-pixel-ratio: 1.5)
-  header .logo
+  nav .logo a
     background-image: url('symbol-white@2x.png')
 
 @media only screen and (min-width: 569px) and (-webkit-min-device-pixel-ratio: 1.5)
-  header .logo
+  nav .logo a
     background-image: url('symbol-black@2x.png')
     &:hover
       background-image: url('symbol-hover@2x.png')
