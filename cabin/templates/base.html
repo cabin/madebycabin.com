@@ -16,7 +16,7 @@
   <script src="/static/vendor/modernizr-latest.js"></script> #}
   {% block extra_head %}{% endblock %}
 </head>
-<body>
+<body{% if splash %} class="splash"{% endif %}>
   <header>
     <h1>Cabin</h1>
     <h2>Crafting experiences for people &amp; places we love.</h2>
