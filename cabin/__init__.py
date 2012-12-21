@@ -40,6 +40,7 @@ def register_assets(app):
         'vendor.js',
         'vendor/jquery-1.9.0b1.js',
         'vendor/jquery.backstretch-2.0.3.js',
+        'vendor/underscore-1.4.3.js',
         filters='uglifyjs', output='gen/vendor.js')
 
     #assets.register(
