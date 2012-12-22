@@ -50,9 +50,8 @@ nav
   > a
     font-weight: bold
     text-transform: uppercase
-  .logo a
+  .logo
     hide-text()
-    display: inline-block
 
 // Make sure the main content is tall enough to cover the splash during
 // transitions, and set up its initial position so animation works.
@@ -93,21 +92,22 @@ body.splash-transition
     height: nav_height
     line-height: @height
 
-    .logo, > a
+    .logo
+      src = 'symbol-white.png'
+      s = image-size(src)
+      background-image: url(src)
+      background-position: center center
+      background-repeat: no-repeat
+      background-size: s[0] s[1]
+      border-left: none
+      text-indent: -999px
+    > a
       light-text()
+      border-left: 1px solid black
       color: #fff
       display: table-cell
       text-align: center
       width: 25%
-    .logo a
-      src = 'symbol-white.png'
-      s = image-size(src)
-      background-image: url(src)
-      background-size: s[0] s[1]
-      size: s[0] s[1]
-      vertical-align: text-bottom
-    > a
-      border-left: 1px solid black
       hr
         display: none
 
@@ -136,15 +136,13 @@ body.splash-transition
     .logo
       src = 'symbol-black.png'
       s = image-size(src)
+      background-image: url(src)
+      background-size: s[0] s[1]
       float: left
-      // Size is for Firefox, which was adding 10px to height for some reason.
       size: s[0] s[1]
-      a
-        background-image: url(src)
-        background-size: s[0] s[1]
-        size: s[0] s[1]
-        &:hover
-          background-image: url('symbol-hover.png')
+      padding: 0
+      &:hover
+        background-image: url('symbol-hover.png')
 
     > a
       color: cabin_black
@@ -184,11 +182,11 @@ body.splash-transition
 // Neither CSS nor Stylus reliably supports nested media queries, so here we go
 // with Retina images.  XXX it works if you use a & immediately inside the nest
 @media only screen and (max-width: 568px) and (-webkit-min-device-pixel-ratio: 1.5)
-  nav .logo a
+  nav .logo
     background-image: url('symbol-white@2x.png')
 
 @media only screen and (min-width: 569px) and (-webkit-min-device-pixel-ratio: 1.5)
-  nav .logo a
+  nav .logo
     background-image: url('symbol-black@2x.png')
     &:hover
       background-image: url('symbol-hover@2x.png')
