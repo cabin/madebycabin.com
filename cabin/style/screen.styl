@@ -75,15 +75,10 @@ body.splash
   .main
     display: none
 
+// Show everyone while transitioning.
 body.splash-transition
-  // Show everyone while transitioning.
   header, .main
     display: block
-  nav, .main
-    transition-property: top, bottom
-    transition-duration: 500ms
-    // Take advantage of hardware-accelerated 3D transforms in Mobile Safari.
-    transform: translate3D(0, 0, 0)
 
 
 // iPhone 5 landscape and smaller  ///////////////////////////////////////////

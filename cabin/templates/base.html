@@ -51,6 +51,14 @@
   {% assets 'vendor.js', 'site.js' %}
     <script src="{{ ASSET_URL }}"></script>
   {%- endassets %}
+  <script>
+    var h = $('header').backstretch('/static/test-bg.jpg');
+    var app = new AppRouter;
+    $(function () {
+      Backbone.history.start({
+        pushState: true, hashChange: false, silent: true});
+    });
+  </script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

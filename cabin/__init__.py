@@ -39,8 +39,9 @@ def register_assets(app):
     assets.register(
         'vendor.js',
         'vendor/jquery-1.9.0b1.js',
-        'vendor/jquery.backstretch-2.0.3.js',
         'vendor/underscore-1.4.3.js',
+        'vendor/backbone-0.9.9.js',
+        'vendor/jquery.backstretch-2.0.3.js',
         filters='uglifyjs', output='gen/vendor.js')
 
     assets.register(
@@ -50,6 +51,6 @@ def register_assets(app):
     #        depends='dummy',  # TODO: remove this once webassets fix is in
     #        filters='handlebars', output='gen/templates.js'),
         Bundle(
-            '../script/splash.coffee',
+            '../script/views.coffee',
             filters='coffeescript', output='gen/coffee.js'),
         filters='uglifyjs', output='gen/site.js')
