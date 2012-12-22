@@ -59,29 +59,48 @@ class @AppRouter extends Backbone.Router
   initialize: ->
     @nav = new NavView(el: $('body > nav').get(0), router: this)
     @splash = new SplashView(el: $('body > header').get(0))
+    @on('all', @trackRoute)
     $('body').on('click', 'a[href^="/"]', @internalLink)
+    @currentPage = $('.content').data('page')
 
   # Pass clicks on internal links through navigate, saving a page load.
   internalLink: (event) =>
+    # Only act on left clicks with no modifiers.
+    return unless event.which is 1
+    return if event.metaKey or event.ctrlKey or event.shiftKey or event.altKey
     event.preventDefault()
     event.stopPropagation()
     @navigate($(event.target).attr('href'), trigger: true)
     $(event.target).blur()  # kill focus outline
+
+  # Track the page currently display in the main content area, so we know when
+  # we need to load new content.
+  trackRoute: (route) ->
+    if route is 'route:showPage'
+      name = Backbone.history.getFragment()
+      @currentPage = name
+
+  pjax: (page) ->
+    handler = (data) ->
+      $('.content').replaceWith(data)
+      title = $('.content').data('title')
+      $('head > title').text(title) if title
+    $.ajax
+      url: '/' + page
+      headers: {'X-PJAX': 'true'}
+      error: -> console.log('PJAX ERROR', arguments)  # XXX
+      success: handler
 
   routes:
     '': 'showSplash'
     ':page': 'showPage'
 
   showSplash: ->
-    #console.log('--> showSplash', arguments)
     @splash.show()
 
   showPage: (page) ->
-    #console.log('showPage', arguments)
-    #if page isnt currentPage
-    #  load page
+    if not page
+      @navigate(@currentPage)
+    else if @currentPage isnt page
+      @pjax(page)
     @splash.hide()
-
-  work: -> showMain('work')
-  about: -> showMain('about')
-  lab: -> showMain('lab')

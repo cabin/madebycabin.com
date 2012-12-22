@@ -1,6 +1,11 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 
 main = Blueprint('main', __name__)
+
+
+@main.context_processor
+def request_is_pjax():
+    return {'request_is_pjax': 'X-PJAX' in request.headers}
 
 
 @main.route('/')
@@ -15,9 +20,9 @@ def work():
 
 @main.route('/about')
 def about():
-    return 'about'
+    return render_template('about.html')
 
 
 @main.route('/lab')
 def lab():
-    return 'lab'
+    return render_template('lab.html')

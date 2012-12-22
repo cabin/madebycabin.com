@@ -1,0 +1,76 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>{% if title %}{{ title }} &middot; {% endif %}Cabin</title>
+  <meta name="description" content="We are makers. We design and build experiences for people and projects we love.">
+
+  <meta name="viewport" content="initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  {% assets 'screen.css' -%}
+    <link href="{{ ASSET_URL }}" rel="stylesheet">
+  {%- endassets %}
+  {# XXX update to non-dev version
+  <script src="/static/vendor/modernizr-latest.js"></script> #}
+  {% block extra_head %}{% endblock %}
+</head>
+<body{% if splash %} class="splash"{% endif %}>
+  <header>
+    <h1>Cabin</h1>
+    <h2>Crafting experiences for people &amp; places we love.</h2>
+  </header>
+
+  <nav>
+    <a href="{{ url_for('main.index') }}" class="logo">Cabin</a>
+    <a href="{{ url_for('main.work') }}"><hr>Work</a>
+    <a href="{{ url_for('main.about') }}"><hr>About</a>
+    <a href="{{ url_for('main.lab') }}"><hr>Lab</a>
+  </nav>
+
+  <div class="main">
+    <div class="content"{% if page %} data-page="{{ page }}"{% endif %}>
+      {% block content %}{% endblock %}
+    </div>
+
+    <footer>
+      Studio
+      4216 N Mississippi Ave #315
+      Portland, OR 97217
+
+      Contact
+      <a href="mailto:connect@madebycabin.com">connect@madebycabin.com</a>
+      +1 415 255 5473
+
+      SOCIAL JUNK
+
+      &copy; Cabin 2013
+      x.o.
+    </footer>
+  </div>
+
+  {% assets 'vendor.js', 'site.js' %}
+    <script src="{{ ASSET_URL }}"></script>
+  {%- endassets %}
+  <script>
+    /* XXX backstretch has a janky fadeIn animation; could do better?
+    it also does a bit more than necessary; we could just set background-image,
+    background-position: center center, and manager background-size: auto 100%
+    or 100% auto based on browser ratio to image ratio.
+    var h = $('header').backstretch(
+      ['/static/test-cannon.jpg', '/static/test-butt.jpg'],
+      {fade: 300, duration: 5000});
+    */
+    var h = $('header').backstretch('/static/test-cannon.jpg');
+    var app = new AppRouter;
+    $(function () {
+      Backbone.history.start({pushState: true, hashChange: false});
+    });
+  </script>
+  {% block scripts %}{% endblock %}
+
+  {# XXX for dev only #}
+  <script src="http://10.0.1.3:35729/livereload.js?snipver=1"></script>
+</body>
+</html>
