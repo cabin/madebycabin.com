@@ -70,7 +70,7 @@ class @AppRouter extends Backbone.Router
     return if event.metaKey or event.ctrlKey or event.shiftKey or event.altKey
     event.preventDefault()
     event.stopPropagation()
-    @navigate($(event.target).attr('href'), trigger: true)
+    @navigate($(event.currentTarget).attr('href'), trigger: true)
     $(event.target).blur()  # kill focus outline
 
   # Track the page currently display in the main content area, so we know when
@@ -81,10 +81,16 @@ class @AppRouter extends Backbone.Router
       @currentPage = name
 
   pjax: (page) ->
-    handler = (data) ->
+    now = new Date
+    $('body').addClass('loading')
+    handler = (data) =>
       $('.content').replaceWith(data)
       title = $('.content').data('title')
-      $('head > title').text(title) if title
+      @setTitle(title) if title
+      # XXX temporary animation shenanigans
+      duration = 750
+      finishDuration = (duration + (now - new Date)) % duration
+      _.delay((-> $('body').removeClass('loading')), finishDuration)
     $.ajax
       url: '/' + page
       headers: {'X-PJAX': 'true'}
@@ -95,12 +101,21 @@ class @AppRouter extends Backbone.Router
     '': 'showSplash'
     ':page': 'showPage'
 
+  setTitle: ->
+    titleChunks = Array.prototype.slice.call(arguments)
+    titleChunks.unshift('Cabin')
+    $('title').text(titleChunks.join(' · '))
+
   showSplash: ->
+    @setTitle()
     @splash.show()
 
   showPage: (page) ->
     if not page
+      @setTitle($('.content').data('title'))
       @navigate(@currentPage)
     else if @currentPage isnt page
       @pjax(page)
+    else
+      @setTitle($('.content').data('title'))
     @splash.hide()

@@ -1,5 +1,5 @@
-<div class="content" data-title="
-  {%- if title %}{{ title }} &middot; {% endif %}Cabin"
+<section class="content"
+  {%- if title %} data-title="{{ title }}"{% endif %}
   {%- if page %} data-page="{{ page }}"{% endif %}>
   {% block content %}{% endblock %}
-</div>
+</section>
