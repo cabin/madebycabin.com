@@ -91,6 +91,50 @@ body.splash-transition
     display: block
 
 
+// Work page common bits  ////////////////////////////////////////////////////
+
+// XXX tmp
+.content
+  clearfix()
+  margin: 0 30px
+
+
+.work-thumb
+  border-top: 1px solid cabin_grey_light
+  color cabin_black
+  display: block
+  margin-bottom: 40px
+  // width: 260px
+  padding: 14px 0 40px 0
+
+  float: left
+  margin-right: 20px
+  &.double
+    // width: 540px
+
+  // Cover the top border on hover.
+  hover-hr(300ms)
+  hr
+    top: -1px
+
+  img
+    margin: 0 auto
+    display: block
+    width: 100%
+    height: auto
+
+  h2, h3
+    font-size 1em
+    margin: 0
+  h2
+    text-transform: uppercase
+  h3
+    @extends .dim-text
+    margin-bottom: 24px  // XXX revisit; should be 30
+
+
+
+
 // iPhone 5 landscape and smaller  ///////////////////////////////////////////
 
 @media only screen and (max-width: 568px)

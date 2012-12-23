@@ -44,6 +44,7 @@ def register_assets(app):
         'vendor/underscore-1.4.3.js',
         'vendor/backbone-0.9.9.js',
         'vendor/jquery.backstretch-2.0.3.js',
+        'vendor/jquery.masonry-2.1.06.js',
         filters='uglifyjs', output='gen/vendor.js')
 
     assets.register(

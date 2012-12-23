@@ -4,32 +4,73 @@
 
 {% block content %}
 
-  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-  consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-  cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-  proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+  <h1>Selected Goodness</h1>
 
-  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-  consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-  cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-  proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+  <div class="bricks">
+    <a class="work-thumb double" href="/about">
+      <hr><h2>Pressed Juicery</h2><h3>Website</h3>
+      <img src="http://placehold.it/540x420" alt>
+    </a>
 
-  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-  consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-  cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-  proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <a class="work-thumb">
+      <hr><h2>Sketch</h2><h3>Packaging</h3>
+      <img src="http://placehold.it/260x300" alt>
+    </a>
 
-  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-  consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-  cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-  proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <a class="work-thumb">
+      <hr><h2>Linkhunter</h2><h3>Browser Extension</h3>
+      <img src="http://placehold.it/100x100" alt>
+    </a>
 
+    <a class="work-thumb">
+      <hr><h2>Sketch</h2><h3>Packaging</h3>
+      <img src="http://placehold.it/260x300" alt>
+    </a>
+
+    <a class="work-thumb">
+      <hr><h2>Pressed Juicery</h2><h3>Brand, Packaging</h3>
+      <img src="http://placehold.it/260x200" alt>
+    </a>
+  </div>
+
+{% endblock %}
+
+{% block scripts %}
+  <script>
+  $(function () {
+    var container = $('.bricks');
+    var items = container.find('.work-thumb');
+    var itemWidth = 260;
+    var gutterWidth = 20;
+    var columns = items.length + items.filter('.double').length
+
+    var maxWidthAt = function(n) {
+      return itemWidth * n + gutterWidth * (n - 1);
+    };
+
+    var computeColumnWidth = function () {
+      var max = Math.min($('body > nav').width(), maxWidthAt(columns));
+      for (var n = 1; n <= columns; ++n) {
+        if (maxWidthAt(n) >= max) break;
+      }
+      columnSpace = max - gutterWidth * (n - 1);
+      columnWidth = Math.floor(columnSpace / n);
+
+      container.css('width', max);
+      items.css('width', columnWidth)
+        .filter('.double').css('width', columnWidth * 2 + gutterWidth);
+
+      return columnWidth;
+    };
+
+    container.imagesLoaded(function () {
+      container.masonry({
+        itemSelector: '.work-thumb',
+        columnWidth: computeColumnWidth,
+        gutterWidth: 20,
+        isAnimated: true,
+        isFitWidth: true});
+    });
+  });
+  </script>
 {% endblock %}
