@@ -13,10 +13,21 @@ cabin_mustard = #edbc13
 
 body
   color: cabin_black
-  font: 13px/16px Helvetica Neue, Helvetica, sans-serif
+  font: 13px/16px ProximaNova, Helvetica Neue, Helvetica, sans-serif
 
 a
   text-decoration: none
+
+.headline-text
+  font: 30px/1.2 'YWFT Ultramagnetic Light'
+  text-transform: uppercase
+
+.dim-text
+  color: cabin_grey_dark
+  font-weight: normal
+
+h1
+  @extend .headline-text
 
 
 // Common nav/splash goodies  ////////////////////////////////////////////////
@@ -33,15 +44,14 @@ body > header
     margin: 0 auto
     text-align: center
   h1
-    font: bold 50px sans-serif
-    text-transform: uppercase
+    font-size: 100px
   h2
-    font: bold italic 25px/30px Georgia
-    width: 420px
-    max-width: 80%
-    margin-top: 20px
     border-top: 1px solid rgba(white, .2)
+    font: bold italic 25px/30px Georgia
+    margin-top: 20px
+    max-width: 80%
     padding-top: 20px
+    width: 420px
 
 nav
   fixed: top left

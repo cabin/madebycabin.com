@@ -30,6 +30,8 @@ def register_assets(app):
     assets.register(
         'screen.css',
         'vendor/normalize-2.0.1.css',
+        'fonts/ywft-ultramagnetic-light.css',
+        'fonts/proxima-nova.css',
         Bundle(
             '../style/screen.styl',
             depends='../style/*.styl',
