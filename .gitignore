@@ -5,3 +5,4 @@ instance
 */static/gen/*
 .sass-cache
 .webassets-cache
+.webassets-manifest

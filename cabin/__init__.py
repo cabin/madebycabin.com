@@ -20,6 +20,7 @@ def create_app():
 
 def register_assets(app):
     assets = Environment(app)
+    assets.manifest = 'file'
     assets.config['stylus_plugins'] = ['nib']
     assets.config['stylus_extra_args'] = [
         '--inline',
@@ -36,7 +37,7 @@ def register_assets(app):
             '../style/screen.styl',
             depends='../style/*.styl',
             filters='stylus', output='gen/stylus.css'),
-        filters='cssmin', output='gen/screen.css')
+        filters='cssmin', output='gen/screen-%(version)s.css')
 
     assets.register(
         'vendor.js',
@@ -45,7 +46,7 @@ def register_assets(app):
         'vendor/backbone-0.9.9.js',
         'vendor/jquery.backstretch-2.0.3.js',
         'vendor/jquery.masonry-2.1.06.js',
-        filters='uglifyjs', output='gen/vendor.js')
+        filters='uglifyjs', output='gen/vendor-%(version)s.js')
 
     assets.register(
         'site.js',
@@ -56,4 +57,4 @@ def register_assets(app):
         Bundle(
             '../script/views.coffee',
             filters='coffeescript', output='gen/coffee.js'),
-        filters='uglifyjs', output='gen/site.js')
+        filters='uglifyjs', output='gen/site-%(version)s.js')
