@@ -86,7 +86,10 @@ class MainView extends Backbone.View
     # a single column.
     computeColumnWidth = ->
       singleColumn = window.innerWidth <= 320
-      doubleFeatured = not singleColumn and window.innerHeight > 320
+      # iPhone 5 landscape will report its height at 321 temporarily when
+      # scrolling through the address bar, despite never actually having that
+      # much real estate. Workaround: cutoff at 321 instead of 320.
+      doubleFeatured = not singleColumn and window.innerHeight > 321
       # Compute columnWidth and maxWidth.
       if singleColumn
         maxWidth = columnWidth = page.width()
