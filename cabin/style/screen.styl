@@ -219,6 +219,7 @@ body.splash-transition
 
 @media only screen and (min-width: 569px)
   nav_height = 90px
+  footer_height = 60px
 
   nav
     background: #fff
@@ -254,20 +255,27 @@ body.splash-transition
     padding-top: nav_height
 
   .main
-    padding-bottom: 76px  // XXX footer height
+    padding-bottom: footer_height
   footer
-    background: cabin_black
-    padding: 30px
-    absolute: bottom left
-    right: 0
+    absolute: bottom left; right: 0
+    background: cabin_grey_light
+    box-shadow: inset 0 2px 2px -2px cabin_grey_dark
+    height: footer_height
+    line-height: @height
+    overflow: hidden
+    padding: 0 30px
     &, a
-      color: black
-    .no-touch &:hover, .no-touch &:hover a
       color: cabin_grey_dark
-      transition: color 100ms ease-in
-    .no-touch a:hover
-      color: cabin_mustard
-      transition: none
+    span
+      color: cabin_grey_med
+      display: inline-block
+      margin: 0 5px
+    ol
+      inline-list()
+    .copyright
+      float: right
+      margin: 0
+      text-transform: uppercase
 
   .work-thumb
     &.feature
