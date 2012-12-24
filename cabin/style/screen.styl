@@ -30,6 +30,19 @@ h1
   @extend .headline-text
 
 
+hover-hr(duration = 200ms)
+  position: relative
+  hr
+    absolute: top left
+    background: cabin_black
+    border: none
+    margin: 0
+    size: 0 1px
+    transition: width duration
+  .no-touch &:hover hr
+    width: 100%
+
+
 // Common nav/splash goodies  ////////////////////////////////////////////////
 
 body > header
@@ -90,6 +103,16 @@ body.splash-transition
   header, .main
     display: block
 
+// XXX temporary animation
+.loading nav .logo
+  animation: rotate 750ms infinite ease-out
+  transform-origin: center 60%
+@keyframes rotate
+  from
+    transform: rotate(0deg)
+  to
+    transform: rotate(360deg)
+
 
 // Work page common bits  ////////////////////////////////////////////////////
 
@@ -98,30 +121,31 @@ body.splash-transition
   clearfix()
   margin: 0 30px
 
+.bricks
+  opacity: 0
+  // masonry class is added after initial layout, so we can avoid initial
+  // transitions.
+  &.masonry
+    opacity: 1
+    transition-property: opacity, height, width
+    &, .masonry-brick
+      transition-duration: 300ms
+      transform: translate3D(0, 0, 0)
+    .masonry-brick
+      transition-property: left, right, top
 
 .work-thumb
+  space_between = 80px
+  hover-hr(300ms)
   border-top: 1px solid cabin_grey_light
   color cabin_black
   display: block
-  margin-bottom: 40px
-  // width: 260px
-  padding: 14px 0 40px 0
-
   float: left
+  margin-bottom: (space_between / 2)
   margin-right: 20px
-  &.double
-    // width: 540px
-
-  // Cover the top border on hover.
-  hover-hr(300ms)
-  hr
-    top: -1px
-
-  img
-    margin: 0 auto
-    display: block
-    width: 100%
-    height: auto
+  padding-top: 14px
+  padding-bottom: (space_between / 2)
+  width: 260px
 
   h2, h3
     font-size 1em
@@ -131,14 +155,21 @@ body.splash-transition
   h3
     @extends .dim-text
     margin-bottom: 24px  // XXX revisit; should be 30
-
-
+  img
+    margin: 0 auto
+    display: block
+    max-width: 100%
+    height: auto
 
 
 // iPhone 5 landscape and smaller  ///////////////////////////////////////////
 
 @media only screen and (max-width: 568px)
   nav_height = 40px
+
+  // XXX tmp
+  .content
+    margin: 0 20px
 
   nav
     background: cabin_black
@@ -174,6 +205,15 @@ body.splash-transition
   footer
     display: none
 
+  extend-borders(page_padding = 20px)
+    padding-left: page_padding
+    padding-right: page_padding
+    margin-left: -(page_padding)
+    margin-right: -(page_padding)
+
+  .single-column .work-thumb
+    extend-borders()
+
 
 // Larger than iPhone 5 landscape  ///////////////////////////////////////////
 
@@ -194,48 +234,52 @@ body.splash-transition
       background-image: url(src)
       background-size: s[0] s[1]
       float: left
+      margin-left: 0
       size: s[0] s[1]
       padding: 0
-      &:hover
+      .no-touch &:hover
         background-image: url('symbol-hover.png')
 
     > a
+      hover-hr()
       color: cabin_black
       display: inline-block
       margin-left: 10px
       padding: 0 10px
       position: relative
-      hr
-        absolute: top left
-        background: cabin_black
-        border: none
-        margin: 0
-        size: 0 1px
-        transition: width 200ms
-      &:hover hr
-        width: 100%
 
   body > header
     bottom: nav_height
   .main
     padding-top: nav_height
 
+  .main
+    padding-bottom: 76px  // XXX footer height
   footer
     background: cabin_black
     padding: 30px
+    absolute: bottom left
+    right: 0
     &, a
       color: black
-    &:hover, &:hover a
+    .no-touch &:hover, .no-touch &:hover a
       color: cabin_grey_dark
       transition: color 100ms ease-in
-    a:hover
+    .no-touch a:hover
       color: cabin_mustard
       transition: none
 
+  .work-thumb
+    &.feature
+      width: 540px
+    // Cover the top border with the hover-hr.
+    hr
+      top: -1px
 
 
 // Neither CSS nor Stylus reliably supports nested media queries, so here we go
 // with Retina images.  XXX it works if you use a & immediately inside the nest
+// XXX having these here along with inlined images penalizes all devices
 @media only screen and (max-width: 568px) and (-webkit-min-device-pixel-ratio: 1.5)
   nav .logo
     background-image: url('symbol-white@2x.png')
@@ -243,5 +287,5 @@ body.splash-transition
 @media only screen and (min-width: 569px) and (-webkit-min-device-pixel-ratio: 1.5)
   nav .logo
     background-image: url('symbol-black@2x.png')
-    &:hover
+    .no-touch &:hover
       background-image: url('symbol-hover@2x.png')

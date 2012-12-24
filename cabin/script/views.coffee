@@ -54,14 +54,100 @@ class SplashView extends Backbone.View
     @main.removeAttr('style')
 
 
+class MainView extends Backbone.View
+
+  initialize: (options) ->
+    @listenTo(options.router, 'route:showPage', @tXXX)
+
+  tXXX: (page) =>
+    if page is 'work'
+      # XXX
+      @masonry()
+      @on('pjax:complete', @masonry)
+
+  masonry: ->
+    page = $('.content')
+    container = $('.bricks')
+    itemSelector = '.work-thumb'
+    items = container.find(itemSelector)
+    featuredItems = items.filter('.feature')
+    itemWidth = 260
+    gutterWidth = 20
+    maxWidthAt = (cols) -> itemWidth * cols + gutterWidth * (cols - 1)
+
+    # Compute the best width for a column by filling the available container.
+    # `itemWidth` is the effective maximum width for each column. Rather than
+    # leaving additional horizontal whitespace, add one more column than will
+    # fit and downscale all columns.
+    # For very narrow viewports (e.g., iPhone portrait), convert to a single
+    # column at full width.
+    # Featured items display at double width, unless the viewport isn't tall
+    # enough to view them appropriately (e.g., iPhone landscape) or we're using
+    # a single column.
+    computeColumnWidth = ->
+      singleColumn = window.innerWidth <= 320
+      doubleFeatured = not singleColumn and window.innerHeight > 320
+      # Compute columnWidth and maxWidth.
+      if singleColumn
+        maxWidth = columnWidth = page.width()
+      else
+        maxColumns = items.length
+        maxColumns += featuredItems.length if doubleFeatured
+        maxWidth = Math.min(page.width(), maxWidthAt(maxColumns))
+        for n in [1..maxColumns]
+          break if maxWidthAt(n) >= maxWidth
+        columnSpace = maxWidth - gutterWidth * (n - 1)
+        columnWidth = Math.floor(columnSpace / n)
+      container.css('width', maxWidth)
+        .toggleClass('single-column', singleColumn)
+      items.css('width', columnWidth)
+      if doubleFeatured
+        featuredItems.css('width', columnWidth * 2 + gutterWidth)
+      columnWidth
+
+    container.imagesLoaded ->
+      container.masonry
+        itemSelector: itemSelector
+        columnWidth: computeColumnWidth
+        gutterWidth: gutterWidth
+        isFitWidth: true
+
+  pjax: (page) ->
+    now = new Date
+    $('body').addClass('loading')
+    handler = (data) =>
+      $('.content').replaceWith(data)
+      title = $('.content').data('title')
+      @setTitle(title) if title
+      # XXX temporary animation shenanigans
+      duration = 750
+      finishDuration = (duration + (now - new Date)) % duration
+      _.delay((-> $('body').removeClass('loading')), finishDuration)
+      @trigger('pjax:complete')
+    $.ajax
+      url: '/' + page
+      headers: {'X-PJAX': 'true'}
+      error: -> console.log('PJAX ERROR', arguments)  # XXX
+      success: handler
+
+  setTitle: ->
+    titleChunks = Array.prototype.slice.call(arguments)
+    titleChunks.unshift('Cabin')
+    $('title').text(titleChunks.join(' · '))
+
+
 class @AppRouter extends Backbone.Router
 
   initialize: ->
-    @nav = new NavView(el: $('body > nav').get(0), router: this)
-    @splash = new SplashView(el: $('body > header').get(0))
-    @on('all', @trackRoute)
-    $('body').on('click', 'a[href^="/"]', @internalLink)
+    bodyChildren = $('body').children()
+    getEl = (selector) -> bodyChildren.filter(selector).get(0)
+    @splash = new SplashView(el: getEl('header'))
+    @nav = new NavView(el: getEl('nav'), router: this)
+    @main = new MainView(el: getEl('.main'), router: this)
+
     @currentPage = $('.content').data('page')
+    $('body').on('click touchstart', 'a[href^="/"]', @internalLink)
+    @on('all', @trackRoute)
 
   # Pass clicks on internal links through navigate, saving a page load.
   internalLink: (event) =>
@@ -80,42 +166,21 @@ class @AppRouter extends Backbone.Router
       name = Backbone.history.getFragment()
       @currentPage = name
 
-  pjax: (page) ->
-    now = new Date
-    $('body').addClass('loading')
-    handler = (data) =>
-      $('.content').replaceWith(data)
-      title = $('.content').data('title')
-      @setTitle(title) if title
-      # XXX temporary animation shenanigans
-      duration = 750
-      finishDuration = (duration + (now - new Date)) % duration
-      _.delay((-> $('body').removeClass('loading')), finishDuration)
-    $.ajax
-      url: '/' + page
-      headers: {'X-PJAX': 'true'}
-      error: -> console.log('PJAX ERROR', arguments)  # XXX
-      success: handler
-
   routes:
     '': 'showSplash'
     ':page': 'showPage'
 
-  setTitle: ->
-    titleChunks = Array.prototype.slice.call(arguments)
-    titleChunks.unshift('Cabin')
-    $('title').text(titleChunks.join(' · '))
-
   showSplash: ->
-    @setTitle()
+    @main.setTitle()
     @splash.show()
 
   showPage: (page) ->
+    # XXX refactor these setTitle shenanigans
     if not page
-      @setTitle($('.content').data('title'))
+      @main.setTitle($('.content').data('title'))
       @navigate(@currentPage)
     else if @currentPage isnt page
-      @pjax(page)
+      @main.pjax(page)
     else
-      @setTitle($('.content').data('title'))
+      @main.setTitle($('.content').data('title'))
     @splash.hide()
