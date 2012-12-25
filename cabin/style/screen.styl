@@ -67,6 +67,8 @@ body > header
     width: 420px
 
 nav
+  background: white
+  border-bottom: 1px solid cabin_grey_light
   fixed: top left
   right: 0
   z-index: 2
@@ -75,13 +77,16 @@ nav
     text-transform: uppercase
   .logo
     hide-text()
+    // XXX handle no-svg browsers
+    background-image: url('cabin-symbol.svg')
+    background-repeat: no-repeat
 
 // Make sure the main content is tall enough to cover the splash during
 // transitions, and set up its initial position so animation works.
 html, body
   height: 100%
 .main
-  background: #fff
+  background: white
   box-sizing: border-box
   min-height: 100%
   relative: top
@@ -172,25 +177,20 @@ body.splash-transition
     margin: 0 20px
 
   nav
-    background: cabin_black
     display: table
     width: 100%
     height: nav_height
     line-height: @height
 
     .logo
-      src = 'symbol-white.png'
-      s = image-size(src)
-      background-image: url(src)
-      background-position: center center
-      background-repeat: no-repeat
-      background-size: s[0] s[1]
+      background-size: 18px 15px
+      background-position: center 12px
       border-left: none
       text-indent: -999px
     > a
       light-text()
-      border-left: 1px solid black
-      color: #fff
+      border-left: 1px solid cabin_grey_light
+      color: cabin_black
       display: table-cell
       text-align: center
       width: 25%
@@ -222,24 +222,17 @@ body.splash-transition
   footer_height = 60px
 
   nav
-    background: #fff
-    border-bottom: 1px solid cabin_grey_light
     height: (nav_height / 3)
     line-height: @height
     padding: @height
     text-align: right
 
     .logo
-      src = 'symbol-black.png'
-      s = image-size(src)
-      background-image: url(src)
-      background-size: s[0] s[1]
+      background-size: 35px 30px
       float: left
       margin-left: 0
-      size: s[0] s[1]
       padding: 0
-      .no-touch &:hover
-        background-image: url('symbol-hover.png')
+      size: 35px 30px
 
     > a
       hover-hr()
@@ -288,6 +281,7 @@ body.splash-transition
 // Neither CSS nor Stylus reliably supports nested media queries, so here we go
 // with Retina images.  XXX it works if you use a & immediately inside the nest
 // XXX having these here along with inlined images penalizes all devices
+/*
 @media only screen and (max-width: 568px) and (-webkit-min-device-pixel-ratio: 1.5)
   nav .logo
     background-image: url('symbol-white@2x.png')
@@ -297,3 +291,4 @@ body.splash-transition
     background-image: url('symbol-black@2x.png')
     .no-touch &:hover
       background-image: url('symbol-hover@2x.png')
+*/
