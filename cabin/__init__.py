@@ -40,6 +40,13 @@ def register_assets(app):
         filters='cssmin', output='gen/screen-%(version)s.css')
 
     assets.register(
+        'social.css',
+        Bundle(
+            '../style/social.styl',
+            filters='stylus', output='gen/social.css'),
+        filters='cssmin', output='gen/social-%(version)s.css')
+
+    assets.register(
         'vendor.js',
         'vendor/jquery-1.9.0b1.js',
         'vendor/underscore-1.4.3.js',

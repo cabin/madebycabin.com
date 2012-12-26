@@ -5,12 +5,20 @@ class NavView extends Backbone.View
 
   events:
     'click': 'closeSplash'
-    'touchstart': 'closeSplash'
+    'click .toggle': 'toggleSocial'
+    #'touchstart': 'closeSplash'  # TODO fastclick?
 
+  # For clicks on the background of the navigation bar, just close the splash.
+  # TODO clicking the logo when showing the splash should close it
   closeSplash: (event) ->
     if event.target is @el
-      return  # XXX think harder about this
-      #@router.showPage()
+      @router.showPage()
+
+  toggleSocial: (event) ->
+    event.stopPropagation()
+    plus = $(event.currentTarget).addClass('transitioning')
+    @$el.toggleClass('show-social')
+    _.delay((-> plus.removeClass('transitioning')), 400)
 
 
 # TODO: when navigating route:x -> splash -> route:x, the second transition

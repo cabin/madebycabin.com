@@ -9,7 +9,7 @@
   <meta name="viewport" content="initial-scale=1.0">
   <meta name="apple-mobile-web-app-capable" content="yes">
 
-  {% assets 'screen.css' -%}
+  {% assets 'screen.css', 'social.css' -%}
     <link href="{{ ASSET_URL }}" rel="stylesheet">
   {%- endassets %}
   {# XXX update to non-dev version #}
@@ -24,9 +24,19 @@
 
   <nav>
     <a href="{{ url_for('main.index') }}" class="logo">Cabin</a>
-    <a href="{{ url_for('main.work') }}"><hr>Work</a>
-    <a href="{{ url_for('main.about') }}"><hr>About</a>
-    <a href="{{ url_for('main.lab') }}"><hr>Lab</a>
+    <div class="links">
+      <a href="{{ url_for('main.work') }}"><hr>Work</a>
+      <a href="{{ url_for('main.about') }}"><hr>About</a>
+      <a href="{{ url_for('main.lab') }}"><hr>Lab</a>
+      <div class="social">
+        <a href="https://twitter.com/madebycabin" target="_blank" class="twitter">Twitter</a>
+        <a href="https://www.facebook.com/madebycabin" target="_blank" class="facebook">Facebook</a>
+        <a href="http://www.linkedin.com/company/cabin" target="_blank" class="linkedin">Linkedin</a>
+        <a href="http://madebycabin.tumblr.com/" target="_blank" class="tumblr">Tumblr</a>
+        <a href="http://www.flickr.com/photos/madebycabin" target="_blank" class="flickr">Flickr</a>
+      </div>
+    </div>
+    <a class="toggle"><span>+</span></a>
   </nav>
 
   <div class="main">
@@ -41,7 +51,7 @@
       <ol>
         <li><a href="mailto:xo@madebycabin.com">xo@madebycabin.com</a></li>
         <li>+1 415 255 5473</li>
-        <li class="address"><a href="http://maps.apple.com/?q=4216+N+Mississippi+Ave,+97217">
+        <li class="address"><a href="http://maps.apple.com/?q=4216+N+Mississippi+Ave,+97217" target="_blank">
           4216 N Mississippi Ave #315<span>&middot;</span>Portland, OR 97217</a></li>
       </ol>
     </footer>

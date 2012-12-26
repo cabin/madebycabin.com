@@ -71,15 +71,17 @@ nav
   border-bottom: 1px solid cabin_grey_light
   fixed: top left
   right: 0
+  user-select: none
   z-index: 2
-  > a
-    font-weight: bold
-    text-transform: uppercase
   .logo
     hide-text()
     // XXX handle no-svg browsers
     background-image: url('cabin-symbol.svg')
     background-repeat: no-repeat
+  .links a
+    color: cabin_black
+    font-weight: bold
+    text-transform: uppercase
 
 // Make sure the main content is tall enough to cover the splash during
 // transitions, and set up its initial position so animation works.
@@ -185,17 +187,19 @@ body.splash-transition
     .logo
       background-size: 18px 15px
       background-position: center 12px
-      border-left: none
-      text-indent: -999px
-    > a
-      light-text()
-      border-left: 1px solid cabin_grey_light
-      color: cabin_black
       display: table-cell
-      text-align: center
+      text-indent: -999px
       width: 25%
-      hr
-        display: none
+    .links
+      display: table
+      table-layout: fixed
+      width: 100%
+      a
+        border-left: 1px solid cabin_grey_light
+        display: table-cell
+        text-align: center
+    .toggle, .social, hr
+      display: none
 
   body > header
     bottom: nav_height
@@ -225,22 +229,81 @@ body.splash-transition
     height: (nav_height / 3)
     line-height: @height
     padding: @height
-    text-align: right
 
     .logo
       background-size: 35px 30px
       float: left
-      margin-left: 0
-      padding: 0
       size: 35px 30px
-
-    > a
-      hover-hr()
-      color: cabin_black
-      display: inline-block
-      margin-left: 10px
-      padding: 0 10px
+    .links
+      float: right
+      overflow: hidden
       position: relative
+      > a
+        hover-hr()
+        float: left
+        margin-right: 20px
+        width: 60px
+
+    .social
+      transition_duration = 400ms
+      absolute: left 100% top
+      background: white
+      transition: left transition_duration
+      white-space: nowrap
+      width: 100%
+      a
+        background-color: cabin_black
+        float: left
+        margin-right: 10px
+        relative: left 100% top
+        transition: left transition_duration ease transition_duration
+        &:hover
+          background-color: cabin_grey_dark
+      a:first-child
+        left: 0
+    // Inside the toggle is a `b` used for creating a little border on hover,
+    // and a `span` element for holding the plus image so it can be rotated
+    // independently of the container.
+    .toggle
+      padding = 10px
+      absolute: right (nav_height / 3 - padding) top (nav_height / 3)
+      background: white
+      border-left: 1px solid white
+      padding: 0 padding
+      transition: border-color 500ms
+      .no-touch &:hover
+        border-color: cabin_grey_med
+      span
+        hide-text()
+        text-indent: -999em
+        img = 'icons/plus@2x.png'
+        background-image: url(img)
+        size: (image-size(img)[0] / 2) (image-size(img)[1] / 2)
+        background-size: @width @height
+        display: inline-block
+        transition: transform 250ms ease-in-out 200ms
+      &.transitioning
+        transition-delay: 400ms
+    .touch & .toggle
+      &.transitioning
+        border-color: cabin_grey_med
+        transition-delay: 0
+
+    &.show-social
+      .social
+        &, a
+          left: 0
+          transition-delay: 0
+        a:nth-child(2)
+          transition-delay: 100ms
+        a:nth-child(3)
+          transition-delay: 200ms
+        a:nth-child(4)
+          transition-delay: 300ms
+        a:nth-child(5)
+          transition-delay: 400ms
+      .toggle span
+        transform: rotate(45deg)
 
   body > header
     bottom: nav_height
@@ -269,6 +332,9 @@ body.splash-transition
       float: right
       margin: 0
       text-transform: uppercase
+
+
+  // Work list page  ///////////////////////////////
 
   .work-thumb
     &.feature
