@@ -79,9 +79,10 @@ nav
   z-index: 2
   .logo
     hide-text()
-    // XXX handle no-svg browsers
     background-image: url('cabin-symbol.svg')
     background-repeat: no-repeat
+    .no-svg &
+      background-image: url('cabin-symbol.png')
   .links a
     color: cabin_black
     font-weight: bold
