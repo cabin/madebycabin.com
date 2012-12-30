@@ -2,4 +2,5 @@ Flask==0.9
 Flask-Assets==0.8
 Flask-Script==0.5.1
 
+jsonschema==0.7
 cssmin==0.1.4
