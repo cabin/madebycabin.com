@@ -69,7 +69,7 @@
       ['/static/test-cannon.jpg', '/static/test-butt.jpg'],
       {fade: 300, duration: 5000});
     */
-    var h = $('header').backstretch('/static/test-cannon.jpg');
+    var h = $('body > header').backstretch('/static/test-cannon.jpg');
     var app = new AppRouter;
     $(function () {
       Backbone.history.start({pushState: true, hashChange: false});

@@ -1,5 +1,18 @@
+import os.path
+
 from flask import Flask
 from flask.ext.assets import Bundle, Environment
+from flask.ext.uploads import UploadSet, configure_uploads
+from redis import StrictRedis as Redis
+
+
+# TODO: make this configurable.
+redis = Redis()
+
+images = UploadSet('images', default_dest=lambda app: os.path.join(
+    app.instance_path, 'images'))
+thumbnails = UploadSet('thumbnails', default_dest=lambda app: os.path.join(
+    app.instance_path, 'images/t'))
 
 
 def create_app():
@@ -11,9 +24,13 @@ def create_app():
     app.config.from_pyfile('settings.cfg', silent=True)
 
     register_assets(app)
+    configure_uploads(app, [images, thumbnails])
 
     from cabin.main import main
     app.register_blueprint(main)
+
+    from cabin.admin import admin
+    app.register_blueprint(admin, url_prefix='/admin')
 
     return app
 

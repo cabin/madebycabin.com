@@ -7,6 +7,15 @@
   <h1>Selected Work</h1>
 
   <div class="bricks">
+  {% for project in projects %}
+    <a class="work-thumb
+      {%- if project.is_featured %} feature{% endif %}" href="
+      {{- url_for('main.project', slug=project.slug) }}">
+      <hr><h2>{{ project.title }}</h2><h3>{{ project.type }}</h3>
+      <img src="{{ project.thumbnail_url }}" alt>
+    </a>
+  {% endfor %}
+
     <a class="work-thumb feature" href="/about">
       <hr><h2>Pressed Juicery</h2><h3>Website</h3>
       <img src="http://placekitten.com/540/420" alt>

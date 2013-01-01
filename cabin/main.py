@@ -1,4 +1,6 @@
-from flask import Blueprint, render_template, request
+from flask import abort, Blueprint, redirect, render_template, request, url_for
+
+from cabin.models import Project
 
 main = Blueprint('main', __name__)
 
@@ -10,12 +12,24 @@ def request_is_pjax():
 
 @main.route('/')
 def index():
-    return render_template('work.html', splash=True)
+    return work(splash=True)
 
 
 @main.route('/work')
-def work():
-    return render_template('work.html')
+def work(splash=False):
+    projects = Project.get_summaries()
+    return render_template('work.html', splash=splash, projects=projects)
+
+
+@main.route('/work/<slug>')
+def project(slug):
+    project = Project.get_by_slug(slug)
+    if project is None:
+        abort(404)
+    if slug != project.slug:
+        canonical_url = url_for('main.project', slug=project.slug)
+        return redirect(canonical_url, code=301)
+    return render_template('project.html', project=project)
 
 
 @main.route('/about')

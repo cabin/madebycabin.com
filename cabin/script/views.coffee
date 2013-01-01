@@ -180,6 +180,7 @@ class @AppRouter extends Backbone.Router
   routes:
     '': 'showSplash'
     ':page': 'showPage'
+    'work/:slug': 'showProject'
 
   showSplash: ->
     @main.setTitle()
@@ -195,3 +196,7 @@ class @AppRouter extends Backbone.Router
     else
       @main.setTitle($('.content').data('title'))
     @splash.hide()
+
+  showProject: (slug) ->
+    @main.pjax("work/#{slug}")
+    @currentPage = null

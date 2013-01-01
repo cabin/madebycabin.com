@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% set title = 'Edit Project' %}
+{% set page = 'admin-project' %}
+
+{% macro render(field) %}
+  {% if field.errors %}
+    {% for error in field.errors %}
+      XXX: {{ error }}
+    {% endfor %}
+  {% endif %}
+  {{ field(placeholder=field.label.text) }}
+{% endmacro %}
+
+{% block content %}
+  <form method="POST" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+
+    {{ form.errors }}
+
+    <h1>Edit Project</h1>
+
+    {{ render(form.is_public) }}
+    {{ render(form.is_featured) }}
+
+    <button type="submit">Save</button>
+
+    <fieldset>
+      {{ render(form.title) }}
+      {{ render(form.type) }}
+      {{ render(form.slug) }}
+      <img src="{{ project.thumbnail_url }}" alt width=540>
+      {{ render(form.thumbnail_file) }}
+    </fieldset>
+
+    <fieldset>
+      <legend>Brief</legend>
+      {{ render(form.brief) }}
+      {{ render(form.external_url) }}
+    </fieldset>
+
+    <fieldset>
+      <legend>Services</legend>
+      {{ form.services }}
+    </fieldset>
+
+    <fieldset>
+      <legend>Cohorts</legend>
+      {% for cohort in form.cohorts %}
+        XXX
+        {# render(cohort.fields.name) }}
+        {{ render(cohort.role) }}
+        {{ render(cohort.twitter_user) #}
+      {% endfor %}
+      <button>Add cohort</button>
+    </fieldset>
+
+    <fieldset>
+      <legend>Project images</legend>
+      {# XXX #}
+      {{ render(form.images) }}
+    </fieldset>
+
+    <button type="submit">Save it bitches!</button>
+    <button>Cancel</button>
+    <button>Delete</button>
+  </form>
+{% endblock %}

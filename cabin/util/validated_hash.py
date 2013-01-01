@@ -87,11 +87,23 @@ class ValidatedHash(object):
             obj[name] = item
         return obj
 
+    def encode(self, skip_json=False):
+        obj = {}
+        for name in self.schema['properties']:
+            if name.startswith('_'):
+                item = getattr(self, name[1:])
+                if not skip_json:
+                    item = json.dumps(item)
+            else:
+                item = getattr(self, name)
+            obj[name] = item
+        return obj
+
     @property
     def errors(self):
         validator = jsonschema.Draft3Validator(self.schema)
         errors = collections.defaultdict(list)
-        for error in validator.iter_errors(self.__dict__):
+        for error in validator.iter_errors(self.encode(skip_json=True)):
             path = '.'.join(reversed(error.path))
             errors[path].append(error.message)
         return errors
