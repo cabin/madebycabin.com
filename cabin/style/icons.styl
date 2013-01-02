@@ -1,12 +1,30 @@
 @import nib
 
+icon(size)
+  hide-text()
+  background-size: size size
+  display: inline-block
+  height: size
+  width: size
+
+.icon-30
+  icon(30px)
+
+.icon
+  icon(16px)
+  &.edit { background-image: url(icons/edit.png) }
+  &.feature { background-image: url(icons/feature.png) }
+  &.move { background-image: url(icons/move.png) }
+  // &.plus is in the main stylesheet
+  &.private { background-image: url(icons/private.png) }
+  &.project-images { @extend .icon-30; background-image: url(icons/project-images.png) }
+  &.public { background-image: url(icons/public.png) }
+  &.thumb-upload { @extend .icon-30; background-image: url(icons/thumb-upload.png) }
+  &.trash { background-image: url(icons/trash.png) }
+
 .social
   > a
-    hide-text()
-    background-size: 26px 26px
-    display: inline-block
-    height: 26px
-    width: 26px
+    icon(26px)
   .behance   { background-image: url(icons/social/behance.png) }
   .facebook  { background-image: url(icons/social/facebook.png) }
   .flickr    { background-image: url(icons/social/flickr.png) }
@@ -17,7 +35,20 @@
   .tumblr    { background-image: url(icons/social/tumblr.png) }
   .twitter   { background-image: url(icons/social/twitter.png) }
 
+
 @media all and (-webkit-min-device-pixel-ratio: 1.5)
+
+  .icon
+    &.edit { background-image: url(icons/edit@2x.png) }
+    &.feature { background-image: url(icons/feature@2x.png) }
+    &.move { background-image: url(icons/move@2x.png) }
+    // &.plus is in the main stylesheet
+    &.private { background-image: url(icons/private@2x.png) }
+    &.project-images { background-image: url(icons/project-images@2x.png) }
+    &.public { background-image: url(icons/public@2x.png) }
+    &.thumb-upload { background-image: url(icons/thumb-upload@2x.png) }
+    &.trash { background-image: url(icons/trash@2x.png) }
+
   .social
     .behance   { background-image: url(icons/social/behance@2x.png) }
     .facebook  { background-image: url(icons/social/facebook@2x.png) }

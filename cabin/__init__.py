@@ -57,11 +57,11 @@ def register_assets(app):
         filters='cssmin', output='gen/screen-%(version)s.css')
 
     assets.register(
-        'social.css',
+        'icons.css',
         Bundle(
-            '../style/social.styl',
-            filters='stylus', output='gen/social.css'),
-        filters='cssmin', output='gen/social-%(version)s.css')
+            '../style/icons.styl',
+            filters='stylus', output='gen/icons.css'),
+        filters='cssmin', output='gen/icons-%(version)s.css')
 
     assets.register(
         'vendor.js',
