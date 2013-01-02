@@ -78,7 +78,6 @@ body > header
 
 nav
   background: white
-  border-bottom: 1px solid cabin_grey_light
   fixed: top left
   right: 0
   user-select: none
@@ -212,6 +211,7 @@ body.splash-transition
       text-indent: -999px
       width: 25%
     .links
+      border-bottom: 1px solid cabin_grey_light
       display: table
       table-layout: fixed
       width: 100%
@@ -229,7 +229,7 @@ body.splash-transition
   .content
     padding: 0 20px
 
-  footer
+  .main > hr, footer
     display: none
 
   extend-borders(page_padding = 20px)
@@ -335,6 +335,14 @@ body.splash-transition
     padding: 0 30px
     padding-top: nav_height
     padding-bottom: footer_height
+
+  .main > hr
+    absolute: top nav_height left
+    background: cabin_grey_light
+    border: none
+    height: 1px
+    margin: 0
+    width: 100%
 
   footer
     absolute: bottom left; right: 0
