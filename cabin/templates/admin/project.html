@@ -8,7 +8,7 @@
       XXX: {{ error }}
     {% endfor %}
   {% endif %}
-  {{ field(placeholder=field.label.text) }}
+  {{ field(placeholder=field.description or field.label.text) }}
 {% endmacro %}
 
 {% block content %}
@@ -32,11 +32,19 @@
       {{ render(form.slug) }}
     </fieldset>
 
-    <fieldset>
+    <fieldset class="thumbnail">
       <legend>Thumbnail</legend>
-      <img src="{{ project.thumbnail_url }}" width=540 alt>
-      <img src="{{ project.thumbnail_url }}" width=260 alt>
-      {# XXX render(form.thumbnail_file) #}
+      <figure>
+        <figcaption>Add thumbnail (540 &times; N)</figcaption>
+        {% if project.thumbnail_url %}
+          <img src="{{ project.thumbnail_url }}" alt>
+        {% endif %}
+      </figure>
+      <figure>
+        {% if project.thumbnail_url %}
+          <img src="{{ project.thumbnail_url }}" alt>
+        {% endif %}
+      </figure>
     </fieldset>
 
     <fieldset>
@@ -45,7 +53,7 @@
       {{ render(form.external_url) }}
     </fieldset>
 
-    <fieldset>
+    <fieldset class="services">
       <legend>Services</legend>
       {{ form.services }}
     </fieldset>

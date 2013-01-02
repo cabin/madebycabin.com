@@ -152,6 +152,51 @@ class MainView extends Backbone.View
     $('title').text(titleChunks.join(' · '))
 
 
+#### DropHandler
+# A `Backbone.View` that creates the necessary event handlers for drag and drop
+# on the document. Passing in a different `el` will listen to drag and drop on
+# that element instead, while ignoring drops on the document itself.
+class @DropHandler extends Backbone.View
+  el: document
+
+  initialize: ->
+    jQuery.event.props.push('dataTransfer')
+    @classableEl = @$el
+    # Make sure we can add a class while dragging.
+    if @el is document
+      @classableEl = $(document).find('body').first()
+    # Ignore drops outside the container.  # XXX verify this
+    else
+      ignoreEvent = (event) -> event.preventDefault()
+      document.ondragover = document.ondrop = ignoreEvent
+    @enteredElements = 0
+
+  events:
+    'dragenter': 'dragEnter'
+    'dragover': 'cancel'  # necessary to catch the drop element
+    'dragleave': 'dragLeave'
+    'drop': 'drop'
+
+  cancel: (event) ->
+    event.stopPropagation()
+    event.preventDefault()
+
+  dragEnter: (event) ->
+    @cancel(event)
+    @enteredElements += 1
+    @classableEl.addClass('drag')
+
+  dragLeave: (event) ->
+    @cancel(event)
+    @enteredElements -= 1
+    @classableEl.removeClass('drag') if @enteredElements is 0
+
+  drop: (event) ->
+    @cancel(event)
+    @classableEl.removeClass('drag')
+    @trigger('drop', event)
+
+
 class @AppRouter extends Backbone.Router
 
   initialize: ->
@@ -185,6 +230,7 @@ class @AppRouter extends Backbone.Router
     '': 'showSplash'
     ':page': 'showPage'
     'work/:slug': 'showProject'
+    'admin/work/:slug': 'tXXX'
 
   showSplash: ->
     @main.setTitle()
@@ -211,3 +257,5 @@ class @AppRouter extends Backbone.Router
   showProject: (slug) ->
     @main.pjax("work/#{slug}")
     @currentPage = null
+
+  tXXX: ->

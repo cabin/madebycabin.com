@@ -382,6 +382,7 @@ body.splash-transition
     height: 1px
     margin: 0
     width: 100%
+    z-index: 2
 
   footer
     absolute: bottom left; right: 0
@@ -416,6 +417,8 @@ body.splash-transition
 
 
   // Admin  ////////////////////////////////////////
+  // TODO: Consider pulling this out into its own stylesheet; load it only if
+  // the user is logged in.
 
   .page-admin-project
     page-width(940px, 1100px)
@@ -431,10 +434,11 @@ body.splash-transition
         float: right
         margin: headline_height 0
 
-    input, textarea
+    input[type="text"], textarea, figure
       background: cabin_grey_light
       border: 1px solid transparent
       box-shadow: inset 1px 1px 1px 0 rgba(cabin_grey_dark, .2)
+      display: block
       outline: none
       padding: 10px
       &:focus
@@ -448,58 +452,75 @@ body.splash-transition
     fieldset
       border: none
       margin: 0
+      padding: 0
     form > fieldset
       margin-bottom: 20px
-      padding: 0
       padding-left: 120px
       position: relative
       > legend
-        XXX: YYY
         absolute: top left
         border-top: 1px solid cabin_black
         font-weight: bold
         line-height: 30px
         text-transform: uppercase
         width: 80px
-      /*
-      input[type="text"], textarea
-        display: block
-      &.left
-        float: left
-        width: 280px
-        input[type="text"], textarea
-          width: 100%
-      &.right
-        float: right
-        padding-left: 100px
-        width: 780px
-        legend.pull
-          width: 80px
-      &.full
-        clear: both
-        legend.pull
-          width: 280px
-      legend.pull
-        border-top: 1px solid cabin_black
-        font-weight: bold
-        line-height: 30px
-        text-transform: uppercase
-      */
 
     [name="title"]
       font: headline_size/headline_lh 'YWFT Ultramagnetic Light'
       text-transform: uppercase
-      width: 280px
-      height: 100px
+      size: 300 100
+      float: left
     [name="type"], [name="slug"]
-      left: 120px + 280 + 20
+      float: left
+      width: 940px - 120 - 300 - 20
+      margin-left: 20px
     [name="type"]
-      absolute: right top
-    [name="slug"]
-      absolute: right bottom
-    fieldset img:first-of-type
+      margin-bottom: 100px - 38 * 2
+    [name="brief"]
+      margin-bottom: 10px
+      size: 750 150
+    [name="external_url"]
+      width: 420px
+
+    .thumbnail
+      figure
+        background: cabin_grey_med
+        border: none
+        display: inline-block
+        min-height: 150px
+        padding: 0
+        position: relative
+        width: 260px
+        &:first-of-type
+          background: cabin_grey_light
+          float: left
+          margin-right: 20px
+          min-height: 320px
+          width: 540px
+        figcaption
+          light-text()
+          color: cabin_grey_med
+          absolute: top 50% left 50%
+        img
+          // Stack img on top of figcaption.
+          position: relative
+          width: 100%
+      &.drag figure
+        // XXX better styles here plz
+        opacity: .5
+
+    .services fieldset
+      font-size: 15px
       float: left
       margin-right: 20px
+      width: 220px
+      legend
+        font-weight: bold
+      ul
+        list-style: none
+        padding: 0
+      li
+        line-height: 22px;
 
 
 // Neither CSS nor Stylus reliably supports nested media queries, so here we go
