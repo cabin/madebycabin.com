@@ -134,6 +134,14 @@ class MainView extends Backbone.View
       duration = 750
       finishDuration = (duration + (now - new Date)) % duration
       _.delay((-> $('body').removeClass('loading')), finishDuration)
+      # XXX update body page class; this should go in an event handler on a
+      # page-wide view instead
+      page = 'page-' + $('.content').data('page')
+      $('body').removeClass((i, classes) ->
+        _(classes.split(' '))
+          .filter((cls) -> cls.match(/^page-/))
+          .join(' ')
+      ).addClass(page)
       @trigger('pjax:complete')
     $.ajax
       url: '/' + page

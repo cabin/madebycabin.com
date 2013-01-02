@@ -30,6 +30,15 @@ a
 h1
   @extend .headline-text
 
+// Set the overall page width either to a set value (if passed a single
+// argument) or bounded between min and max widths (with two arguments).
+page-width(args...)
+  nav, .content
+    if length(args) == 1
+      width: args[0]
+    else
+      min-width: args[0]
+      max-width: args[1]
 
 hover-hr(duration = 200ms)
   position: relative
@@ -69,7 +78,6 @@ body > header
 
 nav
   background: white
-  border-bottom: 1px solid cabin_grey_light
   fixed: top left
   right: 0
   user-select: none
@@ -125,13 +133,14 @@ body.splash-transition
   to
     transform: rotate(360deg)
 
+// XXX tmp
+.main
+  .content
+    clearfix()
+    margin: 0 auto
+
 
 // Work page common bits  ////////////////////////////////////////////////////
-
-// XXX tmp
-.content
-  clearfix()
-  margin: 0 30px
 
 .bricks
   opacity: 0
@@ -179,11 +188,8 @@ body.splash-transition
 @media only screen and (max-width: 568px)
   nav_height = 40px
 
-  // XXX tmp
-  .content
-    margin: 0 20px
-
   nav
+    border-bottom: 1px solid cabin_grey_light
     display: table
     width: 100%
     height: nav_height
@@ -234,6 +240,7 @@ body.splash-transition
     height: (nav_height / 3)
     line-height: @height
     padding: @height
+    margin: 0 auto
 
     .logo
       background-size: 35px 30px
@@ -314,6 +321,13 @@ body.splash-transition
     bottom: nav_height
   .main
     padding-top: nav_height
+    > hr
+      background: cabin_grey_light
+      border: none
+      height: 1px
+      margin: 0
+  .content
+    padding: 0 30px
 
   .main
     padding-bottom: footer_height
