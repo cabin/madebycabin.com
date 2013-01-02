@@ -30,8 +30,8 @@ class SplashView extends Backbone.View
   initialize: (options) ->
     @body = $('body')
     # XXX refactor this; maybe el: body?
-    @nav = $('body > nav')
     @main = $('.main')
+    @nav = @main.children('nav').first()
     @splashVisible = @body.hasClass(@splashVisibleClass)
 
   getMainOffset: ->
@@ -43,7 +43,6 @@ class SplashView extends Backbone.View
     mainOffset = @getMainOffset()
     window.scrollTo(0, 0)
     @body.addClass(@transitionClass)
-    @nav.animate(top: mainOffset)
     @main.animate(top: mainOffset, @finishTransition)
 
   hide: ->
@@ -51,14 +50,12 @@ class SplashView extends Backbone.View
     @splashVisible = false
     mainOffset = @getMainOffset()
     @body.addClass(@transitionClass)
-    @nav.css(top: mainOffset, bottom: 'auto').animate(top: 0)
     @main.css(top: mainOffset).animate(top: 0, @finishTransition)
 
   finishTransition: =>
     @body
       .toggleClass(@splashVisibleClass, @splashVisible)
       .removeClass(@transitionClass)
-    @nav.removeAttr('style')
     @main.removeAttr('style')
 
 
@@ -158,8 +155,7 @@ class MainView extends Backbone.View
 class @AppRouter extends Backbone.Router
 
   initialize: ->
-    bodyChildren = $('body').children()
-    getEl = (selector) -> bodyChildren.filter(selector).get(0)
+    getEl = (selector) -> $(selector).get(0)
     @splash = new SplashView(el: getEl('header'))
     @nav = new NavView(el: getEl('nav'), router: this)
     @main = new MainView(el: getEl('.main'), router: this)
@@ -193,6 +189,13 @@ class @AppRouter extends Backbone.Router
   showSplash: ->
     @main.setTitle()
     @splash.show()
+
+  # TODO REFACTOR
+  # body
+  #   nav
+  #   splash
+  #   main
+  # everybody is pissing in everyone else's water :(
 
   showPage: (page) ->
     # XXX refactor these setTitle shenanigans
