@@ -25,7 +25,7 @@ class ValidatedHash(object):
         'boolean': bool,
         'integer': int,
         'object': dict,
-        'string': str,
+        'string': unicode,
     }
 
     def __init__(self, **kwargs):

@@ -1,4 +1,4 @@
-from flask import abort, Blueprint, redirect, render_template, url_for
+import urllib2
 
 from cabin.forms import ProjectForm
 from cabin.models import Project
@@ -11,7 +11,7 @@ def project(slug):
     project = Project.get_by_slug(slug, private=True)
     if project is None:
         abort(404)
-    if slug != project.slug:
+    if urllib2.unquote(slug) != project.slug:
         canonical_url = url_for('admin.project', slug=project.slug)
         return redirect(canonical_url, code=301)
     form = ProjectForm(obj=project)

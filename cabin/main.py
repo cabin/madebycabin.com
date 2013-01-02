@@ -1,3 +1,5 @@
+import urllib2
+
 from flask import abort, Blueprint, redirect, render_template, request, url_for
 
 from cabin.models import Project
@@ -26,7 +28,7 @@ def project(slug):
     project = Project.get_by_slug(slug)
     if project is None:
         abort(404)
-    if slug != project.slug:
+    if urllib2.unquote(slug) != project.slug:
         canonical_url = url_for('main.project', slug=project.slug)
         return redirect(canonical_url, code=301)
     return render_template('project.html', project=project)

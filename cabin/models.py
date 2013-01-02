@@ -172,7 +172,7 @@ class Project(ValidatedHash):
                 pipe.multi()
                 pipe.set(key, self._id)
             # If it's set to another ID, we have a problem.
-            elif current != self._id:
+            elif int(current) != int(self._id):
                 raise ValueError('duplicate slug')  # XXX
             # Otherwise, it's already set to our ID; do nothing.
         redis.transaction(save_unique_slug, key)

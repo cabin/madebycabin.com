@@ -7,7 +7,7 @@ from redis import StrictRedis as Redis
 
 
 # TODO: make this configurable.
-redis = Redis()
+redis = Redis(charset='utf8', decode_responses=True)
 
 images = UploadSet('images', default_dest=lambda app: os.path.join(
     app.instance_path, 'images'))
