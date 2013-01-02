@@ -8,6 +8,9 @@ cabin_grey_med = #d2d2d2
 cabin_grey_light = #f2f2f2
 cabin_mustard = #edbc13
 default_tap_highlight_color = rgba(26, 26, 26, 0.3)
+headline_size = 30px
+headline_lh = 1.33
+headline_height = headline_size * headline_lh
 
 
 // Common  ///////////////////////////////////////////////////////////////////
@@ -20,7 +23,11 @@ a
   text-decoration: none
 
 .headline-text
-  font: 30px 'YWFT Ultramagnetic Light'
+  font: headline_size/headline_lh 'YWFT Ultramagnetic Light'
+  text-transform: uppercase
+
+.small-header-text
+  font-weight: bold
   text-transform: uppercase
 
 .dim-text
@@ -29,6 +36,25 @@ a
 
 h1
   @extend .headline-text
+  margin: 30px 0
+
+button
+  height = 28
+  @extend .small-header-text
+  background: cabin_grey_light
+  border: none
+  border-radius: 2px
+  line-height: 26px
+  padding: height - @line-height 12px 0
+  border: 1px solid transparent
+  &[type="submit"]
+    light-text()
+    background: cabin_black
+    color: white
+  &:hover
+    background: white
+    border-color: black
+    color: cabin_black
 
 // Set the overall page width either to a set value (if passed a single
 // argument) or bounded between min and max widths (with two arguments).
@@ -93,8 +119,7 @@ nav
       background-image: url('cabin-symbol.png')
   .links a
     color: cabin_black
-    font-weight: bold
-    text-transform: uppercase
+    @extend .small-header-text
 
 // Make sure the main content is tall enough to cover the splash during
 // transitions, and set up its initial position so animation works.
@@ -186,7 +211,7 @@ body.splash-transition
     font-size 1em
     margin: 0
   h2
-    text-transform: uppercase
+    @extend .small-header-text
   h3
     @extends .dim-text
     margin-bottom: 26px
@@ -388,6 +413,93 @@ body.splash-transition
     // Cover the top border with the hover-hr.
     hr
       top: -1px
+
+
+  // Admin  ////////////////////////////////////////
+
+  .page-admin-project
+    page-width(940px, 1100px)
+
+    form *
+      box-sizing: border-box
+
+    .header
+      clearfix()
+      h1
+        float: left
+      aside
+        float: right
+        margin: headline_height 0
+
+    input, textarea
+      background: cabin_grey_light
+      border: 1px solid transparent
+      box-shadow: inset 1px 1px 1px 0 rgba(cabin_grey_dark, .2)
+      outline: none
+      padding: 10px
+      &:focus
+        border-color: cabin_grey_dark
+    textarea
+      resize: none
+    ::-webkit-input-placeholder
+      light-text()
+      color: cabin_grey_med
+
+    fieldset
+      border: none
+      margin: 0
+    form > fieldset
+      margin-bottom: 20px
+      padding: 0
+      padding-left: 120px
+      position: relative
+      > legend
+        XXX: YYY
+        absolute: top left
+        border-top: 1px solid cabin_black
+        font-weight: bold
+        line-height: 30px
+        text-transform: uppercase
+        width: 80px
+      /*
+      input[type="text"], textarea
+        display: block
+      &.left
+        float: left
+        width: 280px
+        input[type="text"], textarea
+          width: 100%
+      &.right
+        float: right
+        padding-left: 100px
+        width: 780px
+        legend.pull
+          width: 80px
+      &.full
+        clear: both
+        legend.pull
+          width: 280px
+      legend.pull
+        border-top: 1px solid cabin_black
+        font-weight: bold
+        line-height: 30px
+        text-transform: uppercase
+      */
+
+    [name="title"]
+      font: headline_size/headline_lh 'YWFT Ultramagnetic Light'
+      text-transform: uppercase
+      width: 280px
+      height: 100px
+    [name="type"], [name="slug"]
+      left: 120px + 280 + 20
+    [name="type"]
+      absolute: right top
+    [name="slug"]
+      absolute: right bottom
+    fieldset img:first-of-type
+      float: left
+      margin-right: 20px
 
 
 // Neither CSS nor Stylus reliably supports nested media queries, so here we go

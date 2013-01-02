@@ -24,7 +24,7 @@ class CohortForm(SimpleForm):
 
 class ProjectForm(Form):
     slug = StringField('URL slug', [InputRequired(), Length(max=64)])
-    title = StringField('Title', [InputRequired()])
+    title = TextAreaField('Title', [InputRequired()])
     type = StringField('Project type', [InputRequired()])
     is_public = BooleanField('Public', default=False)
     is_featured = BooleanField('Featured', default=False)

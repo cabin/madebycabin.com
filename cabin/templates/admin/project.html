@@ -15,21 +15,28 @@
   <form method="POST" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
 
-    {{ form.errors }}
+    <div class="header">
+      <h1>Edit Project</h1>
 
-    <h1>Edit Project</h1>
-
-    {{ render(form.is_public) }}
-    {{ render(form.is_featured) }}
-
-    <button type="submit">Save</button>
+      <aside>
+        {{ render(form.is_public) }}
+        {{ render(form.is_featured) }}
+        <button type="submit">Save</button>
+      </aside>
+    </div>
 
     <fieldset>
+      <legend>Name</legend>
       {{ render(form.title) }}
       {{ render(form.type) }}
       {{ render(form.slug) }}
-      <img src="{{ project.thumbnail_url }}" alt width=540>
-      {{ render(form.thumbnail_file) }}
+    </fieldset>
+
+    <fieldset>
+      <legend>Thumbnail</legend>
+      <img src="{{ project.thumbnail_url }}" width=540 alt>
+      <img src="{{ project.thumbnail_url }}" width=260 alt>
+      {# XXX render(form.thumbnail_file) #}
     </fieldset>
 
     <fieldset>
