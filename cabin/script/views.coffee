@@ -188,59 +188,61 @@ class MainView extends Backbone.View
 #### WorkView
 # Applies jQuery Masonry on the collection of work.
 class WorkView extends Backbone.View
+  containerSelector: '.bricks'
+  itemSelector: '.work-thumb'
+  itemWidth: 260
+  gutterWidth: 20
 
-  # XXX move much of this to init; just call masonry in render
+  initialize: ->
+    @masonryContainer = $(@containerSelector)
+    @items = @masonryContainer.find(@itemSelector)
+    @featuredItems = @items.filter('.feature')
+    @options =
+      itemSelector: @itemSelector
+      columnWidth: @computeColumnWidth
+      gutterWidth: @gutterWidth
+      isFitWidth: true
+
+  # Compute the page width required to display the given number of columns and
+  # their gutters at full scale.
+  maxWidthAt: (cols) ->
+    @itemWidth * cols + @gutterWidth * (cols - 1)
+
+  # Compute the best width for a column by filling the available container.
+  # `itemWidth` is the effective maximum width for each column. Rather than
+  # leaving additional horizontal whitespace, add one more column than will
+  # fit and downscale all columns.
+  # For very narrow viewports (e.g., iPhone portrait), convert to a single
+  # column at full width.
+  # Featured items display at double width, unless the viewport isn't tall
+  # enough to view them appropriately (e.g., iPhone landscape) or we're using
+  # a single column.
+  computeColumnWidth: =>
+    singleColumn = window.innerWidth <= 320
+    # iPhone 5 landscape will report its height at 321 temporarily when
+    # scrolling through the address bar, despite never actually having that
+    # much real estate. Workaround: cutoff at 321 instead of 320.
+    doubleFeatured = not singleColumn and window.innerHeight > 321
+    # Compute `columnWidth` and `maxWidth`.
+    if singleColumn
+      maxWidth = columnWidth = @$el.width()
+    else
+      maxColumns = @items.length
+      maxColumns += @featuredItems.length if doubleFeatured
+      maxWidth = Math.min(@$el.width(), @maxWidthAt(maxColumns))
+      for n in [1..maxColumns]
+        break if @maxWidthAt(n) >= maxWidth
+      columnSpace = maxWidth - @gutterWidth * (n - 1)
+      columnWidth = Math.floor(columnSpace / n)
+    @masonryContainer.css('width', maxWidth)
+      .toggleClass('single-column', singleColumn)
+    @items.css('width', columnWidth)
+    if doubleFeatured
+      @featuredItems.css('width', columnWidth * 2 + @gutterWidth)
+    columnWidth
 
   render: ->
-    page = @$el
-    masonryContainer = $('.bricks')
-    itemSelector = '.work-thumb'
-    items = masonryContainer.find(itemSelector)
-    featuredItems = items.filter('.feature')
-    itemWidth = 260
-    gutterWidth = 20
-    maxWidthAt = (cols) -> itemWidth * cols + gutterWidth * (cols - 1)
-
-    # Compute the best width for a column by filling the available container.
-    # `itemWidth` is the effective maximum width for each column. Rather than
-    # leaving additional horizontal whitespace, add one more column than will
-    # fit and downscale all columns.
-    # For very narrow viewports (e.g., iPhone portrait), convert to a single
-    # column at full width.
-    # Featured items display at double width, unless the viewport isn't tall
-    # enough to view them appropriately (e.g., iPhone landscape) or we're using
-    # a single column.
-    computeColumnWidth = ->
-      singleColumn = window.innerWidth <= 320
-      # iPhone 5 landscape will report its height at 321 temporarily when
-      # scrolling through the address bar, despite never actually having that
-      # much real estate. Workaround: cutoff at 321 instead of 320.
-      doubleFeatured = not singleColumn and window.innerHeight > 321
-      # Compute columnWidth and maxWidth.
-      if singleColumn
-        maxWidth = columnWidth = page.width()
-      else
-        maxColumns = items.length
-        maxColumns += featuredItems.length if doubleFeatured
-        maxWidth = Math.min(page.width(), maxWidthAt(maxColumns))
-        for n in [1..maxColumns]
-          break if maxWidthAt(n) >= maxWidth
-        columnSpace = maxWidth - gutterWidth * (n - 1)
-        columnWidth = Math.floor(columnSpace / n)
-      masonryContainer.css('width', maxWidth)
-        .toggleClass('single-column', singleColumn)
-      items.css('width', columnWidth)
-      if doubleFeatured
-        featuredItems.css('width', columnWidth * 2 + gutterWidth)
-      columnWidth
-
-    masonryContainer.imagesLoaded ->
-      masonryContainer.masonry
-        itemSelector: itemSelector
-        columnWidth: computeColumnWidth
-        gutterWidth: gutterWidth
-        isFitWidth: true
-
+    @masonryContainer.imagesLoaded => @masonryContainer.masonry(@options)
     this
 
 
