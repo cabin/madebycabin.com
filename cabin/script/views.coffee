@@ -63,12 +63,47 @@ class MainView extends Backbone.View
 
   initialize: (options) ->
     @listenTo(options.router, 'route:showPage', @tXXX)
+    @listenTo(options.router, 'route:tXXX', @tXXX2)
 
   tXXX: (page) =>
     if page is 'work'
       # XXX
       @masonry()
       @on('pjax:complete', @masonry)
+
+  tXXX2: =>
+    @v = new DropHandler(el: $('fieldset.thumbnail'))
+    @listenTo @v, 'drop', (event) ->
+      files = event.dataTransfer.files
+      _(files.length).times (n) ->
+        reader = new FileReader
+        reader.addEventListener 'load', (event) ->
+          figures = $('fieldset.thumbnail figure')
+          figures.each ->
+            f = $(this)
+            img = f.find('img')
+            img = $('<img>').appendTo(f) unless img.length
+            img.attr('src', event.target.result)
+        reader.readAsDataURL(files[n])
+
+      xhr = new XMLHttpRequest
+      xhr.open('POST', '/admin/upload')
+      xhr.setRequestHeader('Accept', 'application/json')
+      xhr.addEventListener 'progress', (event) ->
+        console.log('progress', event)  # XXX
+      xhr.addEventListener 'load', (event) ->
+        if xhr.status is 200
+          data = JSON.parse(xhr.response)
+          console.log(data)
+          $('input[name="thumbnail_file"]').val(data.files[0])
+        else
+          throw 'XXX saveFile failed'
+
+      formData = new FormData
+      _(files.length).times (n) ->
+        formData.append('file', files[n])
+      xhr.send(formData)
+
 
   masonry: ->
     page = $('.content')

@@ -11,8 +11,6 @@ redis = Redis(charset='utf8', decode_responses=True)
 
 images = UploadSet('images', default_dest=lambda app: os.path.join(
     app.instance_path, 'images'))
-thumbnails = UploadSet('thumbnails', default_dest=lambda app: os.path.join(
-    app.instance_path, 'images/t'))
 
 
 def create_app():
@@ -24,7 +22,7 @@ def create_app():
     app.config.from_pyfile('settings.cfg', silent=True)
 
     register_assets(app)
-    configure_uploads(app, [images, thumbnails])
+    configure_uploads(app, [images])
 
     from cabin.main import main
     app.register_blueprint(main)

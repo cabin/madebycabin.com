@@ -1,11 +1,11 @@
 from itertools import groupby
 
-from flask.ext.wtf import Form
+from flask.ext.wtf import Form, ValidationError
 from wtforms import Form as SimpleForm
 from wtforms.fields import *
 from wtforms.validators import *
 
-from cabin import thumbnails
+from cabin import images, redis
 from cabin.models import SERVICES, SERVICE_TYPES
 from cabin.util.fields import SelectMultipleGroupedField
 
@@ -23,14 +23,15 @@ class CohortForm(SimpleForm):
 
 
 class ProjectForm(Form):
-    slug = StringField('URL slug', [InputRequired(), Length(max=64)])
+    slug = StringField('URL slug', [InputRequired(), Length(max=64)],
+                       filters=[lambda s: s.strip()])
     title = TextAreaField('Title', [InputRequired()])
     type = StringField('Project type', [InputRequired()])
     is_public = BooleanField('Public', default=False)
     is_featured = BooleanField('Featured', default=False)
     brief = TextAreaField('Brief', [InputRequired()],
                           description='Keep it that way.')
-    thumbnail_file = FileField()
+    thumbnail_file = HiddenField()
     external_url = StringField('URL in the wild', [Optional(), URL()])
 
     services = SelectMultipleGroupedField(
@@ -39,17 +40,19 @@ class ProjectForm(Form):
     images = FieldList(StringField())
     image_files = FieldList(FileField('Image'), min_entries=1)
 
+    def validate_slug(self, field):
+        if not field.data.replace('-', '').isalnum():
+            raise ValidationError(
+                'Slug must contain only "-" and alphanumerics.')
+
     def _populate_cohorts(self, obj):
         cohorts = self.cohorts.data
         del self.cohorts
         # XXX handle cohorts
 
-    def _populate_thumbnail(self, obj):
-        if self.thumbnail_file.data:
-            obj.thumbnail_file = thumbnails.save(self.thumbnail_file.data)
-        del self.thumbnail_file
-
     def populate_obj(self, obj):
         self._populate_cohorts(obj)
-        self._populate_thumbnail(obj)
+        # Claim ownership of the new thumbnail if necessary.
+        if self.thumbnail_file.data != obj.thumbnail_file:
+            redis.zrem('uploaded-files', self.thumbnail_file.data)
         return super(ProjectForm, self).populate_obj(obj)

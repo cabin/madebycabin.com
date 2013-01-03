@@ -4,7 +4,7 @@ import json
 
 import jsonschema
 
-from cabin import images, redis, thumbnails
+from cabin import images, redis
 from cabin.util.validated_hash import ValidatedHash
 
 
@@ -160,7 +160,8 @@ class Project(ValidatedHash):
 
     @property
     def thumbnail_url(self):
-        return thumbnails.url(self.thumbnail_file)
+        if self.thumbnail_file:
+            return images.url(self.thumbnail_file)
 
     def _save_slug(self):
         "Ensure the slug is not used by another id before saving it."

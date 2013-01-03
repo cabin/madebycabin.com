@@ -38,13 +38,13 @@
       <legend>Thumbnail</legend>
       <figure>
         <figcaption>Add thumbnail (540 &times; N)</figcaption>
-        {% if project.thumbnail_url %}
-          <img src="{{ project.thumbnail_url }}" alt>
+        {% if form.thumbnail_file.data %}
+          <img src="{{ image_url(form.thumbnail_file.data) }}" alt>
         {% endif %}
       </figure>
       <figure>
-        {% if project.thumbnail_url %}
-          <img src="{{ project.thumbnail_url }}" alt>
+        {% if form.thumbnail_file.data %}
+          <img src="{{ image_url(form.thumbnail_file.data) }}" alt>
         {% endif %}
       </figure>
     </fieldset>
