@@ -24,8 +24,7 @@ def project(slug):
         form.populate_obj(project)
         project.save()
         return redirect(url_for('admin.project', slug=project.slug))
-    return render_template('admin/project.html', form=form, project=project,
-                           image_url=images.url)
+    return render_template('admin/project.html', form=form, project=project)
 
 
 @admin.route('/upload', methods=['POST'])

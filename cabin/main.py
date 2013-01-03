@@ -7,11 +7,6 @@ from cabin.models import Project
 main = Blueprint('main', __name__)
 
 
-@main.context_processor
-def request_is_pjax():
-    return {'request_is_pjax': 'X-PJAX' in request.headers}
-
-
 @main.route('/')
 def index():
     return work(splash=True)

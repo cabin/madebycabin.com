@@ -1,6 +1,6 @@
 import os.path
 
-from flask import Flask
+from flask import Flask, request
 from flask.ext.assets import Bundle, Environment
 from flask.ext.uploads import UploadSet, configure_uploads
 from redis import StrictRedis as Redis
@@ -23,6 +23,11 @@ def create_app():
 
     register_assets(app)
     configure_uploads(app, [images])
+
+    app.context_processor(lambda: {
+        'image_url': images.url,
+        'request_is_pjax': 'X-PJAX' in request.headers,
+    })
 
     from cabin.main import main
     app.register_blueprint(main)
