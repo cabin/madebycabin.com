@@ -29,7 +29,7 @@
 
     <fieldset>
       <legend>Name</legend>
-      {{ render(form.title, autofocus=True) }}
+      {{ render(form.title) }}
       {{ render(form.type) }}
       {{ render(form.slug) }}
     </fieldset>
@@ -60,13 +60,13 @@
       {{ form.services }}
     </fieldset>
 
-    <fieldset>
+    <fieldset class="cohorts">
       <legend>Cohorts</legend>
       {% for cohort in form.cohorts %}
-        XXX
-        {# render(cohort.fields.name) }}
-        {{ render(cohort.role) }}
-        {{ render(cohort.twitter_user) #}
+        {{ render(cohort.form.name) }}
+        {{ render(cohort.form.role) }}
+        {{ render(cohort.form.twitter_user) }}
+        <a class="icon trash">Delete {{ cohort.name }}</a>
       {% endfor %}
       <button>Add cohort</button>
     </fieldset>

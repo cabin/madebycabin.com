@@ -17,14 +17,14 @@ def grouped_services():
 
 
 class CohortForm(SimpleForm):
-    full_name = StringField('Name')  # XXX should be required
+    name = StringField('Name')  # XXX should be required
     role = StringField('Role')  # XXX should be required
     twitter_user = StringField('@username')
 
 
 class ProjectForm(Form):
     slug = StringField('URL slug', [InputRequired(), Length(max=64)],
-                       filters=[lambda s: s.strip()])
+                       filters=[lambda s: s and s.strip()])
     title = TextAreaField('Title', [InputRequired()])
     type = StringField('Project type', [InputRequired()])
     is_public = BooleanField('Public', default=False)
