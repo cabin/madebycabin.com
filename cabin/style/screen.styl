@@ -552,24 +552,39 @@ body.splash-transition
         line-height: 22px;
 
     .cohorts
-      input
-        float: left
-        margin-bottom: 10px
-        margin-right: 20px
-        width: 200px
-      input:nth-of-type(3n + 2)
-        width: 480px
+      fieldset
+        clearfix()
+        input
+          float: left
+          margin-bottom: 10px
+          margin-right: 20px
+          width: 200px
+        input:nth-of-type(3n + 2)
+          width: 480px
+        input:nth-of-type(3n + 3)
+          clear: left
+        .trash
+          background-color: cabin_grey_med
+          float: left
+          margin-top: 10px
+          &:hover
+            background-color: cabin_mustard
       button
-        float: left
         margin-top: 10px
-      input:nth-of-type(3n + 1), input:nth-of-type(3n + 3), button
-        clear: left
+
+    .project-images
+      margin-top: 60px
+      legend
+        width: 260px
+
+    .buttons
+      margin: 40px 0
+      button, a
+        margin-right: 10px
       .trash
-        background-color: cabin_grey_med
-        float: left
-        margin-top: 10px
+        background-color: #f77
         &:hover
-          background-color: cabin_mustard
+          background-color: cabin_black
 
 
 // Neither CSS nor Stylus reliably supports nested media queries, so here we go

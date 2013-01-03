@@ -21,6 +21,17 @@ class CohortForm(SimpleForm):
     role = StringField('Role')  # XXX should be required
     twitter_user = StringField('@username')
 
+    def validate_twitter_user(self, field):
+        if field.data and not field.data.isalnum():
+            raise ValidationError('Just the username, not the whole URL.')
+
+    def validate_name(self, field):
+        # Since we can't mark name and role as required on the fields
+        # themselves while still allowing submission with an empty form,
+        # instead ensure that they're both set if either one is set.
+        if bool(field.data) != bool(self.role.data):
+            raise ValidationError('Name and role are required.')
+
 
 class ProjectForm(Form):
     slug = StringField('URL slug', [InputRequired(), Length(max=64)],
@@ -46,9 +57,9 @@ class ProjectForm(Form):
                 'Slug must contain only "-" and alphanumerics.')
 
     def _populate_cohorts(self, obj):
-        cohorts = self.cohorts.data
+        obj.cohorts = [c for c in self.cohorts.data
+                       if c.get('name') and c.get('role')]
         del self.cohorts
-        # XXX handle cohorts
 
     def populate_obj(self, obj):
         self._populate_cohorts(obj)

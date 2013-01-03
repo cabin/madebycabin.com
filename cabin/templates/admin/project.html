@@ -63,22 +63,27 @@
     <fieldset class="cohorts">
       <legend>Cohorts</legend>
       {% for cohort in form.cohorts %}
-        {{ render(cohort.form.name) }}
-        {{ render(cohort.form.role) }}
-        {{ render(cohort.form.twitter_user) }}
-        <a class="icon trash">Delete {{ cohort.name }}</a>
+        <fieldset class="cohort" data-prefix="{{ cohort.name }}">
+          {{ render(cohort.form.name) }}
+          {{ render(cohort.form.role) }}
+          {{ render(cohort.form.twitter_user) }}
+          <a class="icon trash">Delete</a>
+        </fieldset>
       {% endfor %}
       <button>Add cohort</button>
     </fieldset>
 
-    <fieldset>
+    <fieldset class="project-images">
       <legend>Project images</legend>
-      {# XXX #}
-      {{ render(form.images) }}
+      {# render(form.images) #}
+      <input type="file" multiple>
+      {# XXX TODO #}
     </fieldset>
 
-    <button type="submit">Save it bitches!</button>
-    <a class="button" href="{{ url_for('main.work') }}">Cancel</a>
-    <button>Delete</button>
+    <div class="buttons">
+      <button type="submit">Save it bitches!</button>
+      <a class="button" href="{{ url_for('main.work') }}">Cancel</a>
+      <a class="icon trash">Delete</a>
+    </div>
   </form>
 {% endblock %}
