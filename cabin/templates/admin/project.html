@@ -3,12 +3,14 @@
 {% set page = 'admin-project' %}
 
 {% macro render(field) %}
-  {% if field.errors %}
-    {% for error in field.errors %}
-      XXX: {{ error }}
-    {% endfor %}
-  {% endif %}
-  {{ field(placeholder=field.description or field.label.text) }}
+  {%- if field.errors %}
+    {% set field_title = ' '.join(field.errors) %}
+    {% set field_class = ('error ' + kwargs.pop('class', '')).strip() %}
+  {% endif -%}
+  {{ field(placeholder=field.description or field.label.text,
+           title=field_title,
+           class=field_class,
+           **kwargs) -}}
 {% endmacro %}
 
 {% block content %}
@@ -19,15 +21,15 @@
       <h1>Edit Project</h1>
 
       <aside>
-        {{ render(form.is_public) }}
-        {{ render(form.is_featured) }}
+        {{ render(form.is_public, class='icon public') }}
+        {{ render(form.is_featured, class='icon feature') }}
         <button type="submit">Save</button>
       </aside>
     </div>
 
     <fieldset>
       <legend>Name</legend>
-      {{ render(form.title) }}
+      {{ render(form.title, autofocus=True) }}
       {{ render(form.type) }}
       {{ render(form.slug) }}
     </fieldset>
@@ -76,7 +78,7 @@
     </fieldset>
 
     <button type="submit">Save it bitches!</button>
-    <button>Cancel</button>
+    <a class="button" href="{{ url_for('main.work') }}">Cancel</a>
     <button>Delete</button>
   </form>
 {% endblock %}

@@ -11,6 +11,7 @@ default_tap_highlight_color = rgba(26, 26, 26, 0.3)
 headline_size = 30px
 headline_lh = 1.33
 headline_height = headline_size * headline_lh
+button_height = 28px
 
 
 // Common  ///////////////////////////////////////////////////////////////////
@@ -38,14 +39,15 @@ h1
   @extend .headline-text
   margin: 30px 0
 
-button
-  height = 28
+button, .button
   @extend .small-header-text
   background: cabin_grey_light
   border: none
   border-radius: 2px
-  line-height: 26px
-  padding: height - @line-height 12px 0
+  color: cabin_black
+  display: inline-block
+  line-height: button_height - 2px
+  padding: button_height - @line-height 12px 0
   border: 1px solid transparent
   &[type="submit"]
     light-text()
@@ -65,6 +67,16 @@ page-width(args...)
     else
       min-width: args[0]
       max-width: args[1]
+
+// Lazy man's custom checkboxes; applying these styles allows styling the input
+// element as a normal element on WebKit browsers. Falls back to a normal
+// checkbox in other browsers. If we need to support other browsers later,
+// another option would be display: none on the checkbox, and then use sibling
+// selectors to style a label.
+custom-checkbox()
+  -webkit-appearance: none
+  border-radius: 0
+  border: none
 
 hover-hr(duration = 200ms)
   position: relative
@@ -442,6 +454,8 @@ body.splash-transition
       padding: 10px
       &:focus
         border-color: cabin_grey_dark
+      &.error
+        border-color: red
     textarea
       resize: none
     ::-webkit-input-placeholder
@@ -463,6 +477,22 @@ body.splash-transition
         line-height: 30px
         text-transform: uppercase
         width: 80px
+
+    [name="is_public"], [name="is_featured"]
+      custom-checkbox()
+      position: relative
+    [name="is_public"]
+      background-color: cabin_mustard
+      margin-right: 10px
+      top: 3px
+      &:checked
+        background-color: grey
+    [name="is_featured"]
+      background-color: grey
+      margin-right: 20px
+      top: 4px
+      &:checked
+        background-color: cabin_mustard
 
     [name="title"]
       font: headline_size/headline_lh 'YWFT Ultramagnetic Light'

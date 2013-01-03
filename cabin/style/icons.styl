@@ -22,6 +22,11 @@ icon(size)
   &.thumb-upload { @extend .icon-30; background-image: url(icons/thumb-upload.png) }
   &.trash { background-image: url(icons/trash.png) }
 
+input[type="checkbox"].icon.public
+  @extend .icon.private
+  &:checked
+    @extend .icon.public
+
 .social
   > a
     icon(26px)
@@ -48,6 +53,11 @@ icon(size)
     &.public { background-image: url(icons/public@2x.png) }
     &.thumb-upload { background-image: url(icons/thumb-upload@2x.png) }
     &.trash { background-image: url(icons/trash@2x.png) }
+
+  input[type="checkbox"].icon.public
+    @extend .icon.private
+    &:checked
+      @extend .icon.public
 
   .social
     .behance   { background-image: url(icons/social/behance@2x.png) }
