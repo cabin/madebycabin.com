@@ -121,26 +121,30 @@ class Project(ValidatedHash):
     @classmethod
     def get(cls, _id, allow_private=False):
         _id = str(_id)
+        key = 'project:%s' % _id
         project = None
+        extra_attrs = {'_id': _id}
         public_projects = redis.lrange('projects:public', 0, -1)
         try:
-            public_index = public_projects.index(_id)
+            pindex = public_projects.index(_id)
         except ValueError:
-            public_index = None
-        if public_index is not None or allow_private:
+            # Not in the list of public projects.
+            if allow_private:
+                project = redis.hgetall(key)
+        else:
+            # Find the prev/next slugs (and wrap around).
+            prev_index = (pindex - 1) % len(public_projects)
+            next_index = (pindex + 1) % len(public_projects)
             with redis.pipeline() as pipe:
-                pipe.hgetall('project:%s' % _id)
-                # Find the prev/next slugs (and wrap around).
-                prev_index = (public_index - 1) % len(public_projects)
-                next_index = (public_index + 1) % len(public_projects)
+                pipe.hgetall(key)
                 pipe.hget('project:%s' % public_projects[prev_index], 'slug')
                 pipe.hget('project:%s' % public_projects[next_index], 'slug')
-                project, prev_slug, next_slug = pipe.execute()
+                project, extra_attrs['prev_slug'], extra_attrs['next_slug'] = (
+                    pipe.execute())
         if project:
             project = cls.decode(project)
-            project._id = _id
-            project.prev_slug = prev_slug
-            project.next_slug = next_slug
+            for name, value in extra_attrs.items():
+                setattr(project, name, value)
         return project
 
     @classmethod
@@ -158,19 +162,14 @@ class Project(ValidatedHash):
 
     @property
     def is_public(self):
-        return str(self._id) in redis.lrange('projects:public', 0, -1)
+        _id = getattr(self, '_id', None)
+        return _id and str(self._id) in redis.lrange('projects:public', 0, -1)
 
     @is_public.setter
     def is_public(self, value):
         if value == self.is_public:
             return
-        from_key, to_key = ['projects:public', 'projects:private']
-        if value:
-            from_key, to_key = ['projects:private', 'projects:public']
-        with redis.pipeline() as pipe:
-            pipe.lrem(from_key, 0, self._id)
-            pipe.rpush(to_key, self._id)
-            pipe.execute()
+        self._is_public = value
 
     @property
     def thumbnail_url(self):
@@ -192,6 +191,17 @@ class Project(ValidatedHash):
             # Otherwise, it's already set to our ID; do nothing.
         redis.transaction(save_unique_slug, key)
 
+    def _save_publicity(self, is_new):
+        value = getattr(self, '_is_public', False if is_new else None)
+        if value is not None:
+            from_key, to_key = ['projects:public', 'projects:private']
+            if value:
+                from_key, to_key = ['projects:private', 'projects:public']
+            with redis.pipeline() as pipe:
+                pipe.lrem(from_key, 0, self._id)
+                pipe.rpush(to_key, self._id)
+                pipe.execute()
+
     def save(self):
         if not self.is_valid():
             raise ValueError('invalid objects cannot be saved')
@@ -199,9 +209,6 @@ class Project(ValidatedHash):
         if is_new:
             self._id = redis.incr('projects:last-id')
         key = 'project:%s' % self._id
+        redis.hmset(key, self.encode())
+        self._save_publicity(is_new)
         self._save_slug()
-        with redis.pipeline() as pipe:
-            pipe.hmset(key, self.encode())
-            if is_new:
-                pipe.lpush('projects:private', self._id)
-            pipe.execute()

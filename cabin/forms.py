@@ -42,7 +42,7 @@ class ProjectForm(Form):
     is_featured = BooleanField('Featured', default=False)
     brief = TextAreaField('Brief', [InputRequired()],
                           description='Keep it that way.')
-    thumbnail_file = HiddenField()
+    thumbnail_file = HiddenField(validators=[InputRequired()])
     external_url = StringField('URL in the wild', [Optional(), URL()])
 
     services = SelectMultipleGroupedField(
@@ -64,6 +64,7 @@ class ProjectForm(Form):
     def populate_obj(self, obj):
         self._populate_cohorts(obj)
         # Claim ownership of the new thumbnail if necessary.
-        if self.thumbnail_file.data != obj.thumbnail_file:
-            redis.zrem('uploaded-files', self.thumbnail_file.data)
+        if hasattr(obj, 'thumbnail_file'):
+            if self.thumbnail_file.data != obj.thumbnail_file:
+                redis.zrem('uploaded-files', self.thumbnail_file.data)
         return super(ProjectForm, self).populate_obj(obj)

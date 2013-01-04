@@ -77,6 +77,7 @@ custom-checkbox()
   -webkit-appearance: none
   border-radius: 0
   border: none
+  cursor: pointer
 
 hover-hr(duration = 200ms)
   position: relative
@@ -447,7 +448,7 @@ body.splash-transition
       &:focus
         border-color: cabin_grey_dark
       &.error
-        border-color: red
+        border: 1px solid red !important
     textarea
       resize: none
     ::-webkit-input-placeholder
@@ -520,8 +521,15 @@ body.splash-transition
           width: 540px
         figcaption
           light-text()
+          absolute: top 40% left 50%
           color: cabin_grey_med
-          absolute: top 50% left 50%
+          text-align: center
+          width: 200px
+          margin-left: -(@width / 2)
+          span
+            background-color: cabin_grey_med
+            display: block
+            margin: 0 auto 10px
         img
           // Stack img on top of figcaption.
           position: relative

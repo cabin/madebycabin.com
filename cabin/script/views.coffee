@@ -218,6 +218,7 @@ class WorkView extends Backbone.View
   # enough to view them appropriately (e.g., iPhone landscape) or we're using
   # a single column.
   computeColumnWidth: =>
+    return @itemWidth unless @items.length
     singleColumn = window.innerWidth <= 320
     # iPhone 5 landscape will report its height at 321 temporarily when
     # scrolling through the address bar, despite never actually having that
@@ -308,7 +309,7 @@ class EditProjectView extends Backbone.View
         oldValue = child.attr(attr)
         child.attr(attr, oldValue.replace(oldPrefix, newPrefix)) if oldValue
       child.val('')
-    clone.insertAfter(fieldset)
+    clone.insertAfter(fieldset).children('input').first().focus()
 
 
 # Support

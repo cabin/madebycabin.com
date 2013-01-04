@@ -24,7 +24,18 @@ def project(slug):
         form.populate_obj(project)
         project.save()
         return redirect(url_for('admin.project', slug=project.slug))
-    return render_template('admin/project.html', form=form, project=project)
+    return render_template('admin/project.html', form=form)
+
+
+@admin.route('/create', methods=['GET', 'POST'])
+def create():
+    form = ProjectForm()
+    if form.validate_on_submit():
+        project = Project()
+        form.populate_obj(project)
+        project.save()
+        return redirect(url_for('admin.project', slug=project.slug))
+    return render_template('admin/project.html', form=form, is_new=True)
 
 
 @admin.route('/upload', methods=['POST'])

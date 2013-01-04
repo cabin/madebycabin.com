@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% set title = 'Edit Project' %}
+{% set title = 'Create Project' if is_new else 'Edit Project' %}
 {% set page = 'admin-project' %}
 
 {% macro render(field) %}
@@ -18,7 +18,7 @@
     {{ form.hidden_tag() }}
 
     <div class="header">
-      <h1>Edit Project</h1>
+      <h1>{{ title }}</h1>
 
       <aside>
         {{ render(form.is_public, class='icon public') }}
@@ -36,8 +36,11 @@
 
     <fieldset class="thumbnail">
       <legend>Thumbnail</legend>
-      <figure>
-        <figcaption>Add thumbnail (540 &times; N)</figcaption>
+      <figure{% if form.thumbnail_file.errors %} class="error"{% endif %}>
+        <figcaption>
+          <span class="icon thumb-upload"></span>
+          Add thumbnail (540 &times; N)
+        </figcaption>
         {% if form.thumbnail_file.data %}
           <img src="{{ image_url(form.thumbnail_file.data) }}" alt>
         {% endif %}
