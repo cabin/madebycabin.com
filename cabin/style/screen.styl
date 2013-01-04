@@ -376,25 +376,15 @@ body.splash-transition
   .main
     padding: 0 30px
     padding-top: nav_height
+    padding-bottom: footer_height + 40px
     > hr
+      fixed: top nav_height left
       background: cabin_grey_light
       border: none
       height: 1px
       margin: 0
-  .content
-    padding: 0 30px
-
-  .main
-    padding-bottom: footer_height + 40px
-
-  .main > hr
-    absolute: top nav_height left
-    background: cabin_grey_light
-    border: none
-    height: 1px
-    margin: 0
-    width: 100%
-    z-index: 2
+      width: 100%
+      z-index: 2
 
   footer
     absolute: bottom left; right: 0
