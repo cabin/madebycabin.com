@@ -16,13 +16,13 @@
   <script src="/static/vendor/modernizr-latest.js"></script>
   {% block extra_head %}{% endblock %}
 </head>
-<body class="{% if page %}page-{{ page }}{% endif %}{% if splash %} splash{% endif %}">
+<body{% if splash %} class="splash"{% endif %}>
   <header>
     <h1>Cabin</h1>
     <h2>Crafting experiences for people &amp; projects we love.</h2>
   </header>
 
-  <div class="main"><hr>
+  <div class="main{% if page %} page-{{ page }}{% endif %}"><hr>
     <nav>
       <a href="{{ url_for('main.index') }}" class="logo">Cabin</a>
       <div class="links">
