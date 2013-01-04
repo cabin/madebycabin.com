@@ -13,7 +13,7 @@ admin = Blueprint('admin', __name__)
 
 @admin.route('/work/<slug>', methods=['GET', 'POST'])
 def project(slug):
-    project = Project.get_by_slug(slug, private=True)
+    project = Project.get_by_slug(slug, allow_private=True)
     if project is None:
         abort(404)
     if urllib2.unquote(slug) != project.slug:

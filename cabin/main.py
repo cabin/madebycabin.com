@@ -20,7 +20,7 @@ def work(splash=False):
 
 @main.route('/work/<slug>')
 def project(slug):
-    project = Project.get_by_slug(slug)
+    project = Project.get_by_slug(slug, allow_private=True)  # XXX private
     if project is None:
         abort(404)
     if urllib2.unquote(slug) != project.slug:

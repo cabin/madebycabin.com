@@ -119,20 +119,34 @@ class Project(ValidatedHash):
         return [cls.decode(dict(zip(cls.summary_attrs, r))) for r in results]
 
     @classmethod
-    def get(cls, _id, private=False):
-        if not private:
-            if str(_id) not in redis.lrange('projects:public', 0, -1):
-                return None
-        project = redis.hgetall('project:%s' % _id)
-        if not project:
-            return None
-        project = cls.decode(project)
-        project._id = _id
+    def get(cls, _id, allow_private=False):
+        _id = str(_id)
+        project = None
+        public_projects = redis.lrange('projects:public', 0, -1)
+        try:
+            public_index = public_projects.index(_id)
+        except ValueError:
+            public_index = None
+        if public_index is not None or allow_private:
+            with redis.pipeline() as pipe:
+                pipe.hgetall('project:%s' % _id)
+                # Find the prev/next slugs (and wrap around).
+                prev_index = (public_index - 1) % len(public_projects)
+                next_index = (public_index + 1) % len(public_projects)
+                pipe.hget('project:%s' % public_projects[prev_index], 'slug')
+                pipe.hget('project:%s' % public_projects[next_index], 'slug')
+                project, prev_slug, next_slug = pipe.execute()
+        if project:
+            project = cls.decode(project)
+            project._id = _id
+            project.prev_slug = prev_slug
+            project.next_slug = next_slug
         return project
 
     @classmethod
-    def get_by_slug(cls, slug, private=False):
-        return cls.get(redis.get('project:slug:%s' % slug), private=private)
+    def get_by_slug(cls, slug, allow_private=False):
+        return cls.get(
+            redis.get('project:slug:%s' % slug), allow_private=allow_private)
 
     @property
     def grouped_services(self):
