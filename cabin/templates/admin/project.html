@@ -85,7 +85,11 @@
 
     <div class="buttons">
       <button type="submit">Save it bitches!</button>
-      <a class="button" href="{{ url_for('main.work') }}">Cancel</a>
+      {% if is_new %}
+        <a class="button" href="{{ url_for('main.work') }}">Cancel</a>
+      {% else %}
+        <a class="button" href="{{ url_for('main.project', slug=form.slug.data) }}">Cancel</a>
+      {% endif %}
       <a class="icon trash">Delete</a>
     </div>
   </form>
