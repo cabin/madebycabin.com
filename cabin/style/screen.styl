@@ -20,6 +20,10 @@ body
   color: cabin_black
   font: 13px/1.23 ProximaNova, Helvetica Neue, Helvetica, sans-serif
 
+.main .content
+  clearfix()
+  margin: 0 auto
+
 a
   text-decoration: none
 
@@ -33,7 +37,12 @@ a
 
 .dim-text
   color: cabin_grey_dark
+  font-size: 13px
   font-weight: normal
+
+body-text()
+  font-size: 15px
+  line-height: 1.35
 
 h1
   @extend .headline-text
@@ -58,12 +67,12 @@ button, .button
     border-color: black
     color: cabin_black
 
-// Set the overall page width either to a set value (if passed a single
+// Set the overall page width either to a max value (if passed a single
 // argument) or bounded between min and max widths (with two arguments).
 page-width(args...)
   nav, .content
     if length(args) == 1
-      width: args[0]
+      max-width: args[0]
     else
       min-width: args[0]
       max-width: args[1]
@@ -120,10 +129,10 @@ nav
   fixed: top left
   right: 0
   user-select: none
+  z-index: 2
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
   a
     -webkit-tap-highlight-color: default_tap_highlight_color
-  z-index: 2
   .logo
     hide-text()
     background-image: url('cabin-symbol.svg')
@@ -131,8 +140,8 @@ nav
     .no-svg &
       background-image: url('cabin-symbol.png')
   .links a
-    color: cabin_black
     @extend .small-header-text
+    color: cabin_black
 
 // Make sure the main content is tall enough to cover the splash during
 // transitions, and set up its initial position so animation works.
@@ -175,7 +184,6 @@ body.splash-transition
   > header
     display: block
 
-
 // XXX temporary animation
 .loading nav .logo
   animation: rotate 750ms infinite ease-out
@@ -186,14 +194,8 @@ body.splash-transition
   to
     transform: rotate(360deg)
 
-// XXX tmp
-.main
-  .content
-    clearfix()
-    margin: 0 auto
 
-
-// Work page common bits  ////////////////////////////////////////////////////
+// Common work page  /////////////////////////////////////////////////////////
 
 .bricks
   opacity: 0
@@ -500,10 +502,12 @@ body.splash-transition
       margin-bottom: 100px - input_height * 2
     [name="brief"]
       margin-bottom: 10px
-      size: 520 + 10*2 150  // match display width
-      font-size: 15px  // XXX brief text fn/class?
+      size: 520 + 10*2 150 + 10*2 // match display size
     [name="external_url"]
       width: 420px
+
+    [name="brief"], .services fieldset, .cohorts input
+      body-text()
 
     .thumbnail
       figure
@@ -538,7 +542,6 @@ body.splash-transition
         opacity: .5
 
     .services fieldset
-      font-size: 15px
       float: left
       margin-right: 20px
       width: 220px
@@ -547,8 +550,6 @@ body.splash-transition
       ul
         list-style: none
         padding: 0
-      li
-        line-height: 22px;
 
     .cohorts
       fieldset
