@@ -174,12 +174,17 @@ class MainView extends Backbone.View
         .join(' ')
     @$el.addClass("page-#{name}")
 
-  # Maintains a per-page view on `.content`, if any.
+  # Maintains a per-page view on `.content`, if any, with shortcut keys.
   _updatePageView: (name) ->
     @pageView?.remove()
+    key.deleteScope('all')
     viewClass = @views[name]
     if viewClass
-      @pageView = new viewClass(el: @content).render()
+      @pageView = new viewClass(el: @content, router: @router).render()
+      for shortcut, method of @pageView.shortcuts
+        callback = if _.isFunction(method) then method else @pageView[method]
+        throw new Error("Method \"#{method}\" does not exist") unless callback
+        key(shortcut, _.bind(callback, @pageView))
 
 
 # Per-page views

@@ -71,6 +71,7 @@ def register_assets(app):
         'vendor/jquery-1.9.0b1.js',
         'vendor/underscore-1.4.3.js',
         'vendor/backbone-0.9.9.js',
+        'vendor/keymaster-1.0.3pre.js',
         'vendor/jquery.backstretch-2.0.3.js',
         'vendor/jquery.masonry-2.1.06.js',
         filters='uglifyjs', output='gen/vendor-%(version)s.js')
