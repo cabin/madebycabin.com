@@ -61,14 +61,6 @@
     <script src="{{ ASSET_URL }}"></script>
   {%- endassets %}
   <script>
-    /* XXX backstretch has a janky fadeIn animation; could do better?
-    it also does a bit more than necessary; we could just set background-image,
-    background-position: center center, and manager background-size: auto 100%
-    or 100% auto based on browser ratio to image ratio.
-    var h = $('header').backstretch(
-      ['/static/test-cannon.jpg', '/static/test-butt.jpg'],
-      {fade: 300, duration: 5000});
-    */
     var h = $('body > header').backstretch('/static/test-cannon.jpg');
     var app = new AppRouter;
     $(function () {
