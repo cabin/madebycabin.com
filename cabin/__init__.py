@@ -5,6 +5,8 @@ from flask.ext.assets import Bundle, Environment
 from flask.ext.uploads import UploadSet, configure_uploads
 from redis import StrictRedis as Redis
 
+from cabin import util
+
 
 # TODO: make this configurable.
 redis = Redis(charset='utf8', decode_responses=True)
@@ -28,6 +30,7 @@ def create_app():
         'image_url': images.url,
         'request_is_pjax': 'X-PJAX' in request.headers,
     })
+    app.jinja_env.filters['hostname'] = util.hostname
 
     from cabin.main import main
     app.register_blueprint(main)
