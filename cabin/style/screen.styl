@@ -440,15 +440,15 @@ body.splash-transition
 
     input[type="text"], textarea, figure
       background: cabin_grey_light
-      border: 1px solid transparent
+      border: none
       box-shadow: inset 1px 1px 1px 0 rgba(cabin_grey_dark, .2)
       display: block
       outline: none
       padding: 10px
       &:focus
-        border-color: cabin_grey_dark
+        outline: 1px solid cabin_grey_dark
       &.error
-        border: 1px solid red !important
+        outline: 1px solid red
     textarea
       resize: none
     ::-webkit-input-placeholder
@@ -488,10 +488,10 @@ body.splash-transition
         background-color: cabin_mustard
 
     [name="title"]
-      font: headline_size/headline_lh 'YWFT Ultramagnetic Light'
-      text-transform: uppercase
-      size: 300 100
       float: left
+      font: headline_size/headline_lh 'YWFT Ultramagnetic Light'
+      size: 280 + 10*2 100  // match display width
+      text-transform: uppercase
     [name="type"], [name="slug"]
       float: left
       width: 940px - 120 - 300 - 20
@@ -500,14 +500,14 @@ body.splash-transition
       margin-bottom: 100px - input_height * 2
     [name="brief"]
       margin-bottom: 10px
-      size: 750 150
+      size: 520 + 10*2 150  // match display width
+      font-size: 15px  // XXX brief text fn/class?
     [name="external_url"]
       width: 420px
 
     .thumbnail
       figure
         background: cabin_grey_med
-        border: none
         display: inline-block
         min-height: 150px
         padding: 0
