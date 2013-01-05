@@ -15,5 +15,8 @@ inline-list(spacing = 20px)
     margin-right: 0
 
 // Light text on a dark background looks much better antialiased.
-light-text()
-  -webkit-font-smoothing: antialiased
+light-text(reset = false)
+  if reset
+    -webkit-font-smoothing: subpixel-antialiased
+  else
+    -webkit-font-smoothing: antialiased

@@ -3,7 +3,81 @@
 {% set page = 'project' %}
 
 {% block content %}
-  <h1>{{ project.title }}</h1>
+  <div class="info">
+    <hgroup>
+      <h1>{{ project.title }}</h1>
+      <h2>{{ project.type }}</h2>
+    </hgroup>
 
-  <p>...</p>
+    <div class="tabs">
+      <div class="tab-contents">
+        <p class="brief selected">{{ project.brief }}</p>
+        {% if project.services -%}
+          <ol class="services">
+          {% for group, services in project.grouped_services %}
+            <li>{{ group }}
+              <ol>
+              {% for service in services -%}
+                <li>{{ service }}</li>
+              {%- endfor %}
+              </ol>
+            </li>
+          {% endfor %}
+          </ol>
+        {%- endif %}
+        {% if project.cohorts -%}
+          <table class="cohorts">
+          {% for cohort in project.cohorts -%}
+            <tr><td>
+            {%- if cohort.twitter_user -%}
+              <a href="https://twitter.com/{{ cohort.twitter_user }}" class="twitter" target="_blank">{{ cohort.name }}</a>
+            {%- else -%}
+              {{ cohort.name }}
+            {%- endif -%}
+            </td><td>{{ cohort.role }}</td></tr>
+          {%- endfor %}
+          </table>
+        {%- endif %}
+      </div>
+      <div class="tab-chooser">
+        <a class="selected" data-for="brief"><hr>Brief</a>
+        {% if project.services -%}
+          <a data-for="services"><hr>Services</a>
+        {%- endif %}
+        {% if project.cohorts -%}
+          <a data-for="cohorts"><hr>Cohorts</a>
+        {%- endif %}
+      </div>
+    </div>
+
+    <div class="prev-next">
+      <a class="button" href="{{ url_for('main.project', slug=project.prev_slug) }}">Previous</a>
+      <a class="button" href="{{ url_for('main.project', slug=project.next_slug) }}">Next</a>
+    </div>
+  </div>
+
+  <div class="images">
+  {% for image in project.images %}
+    {{ image_url(image) }}
+  {% endfor %}
+  </div>
+
+  <div class="prev-next">
+    <a class="button" href="{{ url_for('main.project', slug=project.prev_slug) }}">Previous</a>
+    <a class="button" href="{{ url_for('main.project', slug=project.next_slug) }}">Next</a>
+  </div>
+
+  {# TODO: social, maybe
+    <div class="social" style="background:black">
+      <a href=XXX class="facebook">Facebook</a>
+      <a href=XXX class="twitter">Twitter</a>
+      <a href=XXX class="pinterest">Pinterest</a>
+      work.iamalwayshungry.com/Here-Now
+      https://www.facebook.com/sharer/sharer.php?t=Redesigning+the+Mobile+Phone%3A+Building+Electronics+to+Last&u=http%3A%2F%2Fwww.good.is%2Fposts%2Fredesigning-the-mobile-phone-building-electronics-to-last
+      https://twitter.com/intent/tweet?in_reply_to=51113028241989632
+      http://twitter.com/home/?status=<?php the_title(); ?> - <?php the_permalink(); ?>
+      http://pinterest.com/pin/create/button/?url=<?php the_permalink(); ?>&media=<?php $url = wp_get_attachment_url( get_post_thumbnail_id($post->ID) ); echo $url; ?>
+    </div>
+  #}
+
 {% endblock %}

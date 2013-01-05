@@ -102,6 +102,7 @@ class MainView extends Backbone.View
     @content = @$('.content')
     @views =
       'work': WorkView
+      'project': ProjectView
       'admin-project': EditProjectView
     @_updatePageView(@content.data('page'))
 
@@ -250,6 +251,44 @@ class WorkView extends Backbone.View
   render: ->
     @masonryContainer.imagesLoaded => @masonryContainer.masonry(@options)
     this
+
+
+#### ProjectView
+class ProjectView extends Backbone.View
+
+  initialize: (options) ->
+    @tabs = @$('.tab-chooser a')
+    @contents = @$('.tab-contents').children()
+    @router = options.router
+
+  events:
+    'click .tab-chooser a': 'selectTab'
+
+  shortcuts:
+    'left': 'goPrev'
+    'right': 'goNext'
+    '⌥+e': 'goAdmin'
+
+  selectTab: (event) ->
+    # Unselect the previous item; hide its hr temporarily to avoid a shrinking
+    # transition.
+    oldSelected = @tabs.filter('.selected')
+      .find('hr').hide().end()
+      .removeClass('selected')
+    _.defer -> oldSelected.find('hr').show()
+    # Select the new item and the appropriate tab contents from its data.
+    name = $(event.currentTarget).addClass('selected').data('for')
+    @contents.removeClass('selected')
+      .filter(".#{name}").addClass('selected')
+
+  goPrev: ->
+    @router.navigate(@$('.prev-next a').first().attr('href'), trigger: true)
+
+  goNext: ->
+    @router.navigate(@$('.prev-next a').last().attr('href'), trigger: true)
+
+  goAdmin: ->
+    @router.navigate('admin/' + Backbone.history.fragment, trigger: true)
 
 
 #### EditProjectView

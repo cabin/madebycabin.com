@@ -97,7 +97,7 @@ hover-hr(duration = 200ms)
     margin: 0
     size: 0 1px
     transition: width duration
-  .no-touch &:hover hr
+  .no-touch &:hover hr, &.selected hr
     width: 100%
 
 
@@ -236,6 +236,26 @@ body.splash-transition
     display: block
     max-width: 100%
     height: auto
+
+
+// Common project page  //////////////////////////////////////////////////////
+
+.page-project
+  hgroup
+    h1
+      line-height: 1
+      margin: 0 0 5px
+    h2
+      @extend .dim-text
+      margin: 0
+  .tabs *
+    margin: 0
+  .tab-contents
+    body-text()
+    > *
+      display: none
+    > .selected
+      display: block
 
 
 // iPhone 5 landscape and smaller  ///////////////////////////////////////////
@@ -413,12 +433,75 @@ body.splash-transition
 
   // Work list page  ///////////////////////////////
 
-  .work-thumb
-    &.feature
-      width: 540px
-    // Cover the top border with the hover-hr.
-    hr
-      top: -1px
+  .page-work
+    .work-thumb
+      &.feature
+        width: 540px
+      // Cover the top border with the hover-hr.
+      hr
+        top: -1px
+
+
+  // Project detail page  //////////////////////////
+
+  .page-project
+    page-width(1110px)
+
+    .tab-chooser a
+      hover-hr()
+      light-text()
+      border-top: 1px solid cabin_grey_light
+      color: cabin_grey_med
+      display: block
+      line-height: 30px
+      // @extend .small-header-text -- can't work inside a media query
+      font-weight: bold
+      text-transform: uppercase
+      // Cover the top border with the hover-hr.
+      hr { top: -1px }
+      &.selected, &:hover
+        light-text('reset')
+        color: cabin_black
+      &.selected
+        cursor: default
+
+    .info
+      clearfix()
+      margin-top: 30px
+      position: relative
+      .prev-next
+        absolute: top right
+    hgroup
+      float: left
+      margin-right: 40px
+      width: 280px
+    .tabs
+      clearfix()
+      border-right: 1px solid cabin_grey_light
+      height: 150px
+      margin-right: 100px
+      margin-bottom: 60px
+      padding-right: 39px
+      > div
+        float: right
+    .tab-chooser
+      width: 80px
+      margin-right: 40px
+    .tab-contents
+      width: 520px
+      min-height: 50px
+    .prev-next a
+      width: 38px
+      padding-left: 0
+      padding-right: 0
+
+    // XXX placeholder
+    .images
+      background: rgba(0, 0, 0, .2)
+      border-radius: 10px
+      clear: both
+      min-height: 300px
+      width: 100%
 
 
   // Admin  ////////////////////////////////////////
@@ -601,3 +684,18 @@ body.splash-transition
     .no-touch &:hover
       background-image: url('symbol-hover@2x.png')
 */
+
+
+// At full width, tabs and the tab-chooser are displayed horizontally. As the
+// browser width decreases, first we tuck the tabs underneath the title, then
+// hide the tab-chooser altogether.
+@media only screen and (max-width: 1159px)
+  .page-project .tabs
+    border-right: none
+    clear: left
+    float: left
+    margin: 40px 0 40px
+    padding-right: 0
+@media only screen and (max-width: 699px)
+  .page-project .tab-chooser
+    display: none
