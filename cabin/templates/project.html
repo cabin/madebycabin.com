@@ -30,17 +30,20 @@
           </ol>
         {%- endif %}
         {% if project.cohorts -%}
-          <table class="cohorts">
-          {% for cohort in project.cohorts -%}
-            <tr><td>
-            {%- if cohort.twitter_user -%}
-              <a href="https://twitter.com/{{ cohort.twitter_user }}" class="twitter" target="_blank">{{ cohort.name }}</a>
-            {%- else -%}
-              {{ cohort.name }}
-            {%- endif -%}
-            </td><td>{{ cohort.role }}</td></tr>
-          {%- endfor %}
-          </table>
+          <div class="cohorts">
+            <table>
+            {% for cohort in project.cohorts -%}
+              <tr><td>
+              {%- if cohort.twitter_user -%}
+                <a href="https://twitter.com/{{ cohort.twitter_user }}"
+                  target="_blank"><span class="icon twitter"></span>{{ cohort.name }}</a>
+              {%- else -%}
+                {{ cohort.name }}
+              {%- endif -%}
+              </td><td>{{ cohort.role }}</td></tr>
+            {%- endfor %}
+            </table>
+          </div>
         {%- endif %}
       </div>
       <div class="tab-chooser">

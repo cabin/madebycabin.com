@@ -465,6 +465,34 @@ body.splash-transition
       &.selected
         cursor: default
 
+    .services
+      font-weight: bold
+      &, ol
+        list-style: none
+        padding: 0
+      > li
+        float: left
+        margin-left: 20px
+        width: 160px
+        &:first-child
+          margin-left: 0
+      ol
+        font-weight: normal
+        margin-top: 5px
+
+    .cohorts
+      td:first-child
+        padding-right: 50px
+      a
+        color: cabin_black
+        display: block
+      .twitter
+        background-color: cabin_grey_med
+        margin-right: 5px
+        relative: top 2px left
+      a:hover .twitter
+        background-color: cabin_black
+
     .info
       clearfix()
       margin-top: 30px
