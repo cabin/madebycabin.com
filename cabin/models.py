@@ -77,7 +77,16 @@ SCHEMAS = {
         'type': 'array',
         'uniqueItems': True,
         'default': [],
-        'items': {'type': 'string'},
+        'items': {
+            'type': 'object',
+            'additionalProperties': False,
+            'properties': {
+                'file': {'type': 'string', 'required': True},
+                # Width is assumed to be 1100px.
+                'height': {'type': 'integer', 'required': True},
+                'shadow': {'type': 'boolean', 'default': False},
+            },
+        },
     },
     'services': {
         'type': 'array',

@@ -255,11 +255,15 @@ class WorkView extends Backbone.View
 
 #### ProjectView
 class ProjectView extends Backbone.View
+  fullImageWidth: 1100
 
   initialize: (options) ->
+    @router = options.router
     @tabs = @$('.tab-chooser a')
     @contents = @$('.tab-contents').children()
-    @router = options.router
+    @pageWidth = @$el.width()
+    @heightRatio = @pageWidth / @fullImageWidth
+    @loadImages()
 
   events:
     'click .tab-chooser a': 'selectTab'
@@ -268,6 +272,33 @@ class ProjectView extends Backbone.View
     'left': 'goPrev'
     'right': 'goNext'
     '⌥+e': 'goAdmin'
+
+  # Because our work images are *huge* and Mobile Safari shows an ugly black
+  # background while loading them, we set up placeholders here and swap in the
+  # real image only after it's been completely loaded. Placeholder height must
+  # be computed since the visible width depends on the browser viewport, so we
+  # apply height/width attributes which are removed after the image is loaded
+  # (following a brief delay so that scroll position is consistent). The
+  # placeholder image should have data-src and data-height attributes, and can
+  # have a data-class attribute for a class that will be applied after load.
+  loadImages: ->
+    @$('img[data-src]').each (i, element) =>
+      placeholder = $(element)
+      realSrc = placeholder.data('src')
+      fullHeight = placeholder.data('height')
+      placeholder.attr('width', @pageWidth)
+      placeholder.attr('height', Math.floor(fullHeight * @heightRatio))
+      img = new Image
+      img.onload = ->
+        # XXX remove this fake delay
+        _.delay((->
+          placeholder.attr('src', realSrc)
+          placeholder.attr('class', placeholder.data('class'))
+          # XXX testing out this transition
+          #placeholder.css('opacity', 0).animate(opacity: 1, 200)
+          _.delay((-> placeholder.removeAttr('height width')), 200)
+        ), 1000 + (1000 * Math.random()))
+      img.src = realSrc
 
   selectTab: (event) ->
     # Unselect the previous item; hide its hr temporarily to avoid a shrinking

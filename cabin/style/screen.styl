@@ -241,6 +241,9 @@ body.splash-transition
 // Common project page  //////////////////////////////////////////////////////
 
 .page-project
+  .info
+    clearfix()
+    margin: 30px 0 60px
   hgroup
     h1
       line-height: 1
@@ -256,6 +259,14 @@ body.splash-transition
       display: none
     > .selected
       display: block
+  .images img
+    background-color: cabin_grey_light
+    clear: both
+    max-width: 100%
+    margin-bottom: 60px
+    &.shadow
+      border-radius: 4px 4px 0 0
+      box-shadow: 0 0 2px 1px rgba(cabin_grey_dark, .2)
 
 
 // iPhone 5 landscape and smaller  ///////////////////////////////////////////
@@ -445,7 +456,7 @@ body.splash-transition
   // Project detail page  //////////////////////////
 
   .page-project
-    page-width(1110px)
+    page-width(1100px)
 
     .tab-chooser a
       hover-hr()
@@ -494,8 +505,6 @@ body.splash-transition
         background-color: cabin_black
 
     .info
-      clearfix()
-      margin-top: 30px
       position: relative
       .prev-next
         absolute: top right
@@ -507,7 +516,6 @@ body.splash-transition
       border-right: 1px solid cabin_grey_light
       height: 150px
       margin-right: 100px
-      margin-bottom: 60px
       padding-right: 39px
       > div
         float: right
@@ -520,14 +528,6 @@ body.splash-transition
       width: 38px
       padding-left: 0
       padding-right: 0
-
-    // XXX placeholder
-    .images
-      background: rgba(0, 0, 0, .2)
-      border-radius: 10px
-      clear: both
-      min-height: 300px
-      width: 100%
 
 
   // Admin  ////////////////////////////////////////
@@ -720,7 +720,8 @@ body.splash-transition
     border-right: none
     clear: left
     float: left
-    margin: 40px 0 40px
+    margin-top: 40px
+    margin-right: 0
     padding-right: 0
 @media only screen and (max-width: 699px)
   .page-project .tab-chooser

@@ -27,6 +27,7 @@ def create_app():
     configure_uploads(app, [images])
 
     app.context_processor(lambda: {
+        'blank_img': 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
         'image_url': images.url,
         'request_is_pjax': 'X-PJAX' in request.headers,
     })
