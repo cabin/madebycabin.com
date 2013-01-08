@@ -1,21 +1,21 @@
 import time
 import urllib2
 
-from flask import (
-    abort, Blueprint, jsonify, redirect, render_template, request, url_for)
+import flask
+from flask import redirect, render_template, request, url_for
 
 from cabin import images, redis
 from cabin.forms import ProjectForm
 from cabin.models import Project
 
-admin = Blueprint('admin', __name__)
+admin = flask.Blueprint('admin', __name__)
 
 
 @admin.route('/work/<slug>', methods=['GET', 'POST'])
 def project(slug):
     project = Project.get_by_slug(slug, allow_private=True)
     if project is None:
-        abort(404)
+        flask.abort(404)
     if urllib2.unquote(slug) != project.slug:
         canonical_url = url_for('admin.project', slug=project.slug)
         return redirect(canonical_url, code=301)
@@ -41,9 +41,10 @@ def create():
 @admin.route('/upload', methods=['POST'])
 def upload():
     filenames = []
+    upload_queue = flask.current_app.config['UPLOAD_QUEUE']
     if 'file' in request.files:
         for f in request.files.getlist('file'):
             filename = images.save(f)
-            redis.zadd('uploaded-files', int(time.time()), filename)
+            redis.zadd(upload_queue, int(time.time()), filename)
             filenames.append(filename)
-    return jsonify({'files': filenames})
+    return flask.jsonify({'files': filenames})

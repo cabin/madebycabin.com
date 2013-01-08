@@ -20,6 +20,7 @@ def create_app():
     app.config.update(
         ASSETS_URL='/static',
         COFFEE_NO_BARE=True,
+        UPLOAD_QUEUE='uploaded-files',
     )
     app.config.from_pyfile('settings.cfg', silent=True)
 

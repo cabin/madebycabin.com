@@ -38,7 +38,7 @@
       <legend>Thumbnail</legend>
       <figure{% if form.thumbnail_file.errors %} class="error"{% endif %}>
         <figcaption>
-          <span class="icon thumb-upload"></span>
+          <span class="icon image-upload"></span>
           Add thumbnail (540 &times; N)
         </figcaption>
         {% if form.thumbnail_file.data %}
@@ -76,11 +76,24 @@
       <button>Add cohort</button>
     </fieldset>
 
-    <fieldset class="project-images">
+    <fieldset class="images">
       <legend>Project images</legend>
-      {# render(form.images) #}
-      <input type="file" multiple>
-      {# XXX TODO #}
+      <a class="select-multiple-files button">
+        Select files
+        <input type="file" multiple>
+      </a>
+      <figure class="dropper">
+        <figcaption><span class="icon image-upload"></span>
+        Drag &amp; drop project images
+      </figure>
+
+      <div class="preview">
+        <script>
+          // Form elements for these are handled in JS.
+          var imageUrlPrefix = {{ image_url('')|tojson|safe }};
+          var projectImages = {{ form.images.data|tojson|safe }};
+        </script>
+      </div>
     </fieldset>
 
     <div class="buttons">

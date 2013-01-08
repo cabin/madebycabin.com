@@ -1,5 +1,7 @@
 from itertools import groupby
+import os
 
+import flask
 from flask.ext.wtf import Form, ValidationError
 from wtforms import Form as SimpleForm
 from wtforms.fields import *
@@ -17,8 +19,8 @@ def grouped_services():
 
 
 class CohortForm(SimpleForm):
-    name = StringField('Name')  # XXX should be required
-    role = StringField('Role')  # XXX should be required
+    name = StringField('Name')
+    role = StringField('Role')
     twitter_user = StringField('@username')
 
     def validate_twitter_user(self, field):
@@ -31,6 +33,17 @@ class CohortForm(SimpleForm):
         # instead ensure that they're both set if either one is set.
         if bool(field.data) != bool(self.role.data):
             raise ValidationError('Name and role are required.')
+
+
+class ImageForm(SimpleForm):
+    file = StringField('File')
+    height = IntegerField('Height')
+    shadow = StringField('Shadowed', default='0')
+
+    def validate_shadow(self, field):
+      # This is displayed as a hidden field, which means string values.
+      # BooleanField is naive about conversion, so it has to happen here.
+      field.data = field.data in ['1', 'true', 'True']
 
 
 class ProjectForm(Form):
@@ -48,8 +61,7 @@ class ProjectForm(Form):
     services = SelectMultipleGroupedField(
         choices=grouped_services(), coerce=int)
     cohorts = FieldList(FormField(CohortForm), min_entries=1)
-    images = FieldList(StringField())
-    image_files = FieldList(FileField('Image'), min_entries=1)
+    images = FieldList(FormField(ImageForm))
 
     def validate_slug(self, field):
         if not field.data.replace('-', '').isalnum():
@@ -61,10 +73,25 @@ class ProjectForm(Form):
                        if c.get('name') and c.get('role')]
         del self.cohorts
 
+    def _populate_images(self, obj):
+      previous = set(img['file'] for img in getattr(obj, 'images', []))
+      current = set(img['file'] for img in self.images.data)
+      obj.images = self.images.data
+      del self.images
+      # Delete files that were removed from the list, and claim ownership of
+      # any new files.
+      for old_file in previous - current:
+        os.unlink(images.path(old_file))
+      for new_file in current - previous:
+        redis.zrem(flask.current_app.config['UPLOAD_QUEUE'], new_file)
+
     def populate_obj(self, obj):
         self._populate_cohorts(obj)
+        self._populate_images(obj)
         # Claim ownership of the new thumbnail if necessary.
         if hasattr(obj, 'thumbnail_file'):
             if self.thumbnail_file.data != obj.thumbnail_file:
-                redis.zrem('uploaded-files', self.thumbnail_file.data)
+                os.unlink(images.path(obj.thumbnail_file))
+                redis.zrem(flask.current_app.config['UPLOAD_QUEUE'],
+                           self.thumbnail_file.data)
         return super(ProjectForm, self).populate_obj(obj)

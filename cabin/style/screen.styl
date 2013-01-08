@@ -549,7 +549,7 @@ body.splash-transition
         float: right
         margin: headline_height 0
 
-    input[type="text"], textarea, figure
+    input[type="text"], textarea, .thumbnail figure, .dropper
       background: cabin_grey_light
       border: none
       box-shadow: inset 1px 1px 1px 0 rgba(cabin_grey_dark, .2)
@@ -618,31 +618,33 @@ body.splash-transition
     [name="brief"], .services fieldset, .cohorts input
       body-text()
 
+    .thumbnail figure, .images .dropper
+      background: cabin_grey_med
+      display: inline-block
+      position: relative
+      padding: 0
+      width: 260px
+      figcaption
+        light-text()
+        absolute: top 40% left 50%
+        color: cabin_grey_med
+        text-align: center
+        width: 200px
+        margin-left: -(@width / 2)
+        span
+          background-color: cabin_grey_med
+          display: block
+          margin: 0 auto 10px
+
     .thumbnail
       figure
-        background: cabin_grey_med
-        display: inline-block
         min-height: 150px
-        padding: 0
-        position: relative
-        width: 260px
         &:first-of-type
           background: cabin_grey_light
           float: left
           margin-right: 20px
           min-height: 320px
           width: 540px
-        figcaption
-          light-text()
-          absolute: top 40% left 50%
-          color: cabin_grey_med
-          text-align: center
-          width: 200px
-          margin-left: -(@width / 2)
-          span
-            background-color: cabin_grey_med
-            display: block
-            margin: 0 auto 10px
         img
           // Stack img on top of figcaption.
           position: relative
@@ -681,13 +683,68 @@ body.splash-transition
       button
         margin-top: 10px
 
-    .project-images
+    .images
       margin-top: 60px
+      padding-left: 0
       legend
         width: 260px
+        .filename
+          float: left
+          max-width: 190px
+          overflow: ellipsis
+        .icon
+          background-color: cabin_grey_med
+          margin-top: 7px
+          margin-left: 3px
+          &:hover, &.selected
+            background-color: cabin_black
+      .select-multiple-files
+        cursor: default  // we can't control the cursor over the input
+        absolute: top 50px left
+        input
+          absolute: top left; right: 0; bottom: 0
+          opacity: 0
+      .dropper
+        background: cabin_grey_light
+        margin-left: 280px
+        size: 540 200
+        float: left
+        &.drag
+          outline: 1px solid cabin_grey_dark
+          span
+            background-color: cabin_black
+          figcaption
+            color: cabin_black
+      .preview
+        clearfix()
+        clear: both
+        margin-right: -20px  // make room for the last column
+        padding-top: 40px
+      .image
+        float: left
+        margin: 0 20px 20px 0
+        position: relative
+        width: 260px
+        img
+          transition: transform 200ms ease-in-out
+          width: 100%
+        legend
+          absolute: top 1px left; right: 0
+          background: white
+          color: cabin_grey_dark
+          display: none
+          line-height: 30px
+          text-align: right
+        &:hover
+          img
+            transform: translate3d(0, 30px, 0)
+          legend
+            display: block
+        &:nth-of-type(4n + 1)
+          clear: left
 
     .buttons
-      margin: 40px 0
+      margin: 80px 0 40px
       button, a
         margin-right: 10px
       .trash
@@ -728,3 +785,12 @@ body.splash-transition
     display: none
   .page-project .images img.shadow
     border-radius: 2px 2px 0 0
+
+// By default there are four columns of preview images in the project admin
+// page, but knock that down to three when there's not enough room.
+@media only screen and (max-width: 1159px)
+  .page-admin-project .preview
+    .image:nth-of-type(4n + 1)
+      clear: none
+    .image:nth-of-type(3n + 1)
+      clear: left

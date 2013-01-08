@@ -322,46 +322,65 @@ class ProjectView extends Backbone.View
     @router.navigate('admin/' + Backbone.history.fragment, trigger: true)
 
 
+# Administrative views
+# --------------------
+
 #### EditProjectView
-# Handles drag and drop and inline formsets.
+# Handles drag and drop image/thumbnail upload, cohort fieldset management, and
+# hands off to `EditProjectImageView` children for per-image options.
 class EditProjectView extends Backbone.View
 
   initialize: ->
     thumbnailDropper = new DropHandler(el: @$('fieldset.thumbnail'))
     @listenTo(thumbnailDropper, 'drop', @dropThumbnail)
+    imageDropper = new DropHandler(el: @$('fieldset.images .dropper'))
+    @uploadFiles = imageDropper.uploadFiles
+    @listenTo(imageDropper, 'drop', @dropImages)
+    @previewContainer = @$('.images .preview')
+    @projectImages = @initProjectImages(window.projectImages)
+    @projectImages.each(@imageAdded)
+    @listenTo(@projectImages, 'add', @imageAdded)
+
+  # Clean up any child views.
+  remove: ->
+    _(@imageViews).invoke('remove') if @imageViews
+    super()
 
   events:
     'click .cohort a.trash': 'removeCohort'
     'click .cohorts button': 'addCohort'
+    'change .select-multiple-files input': 'selectFiles'
+
+  # Create a `ProjectImageCollection` whose members each have an `index`
+  # attribute indicating order in the source array.
+  initProjectImages: (data) ->
+    new ProjectImageCollection _(data).map (item, index) ->
+      item.index = index
+      item
+
+  imageAdded: (model) =>
+    view = new EditProjectImageView(model: model)
+    @imageViews or= []
+    @imageViews.push(view)
+    @previewContainer.append(view.render().el)
 
   # When a new thumbnail is dropped, upload it immediately, update the preview,
   # and set the input's value to the filename from the upload response.
   dropThumbnail: (event) ->
-    xhr = new XMLHttpRequest
-    xhr.open('POST', '/admin/upload')
-    xhr.setRequestHeader('Accept', 'application/json')
-    xhr.addEventListener 'progress', (event) ->
-      console.log('progress', event)  # XXX
-    xhr.addEventListener 'load', (event) ->
-      if xhr.status is 200
-        data = JSON.parse(xhr.response)
+    if event.dataTransfer.files.length > 1
+      return alert('How about just one at a time?')
+    figures = @$('fieldset.thumbnail figure')
+    @uploadFiles
+      url: '/admin/upload'
+      files: event.dataTransfer.files
+      onUpload: (data) ->
         $('input[name="thumbnail_file"]').val(data.files[0])
-      else
-        throw 'UPLOAD ERROR'  # XXX
-    formData = new FormData
-    files = event.dataTransfer.files
-    _(files.length).times (n) ->
-      reader = new FileReader
-      reader.addEventListener 'load', (event) ->
-        figures = $('fieldset.thumbnail figure')
+      onRead: (dataURL) ->
         figures.each ->
           f = $(this)
           img = f.find('img')
           img = $('<img>').appendTo(f) unless img.length
-          img.attr('src', event.target.result)
-      reader.readAsDataURL(files[n])
-      formData.append('file', files[n])
-    xhr.send(formData)
+          img.attr('src', dataURL)
 
   removeCohort: (event) ->
     fieldset = $(event.target).parent('.cohort')
@@ -386,6 +405,108 @@ class EditProjectView extends Backbone.View
       child.val('')
     clone.insertAfter(fieldset).children('input').first().focus()
 
+  # Upload the given `files` as new project images; this is used by both the
+  # drop handler and the "select files" button. We need to record the full
+  # height of each image, so we create an `img` element outside of the DOM and
+  # then record its size for the upload handler to apply to the new model.
+  uploadProjectImages: (files) ->
+    sizes = []
+    collection = @projectImages
+    @uploadFiles
+      files: files
+      onUpload: (data) =>
+        _(data.files).each (file, n) ->
+          sizes[n].then (width, height) ->
+            # Rudimentary sanity-check.
+            if width isnt 1100
+              return alert("Width was #{width}!")
+            indexes = collection.pluck('index')
+            model = new ProjectImage
+              file: file
+              height: height
+              index: Math.max.apply(null, indexes.concat([0])) + 1
+            collection.add(model)
+      onRead: (dataURL, i) ->
+        img = new Image
+        deferred = new jQuery.Deferred
+        sizes[i] = deferred.promise()
+        img.onload = -> deferred.resolve(img.width, img.height)
+        img.src = dataURL
+
+  dropImages: (event) ->
+    @uploadProjectImages(event.dataTransfer.files)
+
+  selectFiles: (event) ->
+    @uploadProjectImages(event.currentTarget.files)
+    # "Reset" the input to an empty state.
+    oldInput = $(event.currentTarget)
+    oldInput.replaceWith(oldInput.clone())
+
+
+#### EditProjectImageView
+# Handles display and modification of the project image previews on the admin
+# page, including the (hidden) form fields for each.
+class EditProjectImageView extends Backbone.View
+  tagName: 'figure'
+  className: 'image'
+  template: _.template('
+    <legend>
+      <span class="filename"><%= file %></span>
+      <a class="icon browser-shadow<%= shadow ? " selected" : "" %>"></a>
+      <a class="icon trash"></a>
+      <a class="icon move"></a>
+    </legend>
+    <img src="<%= url %>" alt>
+    <input name="<%= name %>-file" type="hidden" value="<%= file %>">
+    <input name="<%= name %>-height" type="hidden" value="<%= height %>">
+    <input name="<%= name %>-shadow" type="hidden" value="<%= shadow %>">
+  ')
+
+  initialize: ->
+    @listenTo(@model, 'change:index', @setIndex)
+
+  events:
+    'click .browser-shadow': 'toggleShadow'
+    'click .trash': 'confirmRemove'
+
+  render: ->
+    data = @model.toJSON()
+    data.url = window.imageUrlPrefix + data.file
+    data.name = 'images-' + data.index
+    @$el.html(@template(data))
+    this
+
+  toggleShadow: ->
+    @model.set('shadow', not @model.get('shadow'))
+    @render()
+
+  confirmRemove: ->
+    if confirm("Are you sure you want to delete #{@model.get('file')}?")
+      # XXX remove from parent? HierView?
+      @remove()
+
+  setIndex: (event) ->
+    console.log('EditProjectImageView.setIndex', arguments)
+
+
+# Data models
+# -----------
+
+# Mostly we're just using Backbone for its views, doing simple manipulations on
+# markup generated on the backend. However, it's handy to have a collection of
+# project images mapped to subviews in the admin view, so they can be added,
+# removed, and reorganized more easily.
+
+class @ProjectImage extends Backbone.Model
+  defaults:
+    'index': 0
+    'shadow': false
+
+
+class @ProjectImageCollection extends Backbone.Collection
+  model: ProjectImage
+  comparator: (image) -> image.get('index')
+
 
 # Support
 # -------
@@ -396,6 +517,7 @@ class EditProjectView extends Backbone.View
 # that element instead, while ignoring drops on the document itself.
 class DropHandler extends Backbone.View
   el: document
+  onError: (xhr) -> alert('Upload failed: ' + xhr.statusText)
 
   initialize: ->
     jQuery.event.props.push('dataTransfer')
@@ -433,3 +555,41 @@ class DropHandler extends Backbone.View
     @cancel(event)
     @classableEl.removeClass('drag')
     @trigger('drop', event)
+
+  # A helper method for uploading a file or files via XHR and accepting a JSON
+  # response. The `options` argument must contain `url` and `files` attributes,
+  # and may also contain one or more of the following callback attributes:
+  #
+  # - `onUpload`; called once when all files are completed, with the decoded
+  #   JSON response as an argument.
+  # - `onRead`; called once for each file, with the data-URL-encoded contents
+  #   and the original index of the file in `files` as arguments.
+  # - `onError`; called in case of a non-200 response from the upload URL, with
+  #   the `XMLHttpRequest` object as an argument. Defaults to an alert.
+  # - `onProgress`; assigned to the `XMLHttpRequest`'s `progress` event.
+  uploadFiles: (options) =>
+    xhr = new XMLHttpRequest
+    xhr.open('POST', options.url)
+    xhr.setRequestHeader('Accept', 'application/json')
+    formData = new FormData
+    files = options.files
+    reader = null
+    onError = options.onError or @onError
+
+    if options.onProgress
+      xhr.addEventListener('progress', options.onProgress)
+    xhr.addEventListener 'load', ->
+      if xhr.status is 200
+        data = JSON.parse(xhr.response)
+        options.onUpload?(data)
+      else
+        onError(xhr)
+
+    _(files).each (file, n) ->
+      formData.append('file', file)
+      if options.onRead
+        reader = new FileReader
+        reader.addEventListener 'load', (event) ->
+          options.onRead(event.target.result, n)
+        reader.readAsDataURL(file)
+    xhr.send(formData)
