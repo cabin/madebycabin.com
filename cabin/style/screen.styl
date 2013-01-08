@@ -7,6 +7,7 @@ cabin_grey_dark = #929292
 cabin_grey_med = #d2d2d2
 cabin_grey_light = #f2f2f2
 cabin_mustard = #edbc13
+cabin_bronze = #ab9960
 default_tap_highlight_color = rgba(26, 26, 26, 0.3)
 headline_size = 30px
 headline_lh = 1.33
@@ -259,6 +260,10 @@ body.splash-transition
       display: none
     > .selected
       display: block
+  a.external
+    color: cabin_black
+    &:hover
+      color: cabin_bronze
   .images img
     background-color: cabin_grey_light
     clear: both
@@ -337,12 +342,14 @@ body.splash-transition
     .links
       float: right
       overflow: hidden
+      padding-right: 20px  // account for the toggle
       position: relative
       > a
-        hover-hr()
         float: left
         margin-right: 20px
-        width: 60px
+        padding: 0 10px
+        &:hover
+          color: cabin_bronze
 
     .social
       transition_duration = 400ms
@@ -358,7 +365,7 @@ body.splash-transition
         relative: left 100% top
         transition: left transition_duration ease transition_duration
         &:hover
-          background-color: cabin_grey_dark
+          background-color: cabin_bronze
       a:first-child
         left: 0
     // Inside the toggle is a `b` used for creating a little border on hover,
@@ -679,7 +686,7 @@ body.splash-transition
           float: left
           margin-top: 10px
           &:hover
-            background-color: cabin_mustard
+            background-color: cabin_black
       button
         margin-top: 10px
 
