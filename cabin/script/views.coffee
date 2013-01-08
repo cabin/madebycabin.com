@@ -413,6 +413,7 @@ class EditProjectView extends Backbone.View
     sizes = []
     collection = @projectImages
     @uploadFiles
+      url: '/admin/upload'
       files: files
       onUpload: (data) =>
         _(data.files).each (file, n) ->
