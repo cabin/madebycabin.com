@@ -14,14 +14,14 @@ icon(size)
 
 .icon
   icon(16px)
+  &.browser-shadow { background-image: url(icons/browser-shadow.png) }
   &.edit { background-image: url(icons/edit.png) }
   &.feature { background-image: url(icons/feature.png) }
+  &.image-upload { @extend .icon-30; background-image: url(icons/image-upload.png) }
   &.move { background-image: url(icons/move.png) }
   // &.plus is in the main stylesheet
   &.private { background-image: url(icons/private.png) }
-  &.project-images { @extend .icon-30; background-image: url(icons/project-images.png) }
   &.public { background-image: url(icons/public.png) }
-  &.thumb-upload { @extend .icon-30; background-image: url(icons/thumb-upload.png) }
   &.trash { background-image: url(icons/trash.png) }
 
 input[type="checkbox"].icon.public
@@ -52,14 +52,14 @@ social-icon(twitter)
 @media all and (-webkit-min-device-pixel-ratio: 1.5)
 
   .icon
+    &.browser-shadow { background-image: url(icons/browser-shadow@2x.png) }
     &.edit { background-image: url(icons/edit@2x.png) }
     &.feature { background-image: url(icons/feature@2x.png) }
+    &.image-upload { background-image: url(icons/image-upload@2x.png) }
     &.move { background-image: url(icons/move@2x.png) }
     // &.plus is in the main stylesheet
     &.private { background-image: url(icons/private@2x.png) }
-    &.project-images { background-image: url(icons/project-images@2x.png) }
     &.public { background-image: url(icons/public@2x.png) }
-    &.thumb-upload { background-image: url(icons/thumb-upload@2x.png) }
     &.trash { background-image: url(icons/trash@2x.png) }
 
   input[type="checkbox"].icon.public
