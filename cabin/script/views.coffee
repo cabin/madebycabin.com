@@ -331,6 +331,7 @@ class ProjectView extends Backbone.View
 class EditProjectView extends Backbone.View
 
   initialize: ->
+    # XXX remove thumbnailDropper and imageDropper on remove()
     thumbnailDropper = new DropHandler(el: @$('fieldset.thumbnail'))
     @listenTo(thumbnailDropper, 'drop', @dropThumbnail)
     imageDropper = new DropHandler(el: @$('fieldset.images .dropper'))
@@ -340,6 +341,7 @@ class EditProjectView extends Backbone.View
     @projectImages = @initProjectImages(window.projectImages)
     @projectImages.each(@imageAdded)
     @listenTo(@projectImages, 'add', @imageAdded)
+    @$('.preview').sortable(handle: '.move', forcePlaceholderSize: true)
 
   # Clean up any child views.
   remove: ->
@@ -350,6 +352,7 @@ class EditProjectView extends Backbone.View
     'click .cohort a.trash': 'removeCohort'
     'click .cohorts button': 'addCohort'
     'change .select-multiple-files input': 'selectFiles'
+    'sortupdate .preview': 'updateImageIndexes'
 
   # Create a `ProjectImageCollection` whose members each have an `index`
   # attribute indicating order in the source array.
@@ -443,6 +446,10 @@ class EditProjectView extends Backbone.View
     oldInput = $(event.currentTarget)
     oldInput.replaceWith(oldInput.clone())
 
+  updateImageIndexes: ->
+    _(@imageViews).each (view) ->
+      view.model.set('index', view.$el.index())
+
 
 #### EditProjectImageView
 # Handles display and modification of the project image previews on the admin
@@ -464,7 +471,7 @@ class EditProjectImageView extends Backbone.View
   ')
 
   initialize: ->
-    @listenTo(@model, 'change:index', @setIndex)
+    @listenTo(@model, 'change:index', @updateName)
 
   events:
     'click .browser-shadow': 'toggleShadow'
@@ -486,8 +493,12 @@ class EditProjectImageView extends Backbone.View
       # XXX remove from parent? HierView?
       @remove()
 
-  setIndex: (event) ->
-    console.log('EditProjectImageView.setIndex', arguments)
+  updateName: (event, index) ->
+    @$('input').each ->
+      input = $(this)
+      name = input.attr('name').split('-')
+      name[1] = index
+      input.attr('name', name.join('-'))
 
 
 # Data models
@@ -534,7 +545,7 @@ class DropHandler extends Backbone.View
 
   events:
     'dragenter': 'dragEnter'
-    'dragover': 'cancel'  # necessary to catch the drop element
+    'dragover': 'cancel'  # necessary to catch the drop event
     'dragleave': 'dragLeave'
     'drop': 'drop'
 

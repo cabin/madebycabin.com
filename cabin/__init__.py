@@ -79,6 +79,7 @@ def register_assets(app):
         'vendor/keymaster-1.0.3pre.js',
         'vendor/jquery.backstretch-2.0.3.js',
         'vendor/jquery.masonry-2.1.06.js',
+        'vendor/jquery.sortable.js',  # XXX extract to admin.js?
         filters='uglifyjs', output='gen/vendor-%(version)s.js')
 
     assets.register(

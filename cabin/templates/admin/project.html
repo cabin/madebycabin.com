@@ -87,13 +87,12 @@
         Drag &amp; drop project images
       </figure>
 
-      <div class="preview">
-        <script>
-          // Form elements for these are handled in JS.
-          var imageUrlPrefix = {{ image_url('')|tojson|safe }};
-          var projectImages = {{ form.images.data|tojson|safe }};
-        </script>
-      </div>
+      <div class="preview"></div>
+      <script>
+        // Form elements for these are handled in JS.
+        var imageUrlPrefix = {{ image_url('')|tojson|safe }};
+        var projectImages = {{ form.images.data|tojson|safe }};
+      </script>
     </fieldset>
 
     <div class="buttons">
