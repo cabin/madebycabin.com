@@ -2,6 +2,7 @@ import urllib2
 
 from flask import abort, Blueprint, redirect, render_template, request, url_for
 
+from cabin.auth import get_current_user
 from cabin.models import Project
 
 main = Blueprint('main', __name__)
@@ -20,7 +21,8 @@ def work(splash=False):
 
 @main.route('/work/<slug>')
 def project(slug):
-    project = Project.get_by_slug(slug, allow_private=True)  # XXX private
+    is_admin = get_current_user().is_admin
+    project = Project.get_by_slug(slug, allow_private=is_admin)
     if project is None:
         abort(404)
     if urllib2.unquote(slug) != project.slug:

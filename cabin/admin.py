@@ -5,6 +5,7 @@ import flask
 from flask import redirect, render_template, request, url_for
 
 from cabin import images, redis
+from cabin.auth import admin_required
 from cabin.forms import ProjectForm
 from cabin.models import Project
 
@@ -12,6 +13,7 @@ admin = flask.Blueprint('admin', __name__)
 
 
 @admin.route('/work/<slug>', methods=['GET', 'POST'])
+@admin_required
 def project(slug):
     project = Project.get_by_slug(slug, allow_private=True)
     if project is None:
@@ -28,6 +30,7 @@ def project(slug):
 
 
 @admin.route('/create', methods=['GET', 'POST'])
+@admin_required
 def create():
     form = ProjectForm()
     if form.validate_on_submit():
@@ -39,6 +42,7 @@ def create():
 
 
 @admin.route('/upload', methods=['POST'])
+@admin_required
 def upload():
     filenames = []
     upload_queue = flask.current_app.config['UPLOAD_QUEUE']

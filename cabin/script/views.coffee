@@ -112,6 +112,9 @@ class MainView extends Backbone.View
     'click nav .toggle': 'toggleSocial'
     'click nav': 'closeSplash'
 
+  shortcuts:
+    '⌥+l': -> navigator.id.request()
+
   render: ->
     @pageView?.render?()
     this
@@ -179,13 +182,17 @@ class MainView extends Backbone.View
   _updatePageView: (name) ->
     @pageView?.remove()
     key.deleteScope('all')
+    @_assignShortcuts(this)
     viewClass = @views[name]
     if viewClass
       @pageView = new viewClass(el: @content, router: @router).render()
-      for shortcut, method of @pageView.shortcuts
-        callback = if _.isFunction(method) then method else @pageView[method]
-        throw new Error("Method \"#{method}\" does not exist") unless callback
-        key(shortcut, _.bind(callback, @pageView))
+      @_assignShortcuts(@pageView)
+
+  _assignShortcuts: (obj) ->
+    for shortcut, method of obj.shortcuts
+      callback = if _.isFunction(method) then method else obj[method]
+      throw new Error("Method \"#{method}\" does not exist") unless callback
+      key(shortcut, _.bind(callback, obj))
 
 
 # Per-page views
@@ -605,3 +612,31 @@ class DropHandler extends Backbone.View
           options.onRead(event.target.result, n)
         reader.readAsDataURL(file)
     xhr.send(formData)
+
+
+#### PersonaHandler
+class @PersonaHandler extends Backbone.Events
+
+  constructor: (currentUser) ->
+    navigator.id.watch
+      loggedInUser: currentUser
+      onlogin: @login
+      onlogout: @logout
+
+  login: (assertion) ->
+    $.ajax
+      type: 'POST'
+      url: '/auth/login'
+      data: {assertion: assertion}
+      success: (res, status, xhr) ->
+        $('<a class="icon logout">').insertAfter('.copyright')
+          .on('click', -> navigator.id.logout())
+      error: (xhr, status, err) -> alert('Login failure: ' + err)
+
+  logout: ->
+    $.ajax
+      type: 'POST'
+      url: '/auth/logout'
+      success: (res, status, xhr) ->
+        $('footer .logout').remove()
+      error: (xhr, status, err) -> alert('Logout failure: ' + err)

@@ -48,6 +48,9 @@
 
     <footer>
       <p class="copyright"><span>&copy;</span>Cabin 2013</p>
+      {% if current_user %}
+        <a onclick="navigator.id.logout()" class="icon logout"></a>
+      {% endif %}
       <ol>
         <li><a href="mailto:xo@madebycabin.com">xo@madebycabin.com</a></li>
         <li>+1 415 255 5473</li>
@@ -60,9 +63,11 @@
   {% assets 'vendor.js', 'site.js' %}
     <script src="{{ ASSET_URL }}"></script>
   {%- endassets %}
+  <script src="https://login.persona.org/include.js"></script>
   <script>
     var h = $('body > header').backstretch('/static/test-cannon.jpg');
     var app = new AppRouter;
+    var persona = new PersonaHandler({{ current_user.email|tojson|safe }});
     $(function () {
       Backbone.history.start({pushState: true, hashChange: false});
     });

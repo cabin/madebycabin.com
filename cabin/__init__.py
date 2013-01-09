@@ -27,15 +27,20 @@ def create_app():
     register_assets(app)
     configure_uploads(app, [images])
 
+    from cabin.auth import get_current_user
     app.context_processor(lambda: {
         'blank_img': 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
         'image_url': images.url,
         'request_is_pjax': 'X-PJAX' in request.headers,
+        'current_user': get_current_user(),
     })
     app.jinja_env.filters['hostname'] = util.hostname
 
     from cabin.main import main
     app.register_blueprint(main)
+
+    from cabin.auth import auth
+    app.register_blueprint(auth, url_prefix='/auth')
 
     from cabin.admin import admin
     app.register_blueprint(admin, url_prefix='/admin')
