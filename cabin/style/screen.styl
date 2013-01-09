@@ -58,15 +58,14 @@ button, .button
   display: inline-block
   line-height: button_height - 2px
   padding: button_height - @line-height 12px 0
-  border: 1px solid transparent
   &[type="submit"]
     light-text()
     background: cabin_black
     color: white
   &:hover
-    background: white
-    border-color: black
-    color: cabin_black
+    light-text()
+    background: cabin_bronze
+    color: white
 
 // Set the overall page width either to a max value (if passed a single
 // argument) or bounded between min and max widths (with two arguments).
@@ -262,6 +261,8 @@ body.splash-transition
       display: block
   a.external
     color: cabin_black
+    display: inline-block
+    margin-top: 10px
     &:hover
       color: cabin_bronze
   .images img

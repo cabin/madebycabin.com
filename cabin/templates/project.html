@@ -11,11 +11,12 @@
 
     <div class="tabs">
       <div class="tab-contents">
-        <p class="brief selected">{{ project.brief }}
+        <div class="brief selected">
+          <p>{{ project.brief }}</p>
           {%- if project.external_url -%}
-            <br><br>
             <a href="{{ project.external_url }}" target="_blank" class="external">{{ project.external_url|hostname }}</a>
-          {% endif %}</p>
+          {% endif %}
+        </div>
         {% if project.services -%}
           <ol class="services">
           {% for group, services in project.grouped_services %}
