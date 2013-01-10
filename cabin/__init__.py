@@ -9,7 +9,7 @@ from cabin import util
 
 
 # TODO: make this configurable.
-redis = Redis(charset='utf8', decode_responses=True)
+redis = Redis(charset='utf8', decode_responses=True, db=0)
 
 images = UploadSet('images', default_dest=lambda app: os.path.join(
     app.instance_path, 'images'))
