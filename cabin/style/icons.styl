@@ -1,6 +1,6 @@
 @import nib
 
-icon(size)
+icon-base(size)
   hide-text()
   background-size: size size
   background-repeat: no-repeat
@@ -9,35 +9,41 @@ icon(size)
   height: size
   width: size
 
-.icon-30
-  icon(30px)
-
-.icon
-  icon(16px)
-  &.browser-shadow { background-image: url(icons/browser-shadow.png) }
-  &.edit { background-image: url(icons/edit.png) }
-  &.feature { background-image: url(icons/feature.png) }
-  &.image-upload { @extend .icon-30; background-image: url(icons/image-upload.png) }
-  &.logout { background-image: url(icons/logout.png) }
-  &.move { background-image: url(icons/move.png) }
-  // &.plus is in the main stylesheet
-  &.private { background-image: url(icons/private.png) }
-  &.public { background-image: url(icons/public.png) }
-  &.trash { background-image: url(icons/trash.png) }
-
-input[type="checkbox"].icon.public
-  @extend .icon.private
-  &:checked
-    @extend .icon.public
-
+icon(filename, retina = false)
+  fnSuffix = retina ? '@2x' : ''
+  .icon.{filename}
+    background-image: url('icons/' + filename + fnSuffix + '.png')
 
 social-icon(network, retina = false)
   fnSuffix = retina ? '@2x' : ''
   .social .{network}, .icon.{network}
     background-image: url('icons/social/' + network + fnSuffix + '.png')
 
+
+.icon-30
+  icon-base(30px)
+
+.icon
+  icon-base(16px)
+
 .social > a
-  icon(26px)
+  icon-base(26px)
+
+icon(browser-shadow)
+icon(edit)
+icon(feature)
+icon(image-upload)
+icon(logout)
+icon(move)
+// icon(plus) is in the main stylesheet
+icon(private)
+icon(public)
+icon(trash)
+
+input[type="checkbox"].icon.public
+  @extend .icon.private
+  &:checked
+    @extend .icon.public
 
 // social-icon(behance)
 social-icon(facebook)
@@ -52,16 +58,16 @@ social-icon(twitter)
 
 @media all and (-webkit-min-device-pixel-ratio: 1.5)
 
-  .icon
-    &.browser-shadow { background-image: url(icons/browser-shadow@2x.png) }
-    &.edit { background-image: url(icons/edit@2x.png) }
-    &.feature { background-image: url(icons/feature@2x.png) }
-    &.image-upload { background-image: url(icons/image-upload@2x.png) }
-    &.move { background-image: url(icons/move@2x.png) }
-    // &.plus is in the main stylesheet
-    &.private { background-image: url(icons/private@2x.png) }
-    &.public { background-image: url(icons/public@2x.png) }
-    &.trash { background-image: url(icons/trash@2x.png) }
+  icon(browser-shadow, true)
+  icon(edit, true)
+  icon(feature, true)
+  icon(image-upload, true)
+  icon(logout, true)
+  icon(move, true)
+  // icon(plus, true) is in the main stylesheet
+  icon(private, true)
+  icon(public, true)
+  icon(trash, true)
 
   input[type="checkbox"].icon.public
     @extend .icon.private
