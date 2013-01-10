@@ -297,14 +297,9 @@ class ProjectView extends Backbone.View
       placeholder.attr('height', Math.floor(fullHeight * @heightRatio))
       img = new Image
       img.onload = ->
-        # XXX remove this fake delay
-        _.delay((->
-          placeholder.attr('src', realSrc)
-          placeholder.attr('class', placeholder.data('class'))
-          # XXX testing out this transition
-          #placeholder.css('opacity', 0).animate(opacity: 1, 200)
-          _.delay((-> placeholder.removeAttr('height width')), 200)
-        ), 1000 + (1000 * Math.random()))
+        placeholder.attr('src', realSrc)
+        placeholder.attr('class', placeholder.data('class'))
+        _.delay((-> placeholder.removeAttr('height width')), 200)
       img.src = realSrc
 
   selectTab: (event) ->
