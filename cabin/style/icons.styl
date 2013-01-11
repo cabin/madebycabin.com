@@ -1,13 +1,13 @@
 @import nib
 
-icon-base(size)
+icon-base(width, height = width)
   hide-text()
-  background-size: size size
+  background-size: width height
   background-repeat: no-repeat
   background-position: center center
   display: inline-block
-  height: size
-  width: size
+  width: width
+  height: height
 
 icon(filename, retina = false)
   fnSuffix = retina ? '@2x' : ''
@@ -29,8 +29,7 @@ social-icon(network, retina = false)
 .social > a
   icon-base(26px)
 
-icon(arrow-left-black)
-icon(arrow-right-black)
+icon(arrow-mini)
 icon(browser-shadow)
 icon(edit)
 icon(feature)
@@ -41,6 +40,17 @@ icon(move)
 icon(private)
 icon(public)
 icon(trash)
+
+.arrow-left, .arrow-right
+  icon-base(14px, 13px)
+.arrow-left
+  background-image: url('icons/arrow-left-grey.png')
+  &:hover
+    background-image: url('icons/arrow-left-white.png')
+.arrow-right
+  background-image: url('icons/arrow-right-grey.png')
+  &:hover
+    background-image: url('icons/arrow-right-white.png')
 
 input[type="checkbox"].icon.public
   @extend .icon.private
@@ -60,8 +70,7 @@ social-icon(twitter)
 
 @media all and (-webkit-min-device-pixel-ratio: 1.5)
 
-  icon(arrow-left-black, true)
-  icon(arrow-right-black, true)
+  icon(arrow-mini, true)
   icon(browser-shadow, true)
   icon(edit, true)
   icon(feature, true)
@@ -72,6 +81,15 @@ social-icon(twitter)
   icon(private, true)
   icon(public, true)
   icon(trash, true)
+
+  .arrow-left
+    background-image: url('icons/arrow-left-grey@2x.png')
+    &:hover
+      background-image: url('icons/arrow-left-white@2x.png')
+  .arrow-right
+    background-image: url('icons/arrow-right-grey@2x.png')
+    &:hover
+      background-image: url('icons/arrow-right-white@2x.png')
 
   input[type="checkbox"].icon.public
     @extend .icon.private
