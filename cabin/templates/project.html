@@ -16,7 +16,7 @@
         <div class="brief selected">
           <p>{{ project.brief }}</p>
           {%- if project.external_url -%}
-            <a href="{{ project.external_url }}" target="_blank" class="external">{{ project.external_url|hostname }}</a>
+            <a href="{{ project.external_url }}" target="_blank" class="external"><span class="icon arrow-mini"></span>{{ project.external_url|hostname }}</a>
           {% endif %}
         </div>
         {% if project.services -%}
