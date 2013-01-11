@@ -7,10 +7,15 @@ class @AppRouter extends Backbone.Router
   initialize: (options) ->
     @mainView = new MainView(router: this)
     @splashView = new SplashView
+    @on('all', @trackPageView)
 
   routes:
     '': 'splash'
     '*path': 'fetch'
+
+  trackPageView: ->
+    path = '/' + (Backbone.history.fragment or '')
+    window._gaq?.push(['_trackPageview', path])
 
   # We track the current URL in order to skip unneeded PJAX calls, but we can't
   # initialize this value trivially because Backbone.history isn't available
