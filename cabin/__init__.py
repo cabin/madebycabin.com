@@ -29,6 +29,7 @@ def create_app():
 
     from cabin.auth import get_current_user
     app.context_processor(lambda: {
+        'debug': app.debug,
         'blank_img': 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
         'image_url': images.url,
         'request_is_pjax': 'X-PJAX' in request.headers,

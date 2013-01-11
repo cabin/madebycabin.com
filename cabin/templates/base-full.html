@@ -67,6 +67,9 @@
     We use arrays (and jinja's `joiner`) since assets aren't combined in dev.
   #}
   <script>
+    {% if not debug %}{# no need for analytics in dev #}
+    window._gaq = [['_setAccount', 'UA-26897868-1'], ['_trackPageview']];
+    {% endif %}
     Modernizr.load([{
       {% set comma = joiner(',') -%}
       load: [{% assets 'vendor.js' %}
@@ -92,7 +95,8 @@
           }
         });
       },
-    }]);
+    },
+    ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js']);
   </script>
   {% block scripts %}{% endblock %}
 </body>
