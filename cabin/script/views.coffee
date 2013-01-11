@@ -116,6 +116,7 @@ class MainView extends Backbone.View
     '⌥+l': -> navigator.id.request()
 
   render: ->
+    @setTitle(@content.data('title'))
     @pageView?.render?()
     this
 
