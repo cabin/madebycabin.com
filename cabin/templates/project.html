@@ -74,22 +74,19 @@
   {% endfor %}
   </div>
 
-  <div class="prev-next">
+  <div class="bottom">
     <a class="arrow-left" href="{{ url_for('main.project', slug=project.prev_slug) }}">Previous</a>
+    <div class="social">
+    {% with %}
+      {% set url = url_for('main.project', slug=project.slug, _external=true)|urlquote %}
+      {% set title = ("%s by Cabin" % project.title)|urlquote %}
+      <a href="https://www.facebook.com/sharer/sharer.php?t={{ title -}}&u={{ url }}" class="facebook">Facebook</a>
+      <a href="https://twitter.com/intent/tweet?url={{ url }}&text={{ title }}&hashtags=madebycabin&related=madebycabin" class="twitter">Twitter</a>
+      {# TODO: Allow users to select from the project's images.
+      <a href="http://pinterest.com/pin/create/button/?url={{ url }}&description={{ title }}&media={{ image_url(project.thumbnail_file)|urlquote }}" class="pinterest">Pinterest</a>
+      -#}
+    {% endwith %}
+    </div>
     <a class="arrow-right" href="{{ url_for('main.project', slug=project.next_slug) }}">Next</a>
   </div>
-
-  {# TODO: social, maybe
-    <div class="social" style="background:black">
-      <a href=XXX class="facebook">Facebook</a>
-      <a href=XXX class="twitter">Twitter</a>
-      <a href=XXX class="pinterest">Pinterest</a>
-      work.iamalwayshungry.com/Here-Now
-      https://www.facebook.com/sharer/sharer.php?t=Redesigning+the+Mobile+Phone%3A+Building+Electronics+to+Last&u=http%3A%2F%2Fwww.good.is%2Fposts%2Fredesigning-the-mobile-phone-building-electronics-to-last
-      https://twitter.com/intent/tweet?in_reply_to=51113028241989632
-      http://twitter.com/home/?status=<?php the_title(); ?> - <?php the_permalink(); ?>
-      http://pinterest.com/pin/create/button/?url=<?php the_permalink(); ?>&media=<?php $url = wp_get_attachment_url( get_post_thumbnail_id($post->ID) ); echo $url; ?>
-    </div>
-  #}
-
 {% endblock %}

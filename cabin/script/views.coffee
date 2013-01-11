@@ -275,6 +275,7 @@ class ProjectView extends Backbone.View
 
   events:
     'click .tab-chooser a': 'selectTab'
+    'click .social a': 'share'
 
   shortcuts:
     'left': 'goPrev'
@@ -313,6 +314,25 @@ class ProjectView extends Backbone.View
     name = $(event.currentTarget).addClass('selected').data('for')
     @contents.removeClass('selected')
       .filter(".#{name}").addClass('selected')
+
+  # Since we don't want to load a thousand external scripts and be forced to
+  # display standard share buttons, this method catches clicks on our share
+  # icons and pops up a centered, appropriately-sized window.
+  share: (event) ->
+    event.preventDefault()
+    target = $(event.currentTarget)
+    url = target.attr('href')
+    # Browser extensions might have added extra classes.
+    network = target.attr('class').split(' ')[0]
+    popup_sizes =
+      facebook: [580, 325]
+      twitter: [550, 420]
+      pinterest: [632, 320]
+    [width, height] = popup_sizes[network]
+    left = (screen.availWidth or screen.width) / 2 - width / 2
+    top = (screen.availHeight or screen.height) / 2 - height / 2
+    features = "width=#{width},height=#{height},left=#{left},top=#{top}"
+    window.open(url, '_blank', features)
 
   goPrev: ->
     @router.navigate(@$('.prev-next a').first().attr('href'), trigger: true)
