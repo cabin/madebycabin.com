@@ -293,13 +293,12 @@ class ProjectView extends Backbone.View
       placeholder = $(element)
       realSrc = placeholder.data('src')
       fullHeight = placeholder.data('height')
-      placeholder.attr('width', @pageWidth)
       placeholder.attr('height', Math.floor(fullHeight * @heightRatio))
       img = new Image
       img.onload = ->
         placeholder.attr('src', realSrc)
         placeholder.attr('class', placeholder.data('class'))
-        _.delay((-> placeholder.removeAttr('height width')), 200)
+        _.delay((-> placeholder.removeAttr('height')), 2000)
       img.src = realSrc
 
   selectTab: (event) ->
