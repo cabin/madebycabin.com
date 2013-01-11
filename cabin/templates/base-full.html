@@ -59,17 +59,39 @@
     </footer>
   </div>
 
-  {% assets 'vendor.js', 'site.js' %}
-    <script src="{{ ASSET_URL }}"></script>
-  {%- endassets %}
-  <script src="https://login.persona.org/include.js"></script>
+  {#
+    Backstretch depends only on vendor scripts; it should happen as soon as
+    possible. Backbone+main app code of course depends on our site.js. Persona
+    depends on both Mozilla's include.js and our site scripts.
+    We use arrays (and jinja's `joiner`) since assets aren't combined in dev.
+  #}
   <script>
-    var h = $('body > header').backstretch('/static/test-cannon.jpg');
-    var app = new AppRouter;
-    var persona = new PersonaHandler({{ current_user.email|tojson|safe }});
-    $(function () {
-      Backbone.history.start({pushState: true, hashChange: false});
-    });
+    Modernizr.load([{
+      {% set comma = joiner(',') -%}
+      load: [{% assets 'vendor.js' %}
+        {{- comma() }}'{{ ASSET_URL }}'
+      {%- endassets %}],
+      complete: function () {
+        $('body > header').backstretch('/static/test-cannon.jpg');
+      }
+    }, {
+      {% set comma = joiner(',') -%}
+      load: [{% assets 'site.js' %}
+        {{- comma() }}'{{ ASSET_URL }}'
+      {%- endassets %}],
+      complete: function () {
+        window.app = new AppRouter;
+        $(function () {
+          Backbone.history.start({pushState: true, hashChange: false});
+        });
+        Modernizr.load({
+          load: 'https://login.persona.org/include.js',
+          complete: function () {
+            new PersonaHandler({{ current_user.email|tojson|safe }});
+          }
+        });
+      },
+    }]);
   </script>
   {% block scripts %}{% endblock %}
 </body>
