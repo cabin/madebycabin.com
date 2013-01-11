@@ -20,7 +20,7 @@
         {% if project.services -%}
           <ol class="services">
           {% for group, services in project.grouped_services %}
-            <li>{{ group }}
+            <li>{{ group|safe }}
               <ol>
               {% for service in services -%}
                 <li>{{ service }}</li>

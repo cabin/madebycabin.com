@@ -16,7 +16,7 @@ ServiceType = collections.namedtuple('ServiceType', 'id, name')
 Service = collections.namedtuple('Service', 'id, type, name')
 
 SERVICE_TYPES = [
-    ServiceType('pln', 'Planning / Strategy'),
+    ServiceType('pln', 'Planning <span class="thin-text">/</span> Strategy'),
     ServiceType('dsn', 'Design'),
     ServiceType('dev', 'Development'),
 ]
