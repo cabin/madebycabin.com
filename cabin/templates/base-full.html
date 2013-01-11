@@ -12,8 +12,7 @@
   {% assets 'screen.css', 'icons.css' -%}
     <link href="{{ ASSET_URL }}" rel="stylesheet">
   {%- endassets %}
-  {# XXX update to non-dev version #}
-  <script src="/static/vendor/modernizr-latest.js"></script>
+  <script src="{{ url_for('static', filename='vendor/modernizr.js') }}"></script>
   {% block extra_head %}{% endblock %}
 </head>
 <body{% if splash %} class="splash"{% endif %}>
