@@ -36,6 +36,7 @@ def create_app():
         'current_user': get_current_user(),
     })
     app.jinja_env.filters['hostname'] = util.hostname
+    app.jinja_env.filters['urlquote'] = util.urlquote
 
     from cabin.main import main
     app.register_blueprint(main)
