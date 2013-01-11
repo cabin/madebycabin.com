@@ -7,6 +7,7 @@ from redis import StrictRedis as Redis
 
 from cabin import util
 
+PROD_INSTANCE_PATH = '/srv/http/cabin/instance'
 
 # TODO: make this configurable.
 redis = Redis(charset='utf8', decode_responses=True, db=0)
@@ -16,7 +17,11 @@ images = UploadSet('images', default_dest=lambda app: os.path.join(
 
 
 def create_app():
-    app = Flask(__name__, instance_relative_config=True)
+    instance_path = None
+    if os.path.exists(PROD_INSTANCE_PATH):
+        instance_path = PROD_INSTANCE_PATH
+    app = Flask(
+        __name__, instance_relative_config=True, instance_path=instance_path)
     app.config.update(
         ASSETS_URL='/static',
         COFFEE_NO_BARE=True,
