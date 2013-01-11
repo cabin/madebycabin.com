@@ -1,5 +1,5 @@
-{% if request_is_pjax %}
+{% if request_is_pjax -%}
   {% extends 'base-pjax.html' %}
-{% else %}
+{%- else -%}
   {% extends 'base-full.html' %}
-{% endif %}
+{%- endif %}
