@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% set title = project.title %}
 {% set page = 'project' %}
+{% set page_image = image_url(project.thumbnail_file) %}
+{% set page_description = project.brief %}
 
 {% block content %}
   <div class="info">
