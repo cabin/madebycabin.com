@@ -158,8 +158,8 @@ class Project(ValidatedHash):
 
     @classmethod
     def get_by_slug(cls, slug, allow_private=False):
-        return cls.get(
-            redis.get('project:slug:%s' % slug), allow_private=allow_private)
+        key = 'project:slug:%s' % slug.lower()
+        return cls.get(redis.get(key), allow_private=allow_private)
 
     @property
     def grouped_services(self):
@@ -187,7 +187,7 @@ class Project(ValidatedHash):
 
     def _save_slug(self):
         "Ensure the slug is not used by another id before saving it."
-        key = 'project:slug:%s' % self.slug
+        key = 'project:slug:%s' % self.slug.lower()
         def save_unique_slug(pipe):
             current = pipe.get(key)
             # If the slug key is unset, set it to our ID.
