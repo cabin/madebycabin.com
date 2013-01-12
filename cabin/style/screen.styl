@@ -15,7 +15,7 @@ headline_height = headline_size * headline_lh
 button_height = 28px
 
 
-// Common  ///////////////////////////////////////////////////////////////////
+// Common  {{{1
 
 body
   color: cabin_black
@@ -104,7 +104,7 @@ hover-hr(duration = 200ms)
     width: 100%
 
 
-// Common nav/splash goodies  ////////////////////////////////////////////////
+// Common nav/splash goodies  {{{2
 
 body > header
   absolute: top left
@@ -198,7 +198,7 @@ body.splash-transition
     transform: rotate(360deg)
 
 
-// Common work page  /////////////////////////////////////////////////////////
+// Common work page  {{{2
 
 .bricks
   opacity: 0
@@ -241,7 +241,7 @@ body.splash-transition
     height: auto
 
 
-// Common project page  //////////////////////////////////////////////////////
+// Common project page  {{{2
 
 .page-project
   .info
@@ -284,7 +284,7 @@ body.splash-transition
       box-shadow: 0 0 2px 1px rgba(cabin_grey_dark, .2)
 
 
-// iPhone 5 landscape and smaller  ///////////////////////////////////////////
+// iPhone 5 landscape and smaller  {{{1
 
 @media only screen and (max-width: 568px)
   nav_height = 40px
@@ -333,9 +333,10 @@ body.splash-transition
     extend-borders()
 
 
-// Larger than iPhone 5 landscape  ///////////////////////////////////////////
+// Larger than iPhone 5 landscape  {{{1
 
 @media only screen and (min-width: 569px)
+  // Common  {{{2
   nav_height = 90px
   footer_height = 60px
 
@@ -467,7 +468,7 @@ body.splash-transition
         opacity: 1
 
 
-  // Work list page  ///////////////////////////////
+  // Work list page  {{{2
 
   .page-work
     .work-thumb
@@ -478,7 +479,7 @@ body.splash-transition
         top: -1px
 
 
-  // Project detail page  //////////////////////////
+  // Project detail page  {{{2
 
   .page-project
     page-width(1100px)
@@ -567,7 +568,7 @@ body.splash-transition
             background-color: cabin_bronze
 
 
-  // Admin  ////////////////////////////////////////
+  // Admin  {{{2
   // TODO: Consider pulling this out into its own stylesheet; load it only if
   // the user is logged in.
 
@@ -791,6 +792,8 @@ body.splash-transition
         &:hover
           background-color: cabin_black
 
+
+// Assorted media queries  {{{1
 
 // Neither CSS nor Stylus reliably supports nested media queries, so here we go
 // with Retina images.  XXX it works if you use a & immediately inside the nest
