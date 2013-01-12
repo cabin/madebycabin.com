@@ -9,6 +9,8 @@ cabin_grey_light = #f2f2f2
 cabin_mustard = #edbc13
 cabin_bronze = #ab9960
 default_tap_highlight_color = rgba(26, 26, 26, 0.3)
+body_font = ProximaNova, Helvetica Neue, Helvetica, sans-serif
+headline_font = 'YWFT Ultramagnetic Light'  // XXX backup?
 headline_size = 30px
 headline_lh = 1.33
 headline_height = headline_size * headline_lh
@@ -19,7 +21,7 @@ button_height = 28px
 
 body
   color: cabin_black
-  font: 13px/1.23 ProximaNova, Helvetica Neue, Helvetica, sans-serif
+  font: 13px/1.23 body_font
 
 .main .content
   clearfix()
@@ -29,7 +31,7 @@ a
   text-decoration: none
 
 .headline-text
-  font: headline_size/headline_lh 'YWFT Ultramagnetic Light'
+  font: headline_size/headline_lh headline_font
   text-transform: uppercase
 
 .small-header-text
@@ -638,7 +640,7 @@ body.splash-transition
 
     [name="title"]
       float: left
-      font: headline_size/headline_lh 'YWFT Ultramagnetic Light'
+      font: headline_size/headline_lh headline_font
       size: 280 + 10*2 100  // match display width
       text-transform: uppercase
     [name="type"], [name="slug"]
