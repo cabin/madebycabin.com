@@ -50,7 +50,7 @@ class @AppRouter extends Backbone.Router
 
 
 # Persistent views
-# --------------
+# ----------------
 
 #### SplashView
 # Responsible for transitioning the splash header into/out of view. External

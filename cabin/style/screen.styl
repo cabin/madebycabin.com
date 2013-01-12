@@ -173,14 +173,14 @@ body.splash
     width: 100%
     > hr
       position: absolute
-  nav
+  nav, .page-about .top
     position: absolute
   footer
     display: none
 
 // Show everyone while transitioning.
 body.splash-transition
-  nav
+  nav, .page-about .top
     position: absolute
   .main
     height: auto
@@ -287,8 +287,9 @@ body.splash-transition
 
 
 // Common about page  {{{2
-
 .page-about
+  .content section
+    body-text()
   hgroup
     margin-bottom: 1em
     h2
@@ -301,8 +302,8 @@ body.splash-transition
 
 
 // iPhone 5 landscape and smaller  {{{1
-
 @media only screen and (max-width: 568px)
+  // Common  {{{2
   nav_height = 40px
 
   nav
@@ -339,18 +340,68 @@ body.splash-transition
   .main > hr, footer
     display: none
 
-  extend-borders(page_padding = 20px)
+  breakout(page_padding = 20px)
     padding-left: page_padding
     padding-right: page_padding
     margin-left: -(page_padding)
     margin-right: -(page_padding)
 
   .single-column .work-thumb
-    extend-borders()
+    breakout()
+
+
+  // About page  {{{2
+  .page-about
+    .top
+      fixed: left 0 top nav_height; right 0
+    .pics
+      height: 100px
+      overflow: hidden
+      position: relative
+      span
+        absolute: left top; bottom: 0
+        background-size: 130%
+      .bek
+        background-image: url(/static/about-bek.jpg)
+        background-position: 55% 38%
+        right: 50%
+      .zak
+        background-image: url(/static/about-zak.jpg)
+        background-position: 43% 36%
+        left: 50%; right: 0
+    .menu
+      clearfix()
+      light-text()
+      background: cabin_black
+      color: cabin_grey_dark
+      outline: 1px solid black
+
+      font-weight: bold
+      line-height: 40px
+      text-align: center
+      text-transform: uppercase
+      a
+        float: left
+        width: 30%
+        &:nth-child(2)
+          width: 40%
+
+    .content > h1, .sections section, .sections section > h1, .social
+      display: none
+    .sections
+      margin-top: 100px + 40 + 20 // .pics + .menu + padding
+      section.selected
+        display: block
+      section, .partners .bio
+        breakout()
+        border-top: 1px solid cabin_grey_light
+        padding-top: 20px
+      section:first-of-type, .partners, .partners .bio:first-of-type
+        border-top: none
+        padding-top: 0
 
 
 // Larger than iPhone 5 landscape  {{{1
-
 @media only screen and (min-width: 569px)
   // Common  {{{2
   nav_height = 90px
@@ -596,13 +647,15 @@ body.splash-transition
       padding-left: 200%
       padding-right: 200%
 
+    .top .menu
+      display: none
+
     .content > h1
       font-size: 80px
       line-height: 1.1
       width: auto
 
     .content section
-      body-text()
       clear: both
       padding-left: 80px + 40px
       position: relative
