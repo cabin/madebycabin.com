@@ -108,6 +108,7 @@ class MainView extends Backbone.View
     @views =
       'work': WorkView
       'project': ProjectView
+      'about': AboutView
       'admin-project': EditProjectView
     @_updatePageView(@content.data('page'))
 
@@ -347,6 +348,35 @@ class ProjectView extends Backbone.View
 
   goAdmin: ->
     @router.navigate('admin/' + Backbone.history.fragment, trigger: true)
+
+
+#### AboutView
+class AboutView extends Backbone.View
+
+  initialize: ->
+    @sections = @$('section')
+    @menuArrow = @$('.top .menu .arrow')
+    @adjustMenuArrow($('.menu a').first())
+    _.defer => @menuArrow.show()
+
+  events:
+    'click .menu a': 'selectSection'
+
+  adjustMenuArrow: (relativeTo) ->
+    elementCenter = (el) ->
+      left = el.position().left + parseInt(el.css('margin-left'), 10)
+      left + el.width() / 2
+    @menuArrow.css(left: elementCenter(relativeTo))
+
+  selectSection: (event) ->
+    classMap =
+      partners: '.partners, .graph'
+      clients: '.clients, .services'
+      connect: '.XXX'
+    selected = $(event.currentTarget)
+    @adjustMenuArrow(selected)
+    @sections.removeClass('selected')
+      .filter(classMap[selected.data('name')]).addClass('selected')
 
 
 # Administrative views

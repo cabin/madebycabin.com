@@ -385,6 +385,14 @@ body.splash-transition
         width: 30%
         &:nth-child(2)
           width: 40%
+      .arrow
+        absolute: left top 100%
+        border: 9px solid transparent
+        border-top-color: cabin_black
+        display: none
+        margin-left: -9px  // offset so `left` can position the center
+        size: 0 0
+        transition: left 200ms ease-in-out
 
     .content > h1, .sections section, .sections section > h1, .social
       display: none
