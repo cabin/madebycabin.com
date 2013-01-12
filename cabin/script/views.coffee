@@ -358,6 +358,8 @@ class AboutView extends Backbone.View
     @menuArrow = @$('.top .menu .arrow')
     @adjustMenuArrow($('.menu a').first())
     _.defer => @menuArrow.show()
+    # XXX remove on remove
+    new ChartView(el: @sections.filter('.graph').find('div')).render()
 
   events:
     'click .menu a': 'selectSection'

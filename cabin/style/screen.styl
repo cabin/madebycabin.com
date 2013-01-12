@@ -299,6 +299,12 @@ body.splash-transition
     h3
       @extend .dim-text
       margin: 0
+  .graph
+    svg
+      float: left
+      text
+        text-transform: uppercase
+    // XXX fallback png for lame-os
 
 
 // iPhone 5 landscape and smaller  {{{1
@@ -712,6 +718,7 @@ body.splash-transition
 
     section.graph
       breakout()
+      clearfix()
       background: #ebebe7  // XXX
       box-shadow: inset 0 0 3px 2px rgba(cabin_grey_dark, .3)
       padding-top: 60px

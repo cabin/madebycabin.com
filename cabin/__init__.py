@@ -93,6 +93,7 @@ def register_assets(app):
         'vendor/keymaster-1.0.3pre.js',
         'vendor/jquery.backstretch-2.0.3.js',
         'vendor/jquery.masonry-2.1.06.js',
+        'vendor/d3.v3.js',
         'vendor/jquery.sortable.js',  # XXX extract to admin.js?
         filters='uglifyjs', output='gen/vendor-%(version)s.js')
 
@@ -103,6 +104,7 @@ def register_assets(app):
     #        depends='dummy',  # TODO: remove this once webassets fix is in
     #        filters='handlebars', output='gen/templates.js'),
         Bundle(
+            '../script/charts.coffee',
             '../script/views.coffee',
             filters='coffeescript', output='gen/coffee.js'),
         filters='uglifyjs', output='gen/site-%(version)s.js')
