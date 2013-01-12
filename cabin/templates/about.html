@@ -3,9 +3,113 @@
 {% set page = 'about' %}
 
 {% block content %}
+  <h1>It takes two<br>to make a thing<br>go right.</h1>
 
-  <h1>About Us</h1>
+  <section class="summary">
+    <h1>&#8220;</h1>
 
-  <p>Here is some text about us! Hooray!</p>
+    <p>After a decade of leading design and technology efforts for teams at Etsy,
+    GOOD, Blurb, and beyond, one blaring fact demanded attention. Nothing got
+    done better or faster (or with the same dollop of fun) as the times when
+    these two worked side by side. In April of 2011, Bek and Zak carried their
+    discovery into the woods to build Cabin. Today, they partner with other
+    like-minded folks who value design and technology as indispensable tools for
+    sharing, uniting, and making a difference.</p>
+
+    <a class="email button" href="mailto:xo@madebycabin.com">xo@madebycabin.com</a>
+  </section>
+
+  <section class="partners">
+    <h1>Partners</h1>
+
+    <div class="bio">
+      <hgroup>
+        <h2>Bek Hodgson</h2>
+        <h3><span class="founder">Founder / </span>Creative Director</h3>
+      </hgroup>
+
+      <p>Bek Hodgson is a designer and strategist who has worked to define and
+      extend social good brands for over a decade. With experience spanning
+      traditional print, digital design, marketing, and strategy, Bek has spent
+      her career building tools and environments for communities to thrive.</p>
+
+      <p>Originally from Santa Barbara, California&mdash;and a bona fide gypsy
+      at heart&mdash;Bek calls Zak home. Where her caravan goes only one man
+      knows.</p>
+
+      <div class="social">
+        <a href="https://twitter.com/uberbek" class="twitter">@uberbek</a>
+        <a href="http://instagram.com/uberbek" class="instagram">Instagram</a>
+        <a href="http://pinterest.com/uberbek/" class="pinterest">Pinterest</a>
+      </div>
+    </div>
+
+    <div class="bio">
+      <hgroup>
+        <h2>Zak Johnson</h2>
+        <h3><span class="founder">Founder / </span>Technologist</h3>
+      </hgroup>
+
+      <p>Zak Johnson has architected and developed software for over a decade.
+      His passion for crafting experiences that are fun, easy to use, and
+      reliable has defined his work. Zak's intimate familiarity with the entire
+      web stack&mdash;from infrastructure through database, back end, and front
+      end&mdash;enables him to build full-scale web applications.</p>
+
+      <p>Born in Brisbane, Australia and raised in the Pacific Northwest, Zak
+      now calls Portland, Oregon home.</p>
+
+      <div class="social">
+        <a href="https://twitter.com/zakj" class="twitter">@zakj</a>
+        <a href="http://instagram.com/zakj" class="instagram">Instagram</a>
+        <a href="https://github.com/zakj" class="github">GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="graph">
+    <h2>It takes two<br>to make it out of sight.</h2>
+
+    XXX - graph
+  </section>
+
+  <section class="clients">
+    <h1>Clients</h1>
+
+    {% for client in clients %}
+      <a href="{{ client.url }}" style="background-image: {{ client.image }}">
+        {{- client.name }}</a>
+    {% endfor %}
+  </section>
+
+  <section class="services">
+    <h1>Services</h1>
+
+    <ol class="services">
+    {% for group, services in grouped_services %}
+      <li>{{ group|safe }}
+        <ol>
+        {% for service in services -%}
+          <li>{{ service }}</li>
+        {%- endfor %}
+        </ol>
+      </li>
+    {% endfor %}
+    </ol>
+  </section>
+
+  <section class="colophon">
+    <h1>Colophon</h1>
+
+    <p>madebycabin.com was designed by Bek Hodgson and built by Zak Johnson.
+    Cabin features the fonts YWFT Ultramagnetic by Michael Cina, and Proxima Nova
+    by Mark Simonson.</p>
+
+    <p>Responsive design blah blah best suited for the viewing
+    device&mdash;mobile to überscreen. Built on the nest of a million deadly
+    pythons using a dab of this and a pinch of that.</p>
+
+    xo - signature
+  </section>
 
 {% endblock %}

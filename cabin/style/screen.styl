@@ -286,6 +286,20 @@ body.splash-transition
       box-shadow: 0 0 2px 1px rgba(cabin_grey_dark, .2)
 
 
+// Common about page  {{{2
+
+.page-about
+  hgroup
+    margin-bottom: 1em
+    h2
+      @extend h1
+      line-height: 1
+      margin: 0 0 5px
+    h3
+      @extend .dim-text
+      margin: 0
+
+
 // iPhone 5 landscape and smaller  {{{1
 
 @media only screen and (max-width: 568px)
@@ -568,6 +582,129 @@ body.splash-transition
           background-color: black
           &:hover
             background-color: cabin_bronze
+
+
+  // About page  {{{2
+
+  .page-about
+    page-width(1100px)
+    overflow-x: hidden
+
+    breakout()
+      margin-left: -200%
+      margin-right: -200%
+      padding-left: 200%
+      padding-right: 200%
+
+    .content > h1
+      font-size: 80px
+      line-height: 1.1
+      width: auto
+
+    .content section
+      body-text()
+      clear: both
+      padding-left: 80px + 40px
+      position: relative
+      > h1
+        absolute: top left
+        border-top: 1px solid cabin_black
+        font: bold 13px body_font
+        line-height: 30px
+        margin: 0
+        width: 80px
+      p
+        margin: 0 0 1em
+
+    section.summary
+      > h1
+        font-family: Georgia, serif
+        font-size: 20px
+      .email
+        light-text()
+        background: cabin_bronze
+        color: white
+        text-transform: none
+        &:hover
+          background: cabin_black
+
+    .summary, .partners
+      float: right
+      margin-top: 60px
+      max-width: 80px + 40px + 630px - (80 + 40)
+
+    .partners
+      margin-bottom: 60px
+      .bio
+        float: left
+        width: 47%
+        padding-bottom: 30px
+        &:first-of-type
+          margin-right: 6%
+      .social
+        position: absolute
+        bottom: 0
+        a
+          background-color: cabin_black
+          &:hover
+            background-color: cabin_bronze
+
+    section.graph
+      breakout()
+      background: #ebebe7  // XXX
+      box-shadow: inset 0 0 3px 2px rgba(cabin_grey_dark, .3)
+      padding-top: 60px
+      padding-bottom: 60px
+      h2
+        font: 40px/1.1 headline_font
+        margin: 0
+        text-transform: uppercase
+
+    section.clients
+      breakout()
+      box-shadow: 0 2px 3px 0 rgba(cabin_grey_dark, .3)
+      height: 40px
+      margin-top: 50px
+      padding-bottom: 40px
+      z-index: 2
+      > h1
+        position: static
+
+    section.services
+      float: left
+      margin-top: 50px
+      ol.services
+        font-weight: bold
+        margin: 0
+        &, ol
+          list-style: none
+          padding: 0
+        > li
+          float: left
+          margin-left: 20px
+          width: 160px
+          &:first-child
+            margin-left: 0
+        ol
+          font-weight: normal
+          margin-top: 5px
+
+    section.colophon
+      light-text()
+      background-color: cabin_bronze
+      color: white
+      clear: none
+      float: right
+      width: 300px
+
+      // margin-left: 40px
+      padding: 50px 20px
+      margin-bottom: -50px
+
+      > h1
+        border-top-color: white
+        position: relative
+        top: -7px
 
 
   // Admin  {{{2
