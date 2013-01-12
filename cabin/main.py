@@ -3,7 +3,7 @@ import urllib2
 from flask import abort, Blueprint, redirect, render_template, request, url_for
 
 from cabin.auth import get_current_user
-from cabin.models import Project
+from cabin.models import grouped_services, Project
 
 main = Blueprint('main', __name__)
 
@@ -33,7 +33,7 @@ def project(slug):
 
 @main.route('/about')
 def about():
-    return render_template('about.html')
+    return render_template('about.html', grouped_services=grouped_services())
 
 
 @main.route('/lab')

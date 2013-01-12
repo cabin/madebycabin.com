@@ -57,6 +57,12 @@ SERVICES = [
 assert len(SERVICES) == len({s.id for s in SERVICES})
 assert {st.id for st in SERVICE_TYPES} == {s.type for s in SERVICES}
 
+def grouped_services(services=SERVICES):
+    "Convert the list of services into ordered names grouped by type."
+    grouped = groupby(services, key=lambda s: s.type)
+    types = dict(SERVICE_TYPES)
+    return [(types[k], [s.name for s in g]) for k, g in grouped]
+
 
 SCHEMAS = {
     'cohorts': {
@@ -165,9 +171,7 @@ class Project(ValidatedHash):
     def grouped_services(self):
         "Convert the list of services into ordered names grouped by type."
         services = filter(lambda s: s.id in self.services, SERVICES)
-        grouped = groupby(services, key=lambda s: s.type)
-        types = dict(SERVICE_TYPES)
-        return [(types[k], [s.name for s in g]) for k, g in grouped]
+        return grouped_services(services)
 
     @property
     def is_public(self):
