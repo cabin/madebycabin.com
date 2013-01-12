@@ -381,6 +381,88 @@ class AboutView extends Backbone.View
       .filter(classMap[selected.data('name')]).addClass('selected')
 
 
+#### ChartView
+class ChartView extends Backbone.View
+  bekHomes:
+    1978.5: 'Santa Barbara'
+    1996.66: 'New York City'
+    1997.66: 'Santa Barbara'
+    2002.66: 'Los Angeles'
+    2006.5: 'San Francisco'
+    2008.66: 'New York City'
+    2010: 'Los Angeles'
+    2011.33: 'Idyllwild'
+    2011.83: 'Portland'
+
+  zakHomes:
+    1980.33: 'Brisbane, AU'
+    1984.5: 'San Diego'
+    1989.92: 'Portland'
+    2000: 'Washington, DC'
+    2004.33: 'San Francisco'
+    2010.75: 'Los Angeles'
+    2011.33: 'Idyllwild'
+    2011.83: 'Portland'
+
+  shortNames:
+    'Brisbane, AU': 'BNE'
+    'Idyllwild': '6k′'
+    'Los Angeles': 'LAX'
+    'New York City': 'NYC'
+    'Portland': 'PDX'
+    'San Diego': 'SAN'
+    'San Francisco': 'SFO'
+    'Santa Barbara': 'SBA'
+    'Washington, DC': 'DC'
+
+  initialize: ->
+    $(window).on('resize', _.debounce(@render, 100))
+    @bekSvg = d3.select(@el).append('svg')
+    @zakSvg = d3.select(@el).append('svg')
+    @bekChart = Charts.aboutInfographic()
+        .fillColor('#900')
+        .idPrefix('b')
+    @zakChart = Charts.aboutInfographic()
+        .fillColor('#099')
+        .idPrefix('z')
+
+  configureChart: (chart, width, textWidth, padding, left = true) ->
+    chart
+        .width(width)
+        .xLabel(if left then 0 else width)
+        .xPoint(if left then textWidth else width - textWidth)
+        .xFull(if left then width else padding)
+        .padding(padding)
+
+  render: =>
+    width = @$el.width()
+    # Match the width of my half of the chart to my bio's current width.
+    zakWidth = $('.bio.zak').width() + 15
+    bekWidth = width - zakWidth
+    textWidth = 100
+    padding = 5
+
+    if width <= 528  # iPhone 5 landscape - padding
+      bekWidth = Math.floor((width - padding) / 2)
+      zakWidth = width - bekWidth
+      textWidth = 25
+      padding = 1
+      shortData = (data) =>
+        newData = _(data).clone()
+        _(data).each (v, k) => newData[k] = @shortNames[v]
+        newData
+      @bekSvg.datum(d3.entries(shortData(@bekHomes)))
+      @zakSvg.datum(d3.entries(shortData(@zakHomes)))
+    else
+      @bekSvg.datum(d3.entries(@bekHomes))
+      @zakSvg.datum(d3.entries(@zakHomes))
+
+    @configureChart(@bekChart, bekWidth, textWidth, padding)
+    @configureChart(@zakChart, zakWidth, textWidth, padding, false)
+    @bekSvg.call(@bekChart)
+    @zakSvg.call(@zakChart)
+
+
 # Administrative views
 # --------------------
 
