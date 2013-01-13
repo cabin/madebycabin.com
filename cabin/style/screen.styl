@@ -111,11 +111,11 @@ hover-hr(duration = 200ms)
 body > header
   light-text()
   absolute: top left; right: 0
-  background: cabin_black url(/static/pattern-dots-grey.png)
+  background: cabin_black url(/static/splash-dots.png)
   .backgroundsize.multiplebgs &
     background-color: cabin_black
     background-image:
-      url(/static/pattern-dots-grey.png), url(/static/splash.jpg)
+      url(/static/splash-dots.png), url(/static/splash.jpg)
     background-position: center center
     background-size: 27px 15px, cover
   color: white
@@ -1024,7 +1024,13 @@ body.splash-transition
     background-image: url('symbol-black@2x.png')
     .no-touch &:hover
       background-image: url('symbol-hover@2x.png')
-*/
+ */
+ 
+ 
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5)
+  .backgroundsize.multiplebgs body > header
+    background-image:
+      url(/static/splash-dots@2x.png), url(/static/splash.jpg)
 
 
 // At full width, tabs and the tab-chooser are displayed horizontally. As the
