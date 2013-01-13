@@ -375,7 +375,8 @@ class AboutView extends Backbone.View
     classMap =
       partners: '.partners, .graph'
       clients: '.clients, .services'
-      connect: '.XXX'
+      connect: '.connect'
+    window.scrollTo(0, 0)
     selected = $(event.currentTarget)
     @adjustMenuArrow(selected)
     @sections.removeClass('selected')

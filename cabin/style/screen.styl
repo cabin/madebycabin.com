@@ -332,7 +332,7 @@ body.splash-transition
 
 // <= iPhone 5 landscape  {{{1
 @media only screen and (max-width: 568px)
-  // Common  {{{2
+  // nav/splash  {{{2
   nav_height = 40px
 
   nav
@@ -384,6 +384,8 @@ body.splash-transition
   .main > hr, footer
     display: none
 
+
+  // Work page  {{{2
   breakout(page_padding = 20px)
     padding-left: page_padding
     padding-right: page_padding
@@ -441,16 +443,25 @@ body.splash-transition
     .content > h1, .sections section, .sections section > h1, .social
       display: none
     .sections
-      margin-top: 100px + 40 + 20 // .pics + .menu + padding
+      clearfix()
+      margin-top: 100px + 40 // .pics + .menu
+      padding-bottom: 20px
       section.selected
         display: block
-      section, .partners .bio
-        breakout()
-        border-top: 1px solid cabin_grey_light
-        padding-top: 20px
-      section:first-of-type, .partners, .partners .bio:first-of-type
+
+    section.partners .bio
+      breakout()
+      border-top: 1px solid cabin_grey_light
+      padding-top: 20px
+      &:first-child
         border-top: none
-        padding-top: 0
+
+    section.graph
+      breakout()
+      border-top: 1px solid cabin_grey_light
+      padding-top: 20px
+      h2
+        display: none
 
     section.services
       ol
@@ -469,6 +480,21 @@ body.splash-transition
               content: ", "
             &:first-child:before
               content: ""
+
+    section.connect
+      ol
+        list-style: none
+        margin: 0
+        padding: 0
+      li
+        breakout()
+        border-bottom: 1px solid cabin_grey_light
+        font: 28px/2 headline_font
+        padding-top: 4px  // correct not-quite-centered font
+        text-transform: uppercase
+      a
+        color: cabin_black
+        display: block
 
 
 // > iPhone 5 landscape  {{{1
@@ -834,6 +860,9 @@ body.splash-transition
         border-top-color: white
         position: relative
         top: -7px
+
+    section.connect
+      display: none
 
 
   // Admin  {{{2
