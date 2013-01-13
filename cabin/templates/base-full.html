@@ -72,9 +72,8 @@
   </div>
 
   {#
-    Backstretch depends only on vendor scripts; it should happen as soon as
-    possible. Backbone+main app code of course depends on our site.js. Persona
-    depends on both Mozilla's include.js and our site scripts.
+    Main app depends on vendor and site js; Persona also depends on include.js.
+    Google Analytics is completely independent.
     We use arrays (and jinja's `joiner`) since assets aren't combined in dev.
   #}
   <script>
@@ -83,15 +82,7 @@
     {% endif %}
     Modernizr.load([{
       {% set comma = joiner(',') -%}
-      load: [{% assets 'vendor.js' %}
-        {{- comma() }}'{{ ASSET_URL }}'
-      {%- endassets %}],
-      complete: function () {
-        $('body > header').backstretch('/static/test-cannon.jpg');
-      }
-    }, {
-      {% set comma = joiner(',') -%}
-      load: [{% assets 'site.js' %}
+      load: [{% assets 'vendor.js', 'site.js' %}
         {{- comma() }}'{{ ASSET_URL }}'
       {%- endassets %}],
       complete: function () {

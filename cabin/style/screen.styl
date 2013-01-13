@@ -109,12 +109,18 @@ hover-hr(duration = 200ms)
 // Common nav/splash goodies  {{{2
 
 body > header
-  absolute: top left
-  right: 0
+  light-text()
+  absolute: top left; right: 0
+  background: cabin_black url(/static/pattern-dots-grey.png)
+  .backgroundsize.multiplebgs &
+    background-color: cabin_black
+    background-image:
+      url(/static/pattern-dots-grey.png), url(/static/splash.jpg)
+    background-position: center center
+    background-size: 27px 15px, cover
+  color: white
   display: none
   padding-top: 15%
-  color: white
-  light-text()
 
   h1, h2
     margin: 0 auto
