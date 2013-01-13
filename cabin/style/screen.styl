@@ -1011,22 +1011,7 @@ body.splash-transition
 
 // Assorted media queries  {{{1
 
-// Neither CSS nor Stylus reliably supports nested media queries, so here we go
-// with Retina images.  XXX it works if you use a & immediately inside the nest
-// XXX having these here along with inlined images penalizes all devices
-/*
-@media only screen and (max-width: 568px) and (-webkit-min-device-pixel-ratio: 1.5)
-  nav .logo
-    background-image: url('symbol-white@2x.png')
-
-@media only screen and (min-width: 569px) and (-webkit-min-device-pixel-ratio: 1.5)
-  nav .logo
-    background-image: url('symbol-black@2x.png')
-    .no-touch &:hover
-      background-image: url('symbol-hover@2x.png')
- */
- 
- 
+// Retina images.
 @media only screen and (-webkit-min-device-pixel-ratio: 1.5)
   .backgroundsize.multiplebgs body > header
     background-image:
@@ -1049,6 +1034,7 @@ body.splash-transition
     display: none
   .page-project .images img.shadow
     border-radius: 2px 2px 0 0
+
 
 // By default there are four columns of preview images in the project admin
 // page, but knock that down to three when there's not enough room.
