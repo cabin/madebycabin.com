@@ -12,6 +12,9 @@ Charts.aboutInfographic = ->
 
   fillColor = 'black'
   fontSize = 10
+  textOffsets =
+    normal: {padding: 6, adjust: '-.5em'}
+    small: {padding: 2, adjust: '-.28em'}
   pixelsPerYear = 8
   padding = 5
 
@@ -89,6 +92,9 @@ Charts.aboutInfographic = ->
     data = paddedStackLayout(data)
     extent = [data[0].y0, data[data.length - 1].y1]
     height = extent[1]
+    textOffset = (->
+      textWidth = Math.abs(xPoint - xLabel)
+      textOffsets[if textWidth < 50 then 'small' else 'normal'])()
 
     items = selection
         .attr('width', width)
@@ -116,7 +122,8 @@ Charts.aboutInfographic = ->
         .range(extent.reverse())
     yLabel = d3.scale.linear()
         .domain([0, data.length])
-        .rangeRound([height, height - (fontSize + 2) * data.length])
+        .rangeRound(
+          [height, height - (fontSize + textOffset.padding) * data.length])
     opacityScale = d3.scale.linear()
         .domain([data.length, 0])
         .range([1, .1])
@@ -154,7 +161,7 @@ Charts.aboutInfographic = ->
       .text((d) -> d.label)
       .attr('x', xLabel)
       .attr('y', (d, i) -> yLabel(i))
-      .attr('dy', '-.28em')
+      .attr('dy', textOffset.adjust)
       .attr('font-size', fontSize)
       .attr('fill', fillColor)
     # Align text right if the graph is flipped.
