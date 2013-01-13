@@ -1,4 +1,4 @@
-#### AppRouter
+#### AppRouter  {{{1
 # This gets instantiated as `window.app`, and is the manager of all permanent
 # views (`MainView` and `SplashView`). It tracks the current path and hands off
 # to `MainView.pjax`.
@@ -49,7 +49,7 @@ class @AppRouter extends Backbone.Router
       @mainView.pjax(path)
 
 
-# Persistent views
+# Persistent views  {{{1
 # ----------------
 
 #### SplashView
@@ -202,7 +202,7 @@ class MainView extends Backbone.View
       key(shortcut, _.bind(callback, obj))
 
 
-# Per-page views
+# Per-page views  {{{1
 # --------------
 
 #### WorkView
@@ -463,7 +463,7 @@ class ChartView extends Backbone.View
     @zakSvg.call(@zakChart)
 
 
-# Administrative views
+# Administrative views  {{{1
 # --------------------
 
 #### EditProjectView
@@ -642,7 +642,7 @@ class EditProjectImageView extends Backbone.View
       input.attr('name', name.join('-'))
 
 
-# Data models
+# Data models  {{{1
 # -----------
 
 # Mostly we're just using Backbone for its views, doing simple manipulations on
@@ -661,7 +661,7 @@ class @ProjectImageCollection extends Backbone.Collection
   comparator: (image) -> image.get('index')
 
 
-# Support
+# Support  {{{1
 # -------
 
 #### DropHandler
