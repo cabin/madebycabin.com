@@ -359,7 +359,8 @@ class AboutView extends Backbone.View
     @adjustMenuArrow($('.menu a').first())
     _.defer => @menuArrow.show()
     # XXX remove on remove
-    new ChartView(el: @sections.filter('.graph').find('div')).render()
+    @chartView = new ChartView(el: @sections.filter('.graph').find('div'))
+    @chartView.render()
 
   events:
     'click .menu a': 'selectSection'
@@ -379,6 +380,7 @@ class AboutView extends Backbone.View
     @adjustMenuArrow(selected)
     @sections.removeClass('selected')
       .filter(classMap[selected.data('name')]).addClass('selected')
+    @chartView.render()
 
 
 #### ChartView
@@ -435,6 +437,7 @@ class ChartView extends Backbone.View
         .padding(padding)
 
   render: =>
+    return unless @$el.is(':visible')
     width = @$el.width()
     # Match the width of my half of the chart to my bio's current width.
     zakWidth = $('.bio.zak').width() + 15
