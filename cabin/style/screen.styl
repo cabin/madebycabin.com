@@ -18,6 +18,7 @@ button_height = 28px
 
 
 // Common  {{{1
+// Site-wide defaults and functions  {{{2
 
 body
   color: cabin_black
@@ -105,7 +106,7 @@ hover-hr(duration = 200ms)
     width: 100%
 
 
-// Common nav/splash goodies  {{{2
+// nav/splash  {{{2
 
 body > header
   absolute: top left; right: 0
@@ -222,7 +223,7 @@ body.splash-transition
     transform: rotate(360deg)
 
 
-// Common work page  {{{2
+// Work page  {{{2
 
 .bricks
   opacity: 0
@@ -265,7 +266,7 @@ body.splash-transition
     height: auto
 
 
-// Common project page  {{{2
+// Project page  {{{2
 
 .page-project
   .info
@@ -308,7 +309,7 @@ body.splash-transition
       box-shadow: 0 0 2px 1px rgba(cabin_grey_dark, .2)
 
 
-// Common about page  {{{2
+// About page  {{{2
 .page-about
   .content section
     body-text()
@@ -329,7 +330,7 @@ body.splash-transition
     // XXX fallback png for lame-os
 
 
-// iPhone 5 landscape and smaller  {{{1
+// <= iPhone 5 landscape  {{{1
 @media only screen and (max-width: 568px)
   // Common  {{{2
   nav_height = 40px
@@ -470,7 +471,7 @@ body.splash-transition
               content: ""
 
 
-// Larger than iPhone 5 landscape  {{{1
+// > iPhone 5 landscape  {{{1
 @media only screen and (min-width: 569px)
   // Common  {{{2
   nav_height = 90px
@@ -607,7 +608,7 @@ body.splash-transition
         opacity: 1
 
 
-  // Work list page  {{{2
+  // Work page  {{{2
 
   .page-work
     .work-thumb
