@@ -85,6 +85,13 @@ def register_assets(app):
             filters='stylus', output='gen/icons.css'),
         filters='cssmin', output='gen/icons-%(version)s.css')
 
+    # Modernizr is separate, as it bootstraps the other scripts. Run it through
+    # webassets with no filters to add the hash to the filename.
+    assets.register(
+        'modernizr.js',
+        'vendor/modernizr.js',
+        output='gen/modernizr-%(version)s.js')
+
     assets.register(
         'vendor.js',
         'vendor/jquery-1.9.0b1.js',

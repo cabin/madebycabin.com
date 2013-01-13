@@ -23,7 +23,9 @@
   {% assets 'screen.css', 'icons.css' -%}
     <link href="{{ ASSET_URL }}" rel="stylesheet">
   {%- endassets %}
-  <script src="{{ url_for('static', filename='vendor/modernizr.js') }}"></script>
+  {% assets 'modernizr.js' -%}
+    <script src="{{ ASSET_URL }}"></script>
+  {%- endassets %}
   {% block extra_head %}{% endblock %}
 </head>
 <body{% if splash %} class="splash"{% endif %}>
