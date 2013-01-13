@@ -196,14 +196,14 @@ body.splash
     width: 100%
     > hr
       position: absolute
-  nav, .page-about .top
+  nav, .page-about .menu
     position: absolute
   footer
     display: none
 
 // Show everyone while transitioning.
 body.splash-transition
-  nav, .page-about .top
+  nav, .page-about .menu
     position: absolute
   .main
     height: auto
@@ -398,25 +398,8 @@ body.splash-transition
 
   // About page  {{{2
   .page-about
-    .top
-      fixed: left 0 top nav_height; right 0
-    .pics
-      height: 100px
-      overflow: hidden
-      position: relative
-      span
-        absolute: left top; bottom: 0
-        background-size: 130%
-      .bek
-        // XXX should be using a cssrewrite filter instead of hardcoded
-        background-image: url(/static/about-bek.jpg)
-        background-position: 55% 38%
-        right: 50%
-      .zak
-        background-image: url(/static/about-zak.jpg)
-        background-position: 43% 36%
-        left: 50%; right: 0
     .menu
+      fixed: left 0 top nav_height; right 0
       clearfix()
       light-text()
       background: cabin_black
@@ -444,17 +427,29 @@ body.splash-transition
       display: none
     .sections
       clearfix()
-      margin-top: 100px + 40 // .pics + .menu
+      margin-top: 40px  // .menu
       padding-bottom: 20px
       section.selected
         display: block
 
     section.partners .bio
       breakout()
-      border-top: 1px solid cabin_grey_light
-      padding-top: 20px
       &:first-child
         border-top: none
+      .photo
+        breakout()
+        display: block
+        height: 90px
+        margin-bottom: 20px
+        // XXX should be using a cssrewrite filter instead of hardcoded
+        &.bek
+          background-image: url(/static/about-bek.jpg)
+          background-position: 55% 38%
+          background-size: cover
+        &.zak
+          background-image: url(/static/about-zak.jpg)
+          background-position: 43% 36%
+          background-size: cover
 
     section.graph
       breakout()
@@ -746,7 +741,7 @@ body.splash-transition
       padding-left: 200%
       padding-right: 200%
 
-    .top .menu
+    .menu
       display: none
 
     .content > h1

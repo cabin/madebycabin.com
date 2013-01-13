@@ -355,8 +355,9 @@ class AboutView extends Backbone.View
 
   initialize: ->
     @sections = @$('section')
-    @menuArrow = @$('.top .menu .arrow')
-    @adjustMenuArrow($('.menu a').first())
+    @menu = @$('.menu')
+    @menuArrow = @menu.find('.arrow')
+    @adjustMenuArrow(@menu.find('a').first())
     _.defer => @menuArrow.show()
     # XXX remove on remove
     @chartView = new ChartView(el: @sections.filter('.graph').find('div'))
