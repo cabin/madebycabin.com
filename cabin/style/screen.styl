@@ -44,8 +44,7 @@ a
   font-weight: normal
 
 body-text()
-  font-size: 14px
-  line-height: 1.3
+  font: 14px/1.3 body_font
 
 .thin-text
   font-weight: normal
@@ -419,12 +418,11 @@ body.splash-transition
       light-text()
       background: cabin_black
       color: cabin_grey_dark
-      outline: 1px solid black
-
       font-weight: bold
       line-height: 40px
       text-align: center
       text-transform: uppercase
+      user-select: none
       a
         float: left
         width: 30%
@@ -452,6 +450,24 @@ body.splash-transition
       section:first-of-type, .partners, .partners .bio:first-of-type
         border-top: none
         padding-top: 0
+
+    section.services
+      ol
+        font: headline_size/headline_lh headline_font
+        list-style: none
+        margin: 0
+        padding: 0
+        text-transform: uppercase
+        ol
+          body-text()
+          margin: 10px 0 20px
+          text-transform: none
+          li
+            display: inline
+            &:before
+              content: ", "
+            &:first-child:before
+              content: ""
 
 
 // Larger than iPhone 5 landscape  {{{1
