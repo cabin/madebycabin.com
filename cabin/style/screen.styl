@@ -109,7 +109,6 @@ hover-hr(duration = 200ms)
 // Common nav/splash goodies  {{{2
 
 body > header
-  light-text()
   absolute: top left; right: 0
   background: cabin_black url(/static/splash-dots.png)
   .backgroundsize.multiplebgs &
@@ -120,20 +119,38 @@ body > header
     background-size: 27px 15px, cover
   color: white
   display: none
-  padding-top: 15%
+  overflow: hidden
+
+  hgroup
+    absolute: left 50% top 50%
+    width: 420px
+    margin-left: -(@width / 2)
+    height: 240px
+    margin-top: -(@height / 2)
 
   h1, h2
     margin: 0 auto
     text-align: center
   h1
-    font-size: 100px
+    font-size: 80px
+    height: 85px
+    .svg.backgroundsize &
+      hide-text()
+      background-image: url('cabin-logo.svg')
+      background-repeat: no-repeat
+      background-position: center center
+      background-size: contain
   h2
-    border-top: 1px solid rgba(white, .2)
-    font: bold italic 25px/30px Georgia
-    margin-top: 20px
-    max-width: 80%
-    padding-top: 20px
-    width: 420px
+    border-top: 1px solid cabin_grey_dark
+    color: cabin_grey_med
+    font: 18px/1.33 body_font
+    letter-spacing: 1px
+    margin-top: 30px
+    padding-top: 24px
+    text-transform: uppercase
+  // These are enabled per media query.
+  br
+    display: none
 
 nav
   background: white
@@ -349,6 +366,21 @@ body.splash-transition
   .content
     padding: 0 20px
 
+  body > header hgroup
+    width: 240px
+    margin-left: -(@width / 2)
+    height: 160px
+    margin-top: -(@height / 2)
+    h1
+      font-size: 45px
+      height: 50px
+    h2
+      font-size: 14px
+      margin-top: 20px
+      padding-top: 16px
+    br.m
+      display: block
+
   .main > hr, footer
     display: none
 
@@ -527,6 +559,9 @@ body.splash-transition
       margin: 0
       width: 100%
       z-index: 2
+
+  body > header br.f
+    display: block
 
   footer
     absolute: bottom left; right: 0
