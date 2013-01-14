@@ -135,6 +135,8 @@ class Project(ValidatedHash):
 
     @classmethod
     def get(cls, _id, allow_private=False):
+        if _id is None:
+            return None
         _id = str(_id)
         key = 'project:%s' % _id
         project = None
