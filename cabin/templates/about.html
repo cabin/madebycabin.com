@@ -87,10 +87,12 @@
     <section class="clients">
       <h1>Clients</h1>
 
+      <div>
       {% for client in clients %}
-        <a href="{{ client.url }}" style="background-image: {{ client.image }}">
-          {{- client.name }}</a>
+        <a href="{{ client.url }}" target="_blank" class="
+          {{- client.name|replace(' ', '') }}">{{ client.name }}</a>
       {% endfor %}
+      </div>
     </section>
 
     <section class="services">

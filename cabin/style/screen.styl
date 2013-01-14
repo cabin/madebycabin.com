@@ -196,14 +196,14 @@ body.splash
     width: 100%
     > hr
       position: absolute
-  nav, .page-about .menu
+  nav, .page-about .menu, .page-about .clients:after
     position: absolute
   footer
     display: none
 
 // Show everyone while transitioning.
 body.splash-transition
-  nav, .page-about .menu
+  nav, .page-about .menu, .page-about .clients:after
     position: absolute
   .main
     height: auto
@@ -330,6 +330,9 @@ body.splash-transition
       text
         text-transform: uppercase
     // XXX fallback png for lame-os
+  // Hide these until their image stylesheet is loaded.
+  .clients a
+    display: none
 
 
 // <= iPhone 5 landscape  {{{1
@@ -411,6 +414,7 @@ body.splash-transition
       text-align: center
       text-transform: uppercase
       user-select: none
+      z-index: 2
       a
         float: left
         width: 30%
@@ -459,6 +463,27 @@ body.splash-transition
       padding-top: 20px
       h2
         display: none
+
+    section.clients
+      breakout()
+      border-bottom: 1px solid cabin_grey_dark
+      box-shadow: inset 0 -2px 2px 0 rgba(cabin_grey_dark, .5)
+      height: 50px
+      margin-bottom: 20px
+      padding-bottom: 20px
+      padding-top: 20px
+      white-space: nowrap
+      overflow-x: scroll
+      a
+        background-color: cabin_grey_dark
+        margin-right: 20px
+      // Fake the grey background.
+      &:after
+        background: cabin_grey_dark
+        content: ""
+        display: block
+        fixed: left 0 top 80px; right 0; height 90px
+        opacity: .5
 
     section.services
       ol
@@ -812,12 +837,27 @@ body.splash-transition
     section.clients
       breakout()
       box-shadow: 0 2px 3px 0 rgba(cabin_grey_dark, .3)
-      height: 40px
-      margin-top: 50px
+      padding-top: 40px
       padding-bottom: 40px
       z-index: 2
+
       > h1
+        float: left
+        margin-right: 40px
+        margin-top: 10px
         position: static
+      > div
+        height: 50px
+        overflow: hidden
+        white-space: nowrap
+      a
+        background-color: cabin_bronze
+        float: left
+        margin-left: 27px
+        &:first-child
+          margin-left: 0
+        &:hover
+          background-color: cabin_black
 
     section.services
       font-size: 13px

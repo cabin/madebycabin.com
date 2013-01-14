@@ -1,3 +1,4 @@
+import collections
 import urllib2
 
 from flask import abort, Blueprint, redirect, render_template, request, url_for
@@ -33,7 +34,19 @@ def project(slug):
 
 @main.route('/about')
 def about():
-    return render_template('about.html', grouped_services=grouped_services())
+    Client = collections.namedtuple('Client', 'name, url')
+    clients = (
+        Client('GOOD', 'http://www.good.is/'),
+        Client('Etsy', 'http://www.etsy.com/'),
+        Client('Starbucks', 'http://www.starbucks.com/'),
+        Client('Fitbit', 'http://www.fitbit.com/'),
+        Client('Ancestry', 'http://www.ancestry.com/'),
+        Client('Opower', 'http://opower.com/'),
+        Client('Blurb', 'http://www.blurb.com/'),
+        Client('Pressed Juicery', 'http://www.pressedjuicery.com/'),
+    )
+    return render_template(
+        'about.html', clients=clients, grouped_services=grouped_services())
 
 
 @main.route('/lab')

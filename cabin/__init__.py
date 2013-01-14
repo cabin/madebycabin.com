@@ -85,6 +85,13 @@ def register_assets(app):
             filters='stylus', output='gen/icons.css'),
         filters='cssmin', output='gen/icons-%(version)s.css')
 
+    assets.register(
+        'client-logos.css',
+        Bundle(
+            '../style/client-logos.styl',
+            filters='stylus', output='gen/client-logos.css'),
+        filters='cssmin', output='gen/client-logos-%(version)s.css')
+
     # Modernizr is separate, as it bootstraps the other scripts. Run it through
     # webassets with no filters to add the hash to the filename.
     assets.register(

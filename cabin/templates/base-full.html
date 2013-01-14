@@ -103,6 +103,7 @@
         });
       },
     },
+    {% assets 'client-logos.css' %}'{{ ASSET_URL }}',{% endassets %}
     ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js']);
   </script>
   {% block scripts %}{% endblock %}

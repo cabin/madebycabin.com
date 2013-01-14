@@ -1,0 +1,36 @@
+@import nib
+
+client(class, retina = false)
+  .clients .{class}
+    filename = 'clients/' + class + (retina ? '@2x' : '') + '.png'
+    background-image: url(filename)
+    background-repeat: no-repeat
+    background-position: center center
+    unless retina
+      s = image-size(filename)
+      background-size: s[0] s[1]
+      width: s[0]
+      height: s[1]
+
+.clients a
+  hide-text()
+  display: inline-block !important
+
+client(Ancestry)
+client(Blurb)
+client(Etsy)
+client(Fitbit)
+client(GOOD)
+client(Opower)
+client(PressedJuicery)
+client(Starbucks)
+
+@media all and (-webkit-min-device-pixel-ratio: 1.5)
+  client(Ancestry, true)
+  client(Blurb, true)
+  client(Etsy, true)
+  client(Fitbit, true)
+  client(GOOD, true)
+  client(Opower, true)
+  client(PressedJuicery, true)
+  client(Starbucks, true)
