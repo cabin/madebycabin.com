@@ -152,12 +152,13 @@ body > header
   br
     display: none
 
-nav
+.nav-container
   background: white
-  fixed: top left
-  right: 0
-  user-select: none
+  fixed: top left; right 0
   z-index: 10
+nav
+  user-select: none
+  position: relative
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
   a
     -webkit-tap-highlight-color: default_tap_highlight_color
@@ -194,21 +195,17 @@ body.splash
     overflow: hidden
     padding-bottom: 0
     width: 100%
-    > hr
-      position: absolute
-  nav, .page-about .menu
+  .nav-container, .page-about .menu
     position: absolute
   footer
     display: none
 
 // Show everyone while transitioning.
 body.splash-transition
-  nav, .page-about .menu
+  .nav-container, .page-about .menu
     position: absolute
   .main
     height: auto
-    > hr
-      position: absolute
   > header
     display: block
 
@@ -361,7 +358,7 @@ body.splash-transition
         border-left: 1px solid cabin_grey_light
         display: table-cell
         text-align: center
-    .toggle, .social, hr
+    .toggle, .social
       display: none
 
   body > header
@@ -386,7 +383,7 @@ body.splash-transition
     br.m
       display: block
 
-  .main > hr, footer
+  footer
     display: none
 
 
@@ -529,6 +526,8 @@ body.splash-transition
   nav_height = 90px
   footer_height = 60px
 
+  .nav-container
+    box-shadow: 0 0 2px 2px rgba(cabin_grey_dark, .3)
   nav
     height: (nav_height / 3)
     line-height: @height
@@ -620,14 +619,6 @@ body.splash-transition
     padding: 0 30px
     padding-top: nav_height
     padding-bottom: footer_height + 40px
-    > hr
-      fixed: top nav_height left
-      background: cabin_grey_light
-      border: none
-      height: 1px
-      margin: 0
-      width: 100%
-      z-index: 2
 
   body > header br.f
     display: block

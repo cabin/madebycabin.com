@@ -63,7 +63,7 @@ class SplashView extends Backbone.View
 
   initialize: ->
     @main = @$el.find('.main').first()
-    @nav = @main.children('nav').first()
+    @nav = @main.children('.nav-container').first()
     @visible = @$el.hasClass(@visibleClass)
 
   # Compute an appropriate value for the `.main` element's `top` which will

@@ -37,24 +37,26 @@
     </hgroup>
   </header>
 
-  <div class="main{% if page %} page-{{ page }}{% endif %}"><hr>
-    <nav>
-      <a href="{{ url_for('main.index') }}" class="logo">Cabin</a>
-      <div class="links">
-        <a href="{{ url_for('main.work') }}">Work</a>
-        <a href="{{ url_for('main.about') }}">About</a>
-        <a href="{{ url_for('main.lab') }}">Lab</a>
-        <div class="social">
-          <a href="https://twitter.com/madebycabin" target="_blank" class="twitter">Twitter</a>
-          <a href="https://www.facebook.com/madebycabin" target="_blank" class="facebook">Facebook</a>
-          <a href="http://madebycabin.tumblr.com/" target="_blank" class="tumblr">Tumblr</a>
-          <a href="http://www.flickr.com/photos/madebycabin" target="_blank" class="flickr">Flickr</a>
-          <a href="https://github.com/cabin" target="_blank" class="github">GitHub</a>
-          <a href="mailto:xo@madebycabin.com" class="email">xo@madebycabin.com</a>
+  <div class="main{% if page %} page-{{ page }}{% endif %}">
+    <div class="nav-container">
+      <nav>
+        <a href="{{ url_for('main.index') }}" class="logo">Cabin</a>
+        <div class="links">
+          <a href="{{ url_for('main.work') }}">Work</a>
+          <a href="{{ url_for('main.about') }}">About</a>
+          <a href="{{ url_for('main.lab') }}">Lab</a>
+          <div class="social">
+            <a href="https://twitter.com/madebycabin" target="_blank" class="twitter">Twitter</a>
+            <a href="https://www.facebook.com/madebycabin" target="_blank" class="facebook">Facebook</a>
+            <a href="http://madebycabin.tumblr.com/" target="_blank" class="tumblr">Tumblr</a>
+            <a href="http://www.flickr.com/photos/madebycabin" target="_blank" class="flickr">Flickr</a>
+            <a href="https://github.com/cabin" target="_blank" class="github">GitHub</a>
+            <a href="mailto:xo@madebycabin.com" class="email">xo@madebycabin.com</a>
+          </div>
         </div>
-      </div>
-      <a class="toggle"><span>+</span></a>
-    </nav>
+        <a class="toggle"><span>+</span></a>
+      </nav>
+    </div>
 
     <section class="content"
       {%- if page %} data-page="{{ page }}"{% endif %}
