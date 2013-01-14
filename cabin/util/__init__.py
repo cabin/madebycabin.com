@@ -4,7 +4,10 @@ import urlparse
 
 def hostname(s):
     if s:
-        return urlparse.urlparse(s.encode('utf8')).hostname
+        hostname = urlparse.urlparse(s.encode('utf8')).hostname
+        if hostname.startswith('www.'):
+            hostname = hostname[4:]
+        return hostname
     return ''
 
 
