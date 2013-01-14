@@ -98,6 +98,7 @@ Charts.aboutInfographic = ->
 
     items = selection
         .attr('width', width)
+        .style('width', width)  # Chrome wouldn't reflow inline-block otherwise
         .attr('height', height)
       .selectAll('.item')
         .data(data, (d) -> d.key)

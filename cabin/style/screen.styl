@@ -323,8 +323,10 @@ body.splash-transition
       @extend .dim-text
       margin: 0
   .graph
+    white-space: nowrap
     svg
-      float: left
+      vertical-align: top
+      display: inline-block
       text
         text-transform: uppercase
     // XXX fallback png for lame-os
@@ -798,7 +800,6 @@ body.splash-transition
 
     section.graph
       breakout()
-      clearfix()
       background: #ebebe7  // XXX
       box-shadow: inset 0 0 3px 2px rgba(cabin_grey_dark, .3)
       padding-top: 60px
