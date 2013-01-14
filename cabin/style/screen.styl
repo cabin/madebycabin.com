@@ -157,7 +157,7 @@ nav
   fixed: top left
   right: 0
   user-select: none
-  z-index: 2
+  z-index: 10
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
   a
     -webkit-tap-highlight-color: default_tap_highlight_color
@@ -832,7 +832,7 @@ body.splash-transition
       background: #ebebe7  // XXX
       box-shadow: inset 0 0 3px 2px rgba(cabin_grey_dark, .3)
       min-height: 400px
-      padding-top: 60px
+      padding-top: 40px
       padding-bottom: 60px
       h2
         font: 40px/1.1 headline_font
@@ -885,22 +885,24 @@ body.splash-transition
           margin-top: 5px
 
     section.colophon
-      h1
-        light-text()
       background-color: cabin_bronze
-      color: white
       clear: none
+      color: white
       float: right
-      width: 300px
-
-      // margin-left: 40px
-      padding: 50px 20px
       margin-bottom: -50px
-
+      padding: 50px 20px
+      width: 300px
       > h1
+        light-text()
         border-top-color: white
         position: relative
         top: -7px
+      .signature
+        img = 'signed-cabin.png'
+        background-image: url(img)
+        s = image-size(img)
+        background-size: s[0] s[1]
+        size: s[0] s[1]
 
     section.connect
       display: none
@@ -1138,6 +1140,8 @@ body.splash-transition
   .backgroundsize.multiplebgs body > header
     background-image:
       url(/static/splash-dots@2x.png), url(/static/splash.jpg)
+  .page-about section.colophon .signature
+    background-image: url(signed-cabin@2x.png)
 
 
 // At full width, tabs and the tab-chooser are displayed horizontally. As the
@@ -1156,6 +1160,28 @@ body.splash-transition
     display: none
   .page-project .images img.shadow
     border-radius: 2px 2px 0 0
+
+
+// Wrap the about page's colophon when it can no longer fit next to services.
+@media only screen and (min-width: 569px) and (max-width: 1070px)
+  .page-about .sections section.colophon
+    clear: left
+    float: left
+    margin-top: 40px
+    width: 100%
+    p
+      max-width: 640px
+    // breakout
+    margin-left: -200%
+    margin-right: -200%
+    padding-left: 200%
+    padding-right: 200%
+
+
+// When the graph's top point would be bumping into the title, add margin.
+@media only screen and (max-width: 920px)
+  .page-about section.graph h2
+    margin-bottom: 40px
 
 
 // By default there are four columns of preview images in the project admin
