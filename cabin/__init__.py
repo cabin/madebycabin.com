@@ -101,7 +101,7 @@ def register_assets(app):
 
     assets.register(
         'vendor.js',
-        'vendor/jquery-1.9.0rc1.js',
+        'vendor/jquery-1.9.0.js',
         'vendor/underscore-1.4.3.js',
         'vendor/backbone-0.9.9.js',
         'vendor/keymaster-1.0.3pre.js',
