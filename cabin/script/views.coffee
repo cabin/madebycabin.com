@@ -173,6 +173,10 @@ class MainView extends Backbone.View
   pjax: (route) ->
     startTime = new Date
     @$el.addClass('loading')
+    # Remove the old content immediately, which indicates that something is
+    # happening, and scroll back to the top of the page.
+    @content.empty()
+    window.scroll(0, 0)
     $.ajax
       url: "/#{route}"
       headers: {'X-PJAX': 'true'}
