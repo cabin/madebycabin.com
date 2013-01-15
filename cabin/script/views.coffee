@@ -133,7 +133,6 @@ class MainView extends Backbone.View
 
   events:
     'click a[href^="/"]': 'internalLink'
-    'touchstart a[href^="/"]': 'internalLink'
     'click nav .toggle': 'toggleSocial'
     'click nav': 'closeSplash'
 
@@ -148,8 +147,8 @@ class MainView extends Backbone.View
   # Pass clicks on internal links through navigate, saving a page load.
   internalLink: (event) ->
     # Only act on left clicks with no modifiers.
-    return unless event.which is 1
-    return if event.metaKey or event.ctrlKey or event.shiftKey or event.altKey
+    return if event.type is 'click' and (event.which isnt 1 or
+      event.metaKey or event.ctrlKey or event.shiftKey or event.altKey)
     event.preventDefault()
     event.stopPropagation()
     @router.navigate($(event.currentTarget).attr('href'), trigger: true)
