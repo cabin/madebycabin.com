@@ -62,9 +62,28 @@ class SplashView extends Backbone.View
   el: document.body
 
   initialize: ->
+    @hideMobileAddressBar()
     @main = @$el.find('.main').first()
     @nav = @main.children('.nav-container').first()
     @visible = @$el.hasClass(@visibleClass)
+
+  hideMobileAddressBar: ->
+    ua = navigator.userAgent
+    iphone = ~ua.indexOf('iPhone') or ~ua.indexOf('iPod')
+    fullscreen = navigator.standalone
+    if iphone and not fullscreen
+      de = document.documentElement
+      htmlWrapper = $('html')
+      fullHeightElements = $('body, body > header')
+      f = ->
+        portrait = window.orientation is 0
+        htmlWrapper.toggleClass('iphone', portrait)
+        if portrait
+          fullHeightElements.css('height', de.clientHeight + 60)
+          _.defer -> window.scrollTo(0, 0) unless pageYOffset
+        else
+          fullHeightElements.removeAttr('style')
+      window.onorientationchange = f; f()
 
   # Compute an appropriate value for the `.main` element's `top` which will
   # show only the site navigation bar and the splash page.
@@ -74,7 +93,7 @@ class SplashView extends Backbone.View
   show: ->
     return false if @visible
     @visible = true
-    window.scrollTo(0, 0)
+    _.defer -> window.scrollTo(0, 0)
     @$el.addClass(@transitionClass)
     @main.animate(top: @topOffset(), @endTransition)
 
