@@ -414,14 +414,15 @@ body.splash-transition
       light-text()
       background: cabin_black
       color: cabin_grey_dark
-      font-weight: bold
-      line-height: 40px
+      font-size: 11px
       text-align: center
       text-transform: uppercase
       user-select: none
       z-index: 2
       a
         float: left
+        line-height: 37px
+        padding-top: 40 - @line-height  // adjust for all-caps
         width: 30%
         &:nth-child(2)
           width: 40%
