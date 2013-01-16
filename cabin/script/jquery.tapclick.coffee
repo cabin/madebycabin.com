@@ -69,5 +69,7 @@
 
   jQuery.event.special[EVENT_NAME] =
     setup: ->
-      $(this).on('touchstart', onTouchStart).on('click', onClick)
+      $(this).addClass('tapclick')
+        .on('touchstart', onTouchStart)
+        .on('click', onClick)
 )(jQuery)
