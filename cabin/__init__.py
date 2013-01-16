@@ -12,8 +12,7 @@ PROD_INSTANCE_PATH = '/srv/http/cabin/instance'
 # TODO: make this configurable.
 redis = Redis(charset='utf8', decode_responses=True, db=0)
 
-images = UploadSet('images', default_dest=lambda app: os.path.join(
-    app.instance_path, 'images'))
+images = UploadSet('images')
 
 
 def create_app():
@@ -26,6 +25,8 @@ def create_app():
         ASSETS_URL='/static',
         COFFEE_NO_BARE=True,
         UPLOAD_QUEUE='uploaded-files',
+        UPLOADS_DEFAULT_DEST=app.instance_path,
+        UPLOADS_DEFAULT_URL='/u/',
     )
     app.config.from_pyfile('settings.cfg', silent=True)
 
