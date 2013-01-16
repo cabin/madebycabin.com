@@ -132,9 +132,9 @@ class MainView extends Backbone.View
     @_updatePageView(@content.data('page'))
 
   events:
-    'click a[href^="/"]': 'internalLink'
-    'click nav .toggle': 'toggleSocial'
-    'click nav': 'closeSplash'
+    'tapclick a[href^="/"]': 'internalLink'
+    'tapclick nav .toggle': 'toggleSocial'
+    'tapclick nav': 'closeSplash'
 
   shortcuts:
     '⌥+l': -> navigator.id.request()
@@ -302,8 +302,8 @@ class ProjectView extends Backbone.View
     @loadImages()
 
   events:
-    'click .tab-chooser a': 'selectTab'
-    'click .social a': 'share'
+    'tapclick .tab-chooser a': 'selectTab'
+    'tapclick .social a': 'share'
 
   shortcuts:
     'left': 'goPrev'
@@ -386,7 +386,7 @@ class AboutView extends Backbone.View
     @chartView.render()
 
   events:
-    'click .menu a': 'selectSection'
+    'tapclick .menu a': 'selectSection'
 
   adjustMenuArrow: (relativeTo) ->
     elementCenter = (el) ->

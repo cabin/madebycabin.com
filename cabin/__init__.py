@@ -117,6 +117,7 @@ def register_assets(app):
     #        depends='dummy',  # TODO: remove this once webassets fix is in
     #        filters='handlebars', output='gen/templates.js'),
         Bundle(
+            '../script/jquery.tapclick.coffee',
             '../script/charts.coffee',
             '../script/views.coffee',
             filters='coffeescript', output='gen/coffee.js'),
