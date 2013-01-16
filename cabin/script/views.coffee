@@ -380,7 +380,6 @@ class AboutView extends Backbone.View
     @menu = @$('.menu')
     @menuArrow = @menu.find('.arrow')
     @adjustMenuArrow(@menu.find('a').first())
-    _.defer => @menuArrow.show()
     # XXX remove on remove
     @chartView = new ChartView(el: @sections.filter('.graph').find('div'))
     @chartView.render()
@@ -393,6 +392,7 @@ class AboutView extends Backbone.View
       left = el.position().left + parseInt(el.css('margin-left'), 10)
       left + el.width() / 2
     @menuArrow.css(left: elementCenter(relativeTo))
+    _.defer => @menuArrow.show()
 
   selectSection: (event) ->
     classMap =
