@@ -328,7 +328,7 @@ class ProjectView extends Backbone.View
       img.onload = ->
         placeholder.attr('src', realSrc)
         placeholder.attr('class', placeholder.data('class'))
-        _.delay((-> placeholder.removeAttr('height')), 2000)
+        _.delay((-> placeholder.removeAttr('height')), 200)
       img.src = realSrc
 
   selectTab: (event) ->
