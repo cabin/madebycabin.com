@@ -446,10 +446,10 @@ class ChartView extends Backbone.View
     @bekSvg = d3.select(@el).append('svg')
     @zakSvg = d3.select(@el).append('svg')
     @bekChart = Charts.aboutInfographic()
-        .fillColor('#900')
+        .fillColor('#2b2b2b')
         .idPrefix('b')
     @zakChart = Charts.aboutInfographic()
-        .fillColor('#099')
+        .fillColor('#2b2b2b')
         .idPrefix('z')
 
   configureChart: (chart, width, textWidth, padding, left = true) ->
