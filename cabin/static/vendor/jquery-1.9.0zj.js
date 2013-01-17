@@ -1429,7 +1429,8 @@ jQuery.support = (function() {
 
 	// Run tests that need a body at doc ready
 	jQuery(function() {
-		var container, marginDiv, tds,
+		// XXX zakj: made `div` local here; see #32
+		var container, div, marginDiv, tds,
 			divReset = "padding:0;margin:0;border:0;display:block;box-sizing:content-box;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;",
 			body = document.getElementsByTagName("body")[0];
 
@@ -1441,6 +1442,8 @@ jQuery.support = (function() {
 		container = document.createElement("div");
 		container.style.cssText = "border:0;width:0;height:0;position:absolute;top:0;left:-9999px;margin-top:1px";
 
+		// XXX zakj: added this line
+		div = document.createElement('div');
 		body.appendChild( container ).appendChild( div );
 
 		// Support: IE8
