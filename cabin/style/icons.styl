@@ -51,6 +51,12 @@ icon(trash)
   background-image: url('icons/arrow-right-grey.png')
   &:hover
     background-image: url('icons/arrow-right-white.png')
+.button-arrow:after
+  img = 'icons/button-arrow-white.png'
+  s = image-size(img)
+  background-image: url(img)
+  background-size: s[0] s[1]
+  width: s[0]
 
 input[type="checkbox"].icon.public
   @extend .icon.private
@@ -90,6 +96,8 @@ social-icon(twitter)
     background-image: url('icons/arrow-right-grey@2x.png')
     &:hover
       background-image: url('icons/arrow-right-white@2x.png')
+  .button-arrow:after
+    background-image: url('icons/button-arrow-white@2x.png')
 
   input[type="checkbox"].icon.public
     @extend .icon.private
