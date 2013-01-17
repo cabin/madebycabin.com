@@ -483,8 +483,16 @@ body.splash-transition
       breakout()
       border-top: 1px solid cabin_grey_light
       padding-top: 20px
-      h2
+      > h2
         display: none
+      hgroup
+        h2, h3
+          margin: 0
+        h2
+          font-size: 24px
+          line-height: 1
+        h3
+          body-text()
 
     section.clients
       breakout()
@@ -862,6 +870,8 @@ body.splash-transition
         font: 40px/1.1 headline_font
         margin: 0
         text-transform: uppercase
+      hgroup.small
+        display: none
 
     section.clients
       breakout()
