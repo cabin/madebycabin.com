@@ -519,9 +519,18 @@ body.splash-transition
       li
         breakout()
         border-bottom: 1px solid cabin_grey_light
-        font: 28px/2 headline_font
-        padding-top: 4px  // correct not-quite-centered font
+        font: 40px headline_font
+        line-height: 87px
+        padding-top: (90px - @line-height)  // correct not-quite-centered font
+        padding-left: 60px
+        position: relative
         text-transform: uppercase
+      li:before
+        absolute: left 20px top 32px
+        background-color: cabin_black
+        content: ""
+        display: block
+        outline: 1px solid white
       a
         color: cabin_black
         display: block

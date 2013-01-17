@@ -16,7 +16,7 @@ icon(filename, retina = false)
 
 social-icon(network, retina = false)
   fnSuffix = retina ? '@2x' : ''
-  .social .{network}, .icon.{network}
+  .social .{network}, .icon.{network}, .connect li.{network}:before
     background-image: url('icons/social/' + network + fnSuffix + '.png')
 
 
@@ -26,7 +26,7 @@ social-icon(network, retina = false)
 .icon
   icon-base(16px)
 
-.social > a
+.social > a, .connect li:before
   icon-base(26px)
 
 icon(arrow-mini)
@@ -70,6 +70,7 @@ social-icon(flickr)
 social-icon(github)
 social-icon(instagram)
 // social-icon(linkedin)
+social-icon(phone)
 social-icon(pinterest)
 social-icon(tumblr)
 social-icon(twitter)
@@ -114,6 +115,7 @@ social-icon(twitter)
   social-icon(github, true)
   social-icon(instagram, true)
   // social-icon(linkedin, true)
+  social-icon(phone, true)
   social-icon(pinterest, true)
   social-icon(tumblr, true)
   social-icon(twitter, true)
