@@ -386,6 +386,7 @@ class AboutView extends Backbone.View
 
   events:
     'tapclick .menu a': 'selectSection'
+    'tapclick .bio hgroup': 'toggleBio'
 
   adjustMenuArrow: (relativeTo) ->
     elementCenter = (el) ->
@@ -405,6 +406,9 @@ class AboutView extends Backbone.View
     @sections.removeClass('selected')
       .filter(classMap[selected.data('name')]).addClass('selected')
     @chartView.render()
+
+  toggleBio: (event) ->
+    $(event.currentTarget).parent('.bio').toggleClass('open')
 
 
 #### ChartView
