@@ -179,7 +179,7 @@ class MainView extends Backbone.View
     $.ajax
       url: "/#{route}"
       headers: {'X-PJAX': 'true'}
-      error: -> throw 'PJAX ERROR'  # XXX
+      error: (xhr) => @_pjaxHandler(xhr.responseText, startTime)
       success: (data) => @_pjaxHandler(data, startTime)
 
   _pjaxHandler: (data, startTime) ->

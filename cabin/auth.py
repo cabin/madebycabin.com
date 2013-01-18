@@ -65,4 +65,4 @@ def admin_required(f):
 
 @auth.app_errorhandler(401)
 def error_401(request):
-    return flask.render_template('401.html')
+    return flask.render_template('401.html'), 401
