@@ -363,10 +363,12 @@ class ProjectView extends Backbone.View
     window.open(url, '_blank', features)
 
   goPrev: ->
-    @router.navigate(@$('.prev-next a').first().attr('href'), trigger: true)
+    url = @$('.prev-next a').first().attr('href')
+    @router.navigate(url, trigger: true) if url
 
   goNext: ->
-    @router.navigate(@$('.prev-next a').last().attr('href'), trigger: true)
+    url = @$('.prev-next a').last().attr('href')
+    @router.navigate(url, trigger: true) if url
 
   goAdmin: ->
     @router.navigate('admin/' + Backbone.history.fragment, trigger: true)
