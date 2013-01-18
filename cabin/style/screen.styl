@@ -695,6 +695,35 @@ body.splash-transition
       &:hover
         opacity: 1
 
+  .photo
+    background-color: white
+    background-position: center center
+    background-repeat: no-repeat
+    background-size: 400px 400px
+    display: block
+    padding: 5px
+    size: 400px
+    &.shadow-left:before
+      img = 'photos/shadow-left.png'
+      s = image-size(img)
+      absolute: left -7px bottom -18px
+      background-image: url(img)
+      background-position: left bottom
+      background-repeat: no-repeat
+      content: ""
+      display: block
+      size: s[0] s[1]
+    &.shadow-right:before
+      img = 'photos/shadow-right.png'
+      s = image-size(img)
+      absolute: right -7px bottom -18px
+      background-image: url(img)
+      background-position: right bottom
+      background-repeat: no-repeat
+      content: ""
+      display: block
+      size: s[0] s[1]
+
 
   // Work page  {{{2
 
@@ -829,6 +858,19 @@ body.splash-transition
         width: 80px
       p
         margin: 0 0 1em
+
+    .content
+      position: relative
+      .photo
+        position: absolute
+        &.bek
+          background-image: url(/static/photos/bek.jpg)
+          left: -140px; top: 410px
+          transform: rotate(15deg)
+        &.zak
+          background-image: url(/static/photos/zak.jpg)
+          right: -120px; top: -145px
+          transform: rotate(-30deg)
 
     section.summary
       > h1
@@ -1210,6 +1252,38 @@ body.splash-transition
     margin-right: -200%
     padding-left: 200%
     padding-right: 200%
+
+
+// Reshuffle and resize the about-page images when there's too little space to
+// show them full size.
+@media only screen and (max-width: 1100px)
+  .page-about .content
+    > .photo
+      &.bek
+        left: auto
+        right: 0
+        top: 40px
+        transform: scale(.5) rotate(15deg)
+      &.zak
+        transform: scale(.7) rotate(-30deg)
+@media only screen and (max-width: 940px)
+  .page-about .content
+    > h1
+      max-width: 500px
+@media only screen and (max-width: 800px)
+  .page-about .content
+    > .photo
+      &.bek
+        right: -90px
+        top: 120px
+      &.zak
+        right: -200px
+        top: -45px
+        transform: scale(.6) rotate(-30deg)
+@media only screen and (max-width: 680px)
+  .page-about .content
+    > .photo
+      display: none
 
 
 // When the graph's top point would be bumping into the title, add margin.
