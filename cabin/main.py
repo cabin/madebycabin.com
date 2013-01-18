@@ -52,3 +52,13 @@ def about():
 @main.route('/lab')
 def lab():
     return render_template('lab.html')
+
+
+@main.app_errorhandler(404)
+def error_404(self):
+    return render_template('404.html')
+
+
+@main.app_errorhandler(500)
+def error_500(self):
+    return render_template('500.html')

@@ -61,3 +61,8 @@ def admin_required(f):
             flask.abort(401)
         return f(*args, **kwargs)
     return wrapper
+
+
+@auth.app_errorhandler(401)
+def error_401(request):
+    return flask.render_template('401.html')

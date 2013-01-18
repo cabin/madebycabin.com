@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% set title = 'Not Found' %}
+{% set page = 'error' %}
+
+{% block content %}
+  <div class="photo wing-yawn shadow-left"></div>
+
+  <h1>Gaaah!</h1>
+
+  <div class="error-block">
+    <h2>Page not found /<br> Just cry about it</h2>
+    <div class="code">404</div>
+    <p>
+      <a href="{{ url_for('main.work') }}" class="button">Browse our work</a>
+      <a href="mailto:xo@madebycabin.com" class="button-arrow">Email us</a>
+    </p>
+  </div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% set title = 'Server Error' %}
+{% set page = 'error' %}
+
+{% block content %}
+  <div class="photo wing-flop shadow-left"></div>
+
+  <h1>Down for<br>the count.</h1>
+
+  <div class="error-block">
+    <h2>Server error /<br> Try the old refresh</h2>
+    <div class="code">500</div>
+    <p>
+      <a href="{{ request.url }}" class="button">Reload the page</a>
+      <a href="mailto:xo@madebycabin.com" class="button-arrow">Email us</a>
+    </p>
+  </div>
+{% endblock %}

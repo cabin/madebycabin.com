@@ -63,6 +63,7 @@ button, .button, .button-arrow
   display: inline-block
   line-height: button_height - 2px
   padding: button_height - @line-height 12px 0
+  white-space: nowrap
   &[type="submit"]
     light-text()
     background: cabin_black
@@ -337,6 +338,34 @@ body.splash-transition
   // Hide these until their image stylesheet is loaded.
   .clients a
     display: none
+
+
+// Error pages  {{{2
+.page-error
+  h1
+    font-size: 80px
+    margin-bottom: 40px
+    line-height: 1
+  h2
+    font: headline_size/1 headline_font
+    text-transform: uppercase
+  .error-block
+    position: relative
+    padding-left: 120px
+  .code
+    absolute: left top
+    border-top: 1px solid cabin_black
+    font-weight: bold
+    line-height: 30px
+    width: 80px
+  .button, .button-arrow
+    light-text()
+    background-color: cabin_black
+    color: white
+    float: left
+    margin: 0 5px 10px 0
+    &:hover
+      background-color: cabin_bronze
 
 
 // <= iPhone 5 landscape  {{{1
@@ -984,6 +1013,35 @@ body.splash-transition
       display: none
 
 
+  // Error pages  {{{2
+  .page-error
+    page-width(1100px)
+    overflow: hidden
+    .content
+      position: relative
+    h1
+      min-height: 220px
+      position: relative
+    .photo
+      position: absolute
+      z-index: 0
+      &.wing-belly
+        background-image: url(/static/photos/wing-belly.jpg)
+        right: -100px
+        top: -140px
+        transform: rotate(-30deg)
+      &.wing-flop
+        background-image: url(/static/photos/wing-flop.jpg)
+        right: -100px
+        top: -100px
+        transform: rotate(-15deg)
+      &.wing-yawn
+        background-image: url(/static/photos/wing-yawn.jpg)
+        right: -100px
+        top: -20px
+        transform: rotate(-30deg)
+
+
   // Admin  {{{2
   // TODO: Consider pulling this out into its own stylesheet; load it only if
   // the user is logged in.
@@ -1290,6 +1348,12 @@ body.splash-transition
 @media only screen and (max-width: 920px)
   .page-about section.graph h2
     margin-bottom: 40px
+
+
+// Let the secondary error message take up the screen width when it fits.
+@media only screen and (min-width: 950px)
+  .page-error h2 br
+    display: none
 
 
 // By default there are four columns of preview images in the project admin

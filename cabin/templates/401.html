@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% set title = 'Unauthorized' %}
+{% set page = 'error' %}
+
+{% block content %}
+  <div class="photo wing-belly shadow-left"></div>
+
+  <h1>Who goes<br>there?</h1>
+
+  <div class="error-block">
+    <h2>Unauthorized /<br> Busted chop</h2>
+    <div class="code">401</div>
+    <p>
+      <a href="mailto:xo@madebycabin.com" class="button-arrow">Request access</a>
+    </p>
+  </div>
+{% endblock %}
