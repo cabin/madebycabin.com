@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Cabin &middot; Maintenance</title>
+
+  <meta name="viewport" content="width=1000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <link href="/static/fonts/ywft-ultramagnetic-light.css" rel="stylesheet">
+  <link href="/static/fonts/proxima-nova.css" rel="stylesheet">
+  <style>
+    body {
+      font: 13px/1.23 ProximaNova, 'Helvetica Neue', Helvetica, sans-serif;
+      color: #2b2b2b;
+      max-width: 1100px;
+      margin: 0 auto;
+      overflow: hidden;
+      padding: 0 30px;
+      position: relative;
+    }
+
+    .chunk {
+      position: relative;
+      clear: left;
+      margin-top: 120px;
+      overflow: hidden;
+      padding-left: 120px;
+    }
+    .chunk > :first-child {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    h1, h2 {
+      font-family: 'YWFT Ultramagnetic Light';
+      font-weight: normal;
+      line-height: 1;
+      margin: 0;
+      text-transform: uppercase;
+    }
+    h1 {
+      font-size: 80px;
+    }
+    h2 {
+      font-size: 30px;
+    }
+
+    .name {
+      border-top: 1px solid #2b2b2b;
+      line-height: 30px;
+      width: 80px;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    .button-arrow {
+      background: #2b2b2b;
+      color: white;
+      float: left;
+      font-weight: bold;
+      line-height: 28px;
+      margin-right: 5px;
+      padding: 2px 26px 0 12px;
+      position: relative;
+      text-decoration: none;
+      text-transform: uppercase;
+      -webkit-font-smoothing: antialiased;
+      -webkit-border-radius: 2px;
+      -moz-border-radius: 2px;
+      border-radius: 2px;
+    }
+    .button-arrow:hover {
+      background: #ab9960;
+    }
+    .button-arrow:after {
+      position: absolute; right: 12px; top: 0; bottom: 0;
+      background: url(/static/icons/button-arrow-white.png) center center no-repeat;
+      content: "";
+      display: block;
+      width: 8px;
+    }
+
+    .photo {
+      background: white url(/static/photos/wing-flop.jpg) center center no-repeat;
+      padding: 5px;
+      width: 400px;
+      height: 400px;
+      position: absolute; left: 700px; top: 30px;
+      -webkit-transform: rotate(-15deg);
+      -moz-transform: rotate(-15deg);
+      -ms-transform: rotate(-15deg);
+      -o-transform: rotate(-15deg);
+      transform: rotate(-15deg);
+    }
+    .photo.shadow-left:before {
+      background: url(/static/photos/shadow-left.png) left bottom no-repeat;
+      content: "";
+      display: block;
+      position: absolute; left: -7px; bottom: -18px;
+      width: 100%; height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="chunk">
+    <img src="/static/cabin-symbol.svg" width="30" height="26" alt>
+    <h1>Be back up<br>soon!</h1>
+  </div>
+
+  <div class="chunk">
+    <div class="name">Cabin</div>
+    <h2>Site maintenance / Cleaning house</h2>
+    <p>
+      <a class="button-arrow" href="mailto:xo@madebycabin.com">Email us</a>
+      <a class="button-arrow" target="_blank" href="https://twitter.com/madebycabin">Tweet to us</a>
+    </p>
+  </div>
+
+  <div class="photo shadow-left"></div>
+</body>
+</html>
