@@ -414,29 +414,30 @@ class AboutView extends Backbone.View
 
 
 #### ChartView
-class ChartView extends Backbone.View
-  bekHomes:
-    1978.5: 'Santa Barbara'
-    1996.66: 'New York City'
-    1997.66: 'Santa Barbara'
-    2002.66: 'Los Angeles'
-    2006.5: 'San Francisco'
-    2008.66: 'New York City'
-    2010: 'Los Angeles'
-    2011.33: 'Idyllwild'
-    2011.83: 'Portland'
-
-  zakHomes:
-    1980.33: 'Brisbane, AU'
-    1984.5: 'San Diego'
-    1989.92: 'Portland'
-    2000: 'Washington, DC'
-    2004.33: 'San Francisco'
-    2010.75: 'Los Angeles'
-    2011.33: 'Idyllwild'
-    2011.83: 'Portland'
-
-  shortNames:
+# Data are arrays of three-tuples: [float year, short city name, note].
+class @ChartView extends Backbone.View
+  bekData: [
+    [1978.5, 'Santa Barbara', 'X']
+    [1996.66, 'New York City', 'X']
+    [1997.66, 'Santa Barbara', 'X']
+    [2002.66, 'Los Angeles', 'X']
+    [2006.5, 'San Francisco', 'X']
+    [2008.66, 'New York City', 'X']
+    [2010, 'Los Angeles', 'X']
+    [2011.33, 'Idyllwild', 'X']
+    [2011.83, 'Portland', 'X']
+  ]
+  zakData: [
+    [1980.33, 'Brisbane, AU', 'X']
+    [1984.5, 'San Diego', 'X']
+    [1989.92, 'Portland', 'X']
+    [2000, 'Washington, DC', 'X']
+    [2004.33, 'San Francisco', 'X']
+    [2010.75, 'Los Angeles', 'X']
+    [2011.33, 'Idyllwild', 'X']
+    [2011.83, 'Portland', 'X']
+  ]
+  abbrCities:
     'Brisbane, AU': 'BNE'
     'Idyllwild': '6k′'
     'Los Angeles': 'LAX'
@@ -449,51 +450,40 @@ class ChartView extends Backbone.View
 
   initialize: ->
     $(window).on('resize', _.debounce(@render, 100))
-    @bekSvg = d3.select(@el).append('svg')
-    @zakSvg = d3.select(@el).append('svg')
-    @bekChart = Charts.aboutInfographic()
-        .fillColor('#2b2b2b')
-        .idPrefix('b')
-    @zakChart = Charts.aboutInfographic()
-        .fillColor('#2b2b2b')
-        .idPrefix('z')
+    @bekSvg = d3.select(@el).append('svg').datum(@decorateData(@bekData))
+    @zakSvg = d3.select(@el).append('svg').datum(@decorateData(@zakData))
+    @bekChart = Charts.aboutInfographic().idPrefix('b')
+    @zakChart = Charts.aboutInfographic().idPrefix('z').alignLeft(false)
 
-  configureChart: (chart, width, textWidth, padding, left = true) ->
-    chart
-        .width(width)
-        .xLabel(if left then 0 else width)
-        .xPoint(if left then textWidth else width - textWidth)
-        .xFull(if left then width else padding)
-        .padding(padding)
+  decorateData: (data) ->
+    _(data).map (item) =>
+      year: item[0]
+      city: item[1]
+      abbrCity: @abbrCities[item[1]]
+      note: item[2]
+
+  events:
+    'mouseover g.item': 'showDetails'
+
+  showDetails: ->
+    console.log('showDetails', arguments)
 
   render: =>
     return unless @$el.is(':visible')
     width = @$el.width()
-    # Match the width of my half of the chart to my bio's current width.
-    zakWidth = $('.bio.zak').width() + 15
-    bekWidth = width - zakWidth
-    textWidth = 100
-    padding = 5
-
-    if width <= 528  # iPhone 5 landscape - padding
+    if width > 528  # iPhone 5 landscape - padding
+      # Match the width of my half of the chart to my bio's current width.
+      zakWidth = $('.bio.zak').width() + 15
+      bekWidth = width - zakWidth
+      textWidth = 100
+      padding = 5
+    else
       bekWidth = Math.floor((width - padding) / 2)
       zakWidth = width - bekWidth
       textWidth = 25
       padding = 1
-      shortData = (data) =>
-        newData = _(data).clone()
-        _(data).each (v, k) => newData[k] = @shortNames[v]
-        newData
-      @bekSvg.datum(d3.entries(shortData(@bekHomes)))
-      @zakSvg.datum(d3.entries(shortData(@zakHomes)))
-    else
-      @bekSvg.datum(d3.entries(@bekHomes))
-      @zakSvg.datum(d3.entries(@zakHomes))
-
-    @configureChart(@bekChart, bekWidth, textWidth, padding)
-    @configureChart(@zakChart, zakWidth, textWidth, padding, false)
-    @bekSvg.call(@bekChart)
-    @zakSvg.call(@zakChart)
+    @bekChart.width(bekWidth).textWidth(textWidth).padding(padding)(@bekSvg)
+    @zakChart.width(zakWidth).textWidth(textWidth).padding(padding)(@zakSvg)
 
 
 # Administrative views  {{{1
