@@ -104,7 +104,7 @@ Charts.aboutInfographic = ->
       .selectAll('g.items')
         .data([data])
     g.enter().append('g').classed('items', true)
-        .attr('transform', "translate(0, #{iconHeight + padding})")
+    g.attr('transform', "translate(0, #{iconHeight + padding})")
 
     # Such a hack. May the gods have mercy on my soul.
     iconPath = selection.selectAll('path.icon')
