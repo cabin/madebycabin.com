@@ -458,7 +458,7 @@ class @ChartView extends Backbone.View
   decorateData: (data) ->
     _(data).map (item) =>
       year: item[0]
-      city: item[1]
+      city: item[1].toUpperCase()
       abbrCity: @abbrCities[item[1]]
       note: item[2]
 
