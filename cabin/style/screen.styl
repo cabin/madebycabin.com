@@ -328,12 +328,18 @@ body.splash-transition
       .no-touch &:hover
         background-color: cabin_bronze
   .graph
-    white-space: nowrap
-    svg
-      vertical-align: top
-      display: inline-block
-      text
-        text-transform: uppercase
+    .svg
+      white-space: nowrap
+      svg
+        vertical-align: top
+        display: inline-block
+        .selected
+          path
+            fill: cabin_bronze
+          g
+            fill-opacity: 1
+    .notes
+      display: none
     // XXX fallback png for lame-os
   // Hide these until their image stylesheet is loaded.
   .clients a
@@ -945,6 +951,19 @@ body.splash-transition
         text-transform: uppercase
       hgroup.small
         display: none
+      .notes
+        margin-top: 30px
+        // XXX figure out positioning here
+        position: absolute
+        .year
+          absolute: left top
+          border-top: 1px solid cabin_black
+          font-weight: bold
+          line-height: 30px
+          width: 80px
+        .note
+          margin-left: 120px
+          width: 300px
 
     section.clients
       breakout()

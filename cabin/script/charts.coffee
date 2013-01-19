@@ -53,6 +53,7 @@ Charts.aboutInfographic = ->
       bottomRight = (start - yearZero) * pixelsPerYear + i * padding
       item.y0 = bottomRight
       item.y1 = bottomRight + itemHeight
+      item.yearEnd = end
       item
 
   # Build clip paths for animation.

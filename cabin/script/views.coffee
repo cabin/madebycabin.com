@@ -383,7 +383,7 @@ class AboutView extends Backbone.View
     @menuArrow = @menu.find('.arrow')
     @adjustMenuArrow(@menu.find('a').first())
     # XXX remove on remove
-    @chartView = new ChartView(el: @sections.filter('.graph').find('div'))
+    @chartView = new ChartView(el: @sections.filter('.graph'))
     @chartView.render()
 
   events:
@@ -450,8 +450,10 @@ class @ChartView extends Backbone.View
 
   initialize: ->
     $(window).on('resize', _.debounce(@render, 100))
-    @bekSvg = d3.select(@el).append('svg').datum(@decorateData(@bekData))
-    @zakSvg = d3.select(@el).append('svg').datum(@decorateData(@zakData))
+    @graph = @$el.find('.svg').get(0)
+    @notes = @$el.find('.notes')
+    @bekSvg = d3.select(@graph).append('svg').datum(@decorateData(@bekData))
+    @zakSvg = d3.select(@graph).append('svg').datum(@decorateData(@zakData))
     @bekChart = Charts.aboutInfographic().idPrefix('b')
     @zakChart = Charts.aboutInfographic().idPrefix('z').alignLeft(false)
 
@@ -463,14 +465,26 @@ class @ChartView extends Backbone.View
       note: item[2]
 
   events:
-    'mouseover g.item': 'showDetails'
+    'mouseover g': 'showDetails'
 
-  showDetails: ->
-    console.log('showDetails', arguments)
+  showDetails: (event) ->
+    # Using d3 instead of jQuery objects, since jQuery doesn't have any decent
+    # support for SVG.
+    target = d3.select(event.currentTarget)
+    return unless target.classed('item')
+    d3.select(@graph).selectAll('g.item').classed('selected', false)
+    target.classed('selected', true).each (d) =>
+      from = Math.floor(d.year)
+      to = Math.floor(d.yearEnd)
+      range = if from is to then from else "#{from}&ndash;#{to}"
+      @notes.find('.year').html(range)
+      @notes.find('.note').text(d.note)
+    @notes.show()
 
   render: =>
-    return unless @$el.is(':visible')
-    width = @$el.width()
+    graph = $(@graph)
+    return unless graph.is(':visible')
+    width = graph.width()
     if width > 528  # iPhone 5 landscape - padding
       # Match the width of my half of the chart to my bio's current width.
       zakWidth = $('.bio.zak').width() + 15
@@ -478,10 +492,10 @@ class @ChartView extends Backbone.View
       textWidth = 100
       padding = 5
     else
+      padding = 1
       bekWidth = Math.floor((width - padding) / 2)
       zakWidth = width - bekWidth
       textWidth = 25
-      padding = 1
     @bekChart.width(bekWidth).textWidth(textWidth).padding(padding)(@bekSvg)
     @zakChart.width(zakWidth).textWidth(textWidth).padding(padding)(@zakSvg)
 
