@@ -129,6 +129,7 @@ Charts.aboutInfographic = ->
     #     text
     itemsEnter = items
       .enter().append('g').classed('item', true)
+        .attr('start', (d) -> d.year)  # used for ordering the cycler
     trianglesEnter = itemsEnter.append('g').classed('triangle', true)
     trianglesEnter.append('path').classed('main', true)
     trianglesEnter.append('path').classed('highlight', true)

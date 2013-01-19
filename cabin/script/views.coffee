@@ -470,9 +470,8 @@ class @ChartView extends Backbone.View
   setupCycle: ->
     return if @cycleItems?
     @cycleIndex = 0
-    svgs = @$('svg')
-    @cycleItems = _.compact(_.flatten(_.zip(
-      svgs.eq(0).find('.item'), svgs.eq(1).find('.item'))))
+    @cycleItems = _(@$('g.item')).sortBy (item) ->
+      parseFloat($(item).attr('start'))
     @cycle()
     @cycleInterval = setInterval(@cycle, 5000)
 
