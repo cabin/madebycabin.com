@@ -334,9 +334,11 @@ body.splash-transition
         vertical-align: top
         display: inline-block
         .selected
-          path
+          &, path.main
             fill: cabin_bronze
-          g
+          path.highlight
+            fill: #b8a878
+          &, g
             fill-opacity: 1
     .notes
       display: none

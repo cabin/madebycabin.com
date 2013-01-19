@@ -3,7 +3,6 @@ Charts = Charts or {}
 Charts.aboutInfographic = ->
   # Defaults.
   width = 500
-  height = undefined  # computed based on data
   alignLeft = true
   textWidth = 100
   endcapWidth = 10
@@ -14,6 +13,10 @@ Charts.aboutInfographic = ->
     small: {padding: 2, adjust: '-.28em', attr: 'abbrCity'}
   pixelsPerYear = 8
   padding = 5
+  iconPaths =
+    his: 'M7.963,5.559C9.789,5.559,11,7.156,11,8.787v7.491c0.004,1.477-2.037,1.477-2.037,0V9.387H8.488 L6.744,28.483c0,2.022-2.463,2.022-2.463,0L2.537,9.387H2.052v6.892c0,1.465-2.052,1.465-2.052,0V8.742 c0-1.769,1.337-3.188,3.001-3.188L7.963,5.559z M5.494,4.871c1.306,0,2.363-1.091,2.363-2.436S6.8,0,5.494,0 C4.189,0,3.13,1.091,3.13,2.436S4.189,4.871,5.494,4.871z M5.494,2.436'
+    hers: 'M4.535,2.438C4.535,1.091,5.646,0,7.016,0c1.371,0,2.482,1.091,2.482,2.438 c0,1.345-1.111,2.436-2.482,2.436C5.646,4.874,4.535,3.782,4.535,2.438z M7.016,2.438 M8.072,28.859l1.602-8.535h3.114L9.435,9.021 H10l1.953,6.434c0.465,1.47,2.419,0.845,1.984-0.662l-2.171-7.007c-0.268-0.789-1.302-2.218-3.068-2.218H6.927l0,0H5.283 c-1.783,0-2.814,1.417-3.046,2.218L0.066,14.8c-0.45,1.507,1.519,2.086,1.984,0.679l1.955-6.458h0.521L1.208,20.324h3.101 l1.603,8.524C5.912,30.382,8.072,30.382,8.072,28.859z'
+  iconHeight = 30
 
   # Since clip paths require IDs, we need to avoid duplicate IDs.
   idPrefix = ''
@@ -29,11 +32,13 @@ Charts.aboutInfographic = ->
     if alignLeft then textWidth else width - textWidth
   xTriangleEdge = ->
     if alignLeft
-      width - endcapWidth
+      xEndcapEdge() - endcapWidth
     else
       xEndcapEdge() + endcapWidth
   xEndcapEdge = ->
-    if alignLeft then width else padding
+    if alignLeft then width - xPadding() else xPadding()
+  xPadding = ->
+    if alignLeft then Math.ceil(padding / 2) else Math.floor(padding / 2)
   clipperId = (d, i) -> "clipper-#{idPrefix}#{i}"
 
   # A helper for decorating a list of objects with y0 and y1 based on year.
@@ -92,11 +97,28 @@ Charts.aboutInfographic = ->
     height = extent[1]
     labelAdj = labelAdjustments[if textWidth < 50 then 'small' else 'normal']
 
-    items = selection
+    g = selection
         .attr('width', width)
         .style('width', width)  # Chrome wouldn't reflow inline-block otherwise
-        .attr('height', height)
-      .selectAll('.item')
+        .attr('height', height + iconHeight + padding)
+      .selectAll('g.items')
+        .data([data])
+    g.enter().append('g').classed('items', true)
+        .attr('transform', "translate(0, #{iconHeight + padding})")
+
+    # Such a hack. May the gods have mercy on my soul.
+    iconPath = selection.selectAll('path.icon')
+        .data([if alignLeft then 'hers' else 'his'])
+    iconPath
+      .enter().append('path').classed('icon', true)
+        .attr('d', (d) -> iconPaths[d])
+        .attr('class', (d) -> 'icon ' + d)
+        .attr('fill', fillColor)
+        .attr('fill-opacity', .2)
+    xIcon = if alignLeft then width - 15 else 1
+    iconPath.attr('transform', "translate(#{xIcon}, 0)")
+
+    items = g.selectAll('.item')
         .data(data, (d) -> d.year)
 
     # Each node is represented by a structure like this:

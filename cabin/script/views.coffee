@@ -467,12 +467,31 @@ class @ChartView extends Backbone.View
   events:
     'mouseover g': 'showDetails'
 
+  setupCycle: ->
+    return if @cycleItems?
+    @cycleIndex = 0
+    svgs = @$('svg')
+    @cycleItems = _.compact(_.flatten(_.zip(
+      svgs.eq(0).find('.item'), svgs.eq(1).find('.item'))))
+    @cycle()
+    @cycleInterval = setInterval(@cycle, 5000)
+
+  cycle: =>
+    @select(@cycleItems[@cycleIndex])
+    @cycleIndex = (@cycleIndex + 1) % @cycleItems.length
+
   showDetails: (event) ->
+    clearInterval(@cycleInterval)
+    @select(event.currentTarget)
+
+  select: (element) ->
     # Using d3 instead of jQuery objects, since jQuery doesn't have any decent
     # support for SVG.
-    target = d3.select(event.currentTarget)
+    target = d3.select(element)
     return unless target.classed('item')
-    d3.select(@graph).selectAll('g.item').classed('selected', false)
+    d3.select(@graph).selectAll('.item, .icon').classed('selected', false)
+    d3.select(target.node().parentNode.parentNode).selectAll('.icon')
+      .classed('selected', true)
     target.classed('selected', true).each (d) =>
       from = Math.floor(d.year)
       to = Math.floor(d.yearEnd)
@@ -498,6 +517,7 @@ class @ChartView extends Backbone.View
       textWidth = 25
     @bekChart.width(bekWidth).textWidth(textWidth).padding(padding)(@bekSvg)
     @zakChart.width(zakWidth).textWidth(textWidth).padding(padding)(@zakSvg)
+    @setupCycle()
 
 
 # Administrative views  {{{1
