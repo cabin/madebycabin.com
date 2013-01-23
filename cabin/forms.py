@@ -9,7 +9,7 @@ from wtforms.validators import *
 
 from cabin import images, redis
 from cabin.models import SERVICES, SERVICE_TYPES
-from cabin.util.fields import SelectMultipleGroupedField
+from cabin.util.fields import SelectMultipleGroupedField, StringListField
 
 
 def grouped_services():
@@ -61,6 +61,7 @@ class ProjectForm(Form):
     services = SelectMultipleGroupedField(
         choices=grouped_services(), coerce=int)
     cohorts = FieldList(FormField(CohortForm), min_entries=1)
+    dev_shortlist = StringListField('Development Shortlist')
     images = FieldList(FormField(ImageForm))
 
     def validate_slug(self, field):

@@ -71,3 +71,23 @@ class SelectMultipleGroupedField(fields.SelectMultipleField):
             else:
                 values.add(value)
         return values
+
+
+class StringListField(fields.Field):
+    """A field whose input and output data are a list of strings.
+
+    The list is rendered as a textarea split linewise for simple editing.
+    """
+    widget = widgets.TextArea()
+
+    def process_data(self, value):
+        if value:
+            self.data = '\n'.join(value)
+        else:
+            self.data = ''
+
+    def process_formdata(self, valuelist):
+        self.data = valuelist[0].splitlines()
+
+    def _value(self):
+        return self.data if self.data else ''

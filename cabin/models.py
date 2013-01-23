@@ -79,6 +79,18 @@ SCHEMAS = {
             },
         },
     },
+    'services': {
+        'type': 'array',
+        'uniqueItems': True,
+        'default': [],
+        'items': {'type': 'integer'},
+    },
+    'dev_shortlist': {
+        'type': 'array',
+        'uniqueItems': True,
+        'default': [],
+        'items': {'type': 'string'}
+    },
     'images': {
         'type': 'array',
         'uniqueItems': True,
@@ -94,12 +106,6 @@ SCHEMAS = {
             },
         },
     },
-    'services': {
-        'type': 'array',
-        'uniqueItems': True,
-        'default': [],
-        'items': {'type': 'integer'},
-    },
 }
 SCHEMAS['project'] = {
     'type': 'object',
@@ -113,8 +119,9 @@ SCHEMAS['project'] = {
         'thumbnail_file': {'type': 'string', 'required': True},
         'external_url': {'type': 'string', 'format': 'uri'},
         '_cohorts': SCHEMAS['cohorts'],
-        '_images': SCHEMAS['images'],
         '_services': SCHEMAS['services'],
+        '_images': SCHEMAS['images'],
+        '_dev_shortlist': SCHEMAS['dev_shortlist'],
     }
 }
 
