@@ -27,8 +27,7 @@ def login():
 
 @auth.route('/logout', methods=['POST'])
 def logout():
-    if 'user' in flask.session:
-        del flask.session['user']
+    flask.session.clear()
     return flask.jsonify({'status': 'okay'})
 
 
