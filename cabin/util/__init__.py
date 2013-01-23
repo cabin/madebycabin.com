@@ -1,6 +1,14 @@
 import urllib
 import urlparse
 
+from flask import request
+
+
+def external_url(s):
+    if s.startswith('/'):
+        return 'http://{}{}'.format(request.host, s)
+    return s
+
 
 def hostname(s):
     if s:

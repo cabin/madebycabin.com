@@ -41,6 +41,7 @@ def create_app():
         'request_is_pjax': 'X-PJAX' in request.headers,
         'current_user': get_current_user(),
     })
+    app.jinja_env.filters['external_url'] = util.external_url
     app.jinja_env.filters['hostname'] = util.hostname
     app.jinja_env.filters['urlquote'] = util.urlquote
 
