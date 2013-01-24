@@ -290,7 +290,7 @@ class WorkView extends Backbone.View
 
 
 #### ProjectView
-class ProjectView extends Backbone.View
+class ProjectView extends HierView
   fullImageWidth: 1100
 
   initialize: (options) ->
@@ -300,6 +300,8 @@ class ProjectView extends Backbone.View
     @pageWidth = @$el.width()
     @heightRatio = @pageWidth / @fullImageWidth
     @loadImages()
+    shortlist = @$('.dev-shortlist')
+    @addChild(new DevShortlistView(el: shortlist)) if shortlist.length
 
   events:
     'tapclick .tab-chooser a': 'selectTab'
@@ -372,6 +374,93 @@ class ProjectView extends Backbone.View
 
   goAdmin: ->
     @router.navigate('admin/' + Backbone.history.fragment, trigger: true)
+
+
+#### DevShortlistView
+class DevShortlistView extends HierView
+
+  initialize: ->
+    items = @$('li')
+    @itemCount = items.length
+    @closed = true
+
+    # Find the biggest shortlist element by wrapping each one in a `span` (so
+    # we can measure the text width, wrather than the container). Assumes
+    # `nowrap` on the items.
+    biggest = null
+    maxWidth = 0
+    items.wrapInner('<span/>')
+    items.find('span').each ->
+      span = $(this)
+      w = span.width()
+      if w > maxWidth
+        maxWidth = w
+        biggest = span
+    @biggest = biggest
+    @visibleWindow = @$('.dev-shortlist-window')
+    $(window).on('resize', @resize); @resize()
+
+    # Each item's opacity differs from the last by a set amount, variable based
+    # on the number of items. The first item will be set to `opacity`, and the
+    # last item will be set to `minOpacity`.
+    opacity = 1
+    minOpacity = 0.2
+    delta = (opacity - minOpacity) / (@itemCount - 1)
+    items.each ->
+      $(this).css('opacity', opacity.toFixed(2))
+      opacity -= delta
+
+    # Set up styles for and begin the cycle.
+    @cycleIndex = 0
+    @reposition()
+    @toggleClosed(@closed)
+
+    # CSS hides the content until we've added our styles here.
+    @$el.addClass('loaded')
+
+  remove: ->
+    if @cycleInterval
+      clearInterval(@cycleInterval)
+    super()
+
+  events:
+    'tapclick .dev-shortlist-toggle': 'toggleClosed'
+
+  toggleClosed: (value) ->
+    @closed = @$el.toggleClass('closed', value).hasClass('closed')
+    @resize()
+    if @closed
+      @cycleInterval = setInterval(@cycle, 2000)
+    else
+      clearInterval(@cycleInterval)
+      @cycleInterval = null
+      @visibleWindow.css(height: @itemHeight * @itemCount)
+    @reposition()
+
+  # Adjust font size `1px` at a time, first increasing the size to ensure
+  # it's too wide, then decreasing the size until it just fits.
+  resize: =>
+    targetWidth = @$el.width()
+    fontSize = parseInt(@biggest.css('font-size'), 10)
+    list = @$('ul')
+    while @biggest.width() < targetWidth
+      list.css(fontSize: fontSize += 1)
+    while @biggest.width() > targetWidth
+      list.css(fontSize: fontSize -= 1)
+    @itemHeight = fontSize * 2
+    windowHeight = if @closed then @itemHeight else @itemHeight * @itemCount
+    @visibleWindow.css(height: windowHeight)
+    @reposition()
+
+  cycle: =>
+    @cycleIndex += 1
+    if @cycleIndex >= @itemCount
+      @cycleIndex = 0
+    @reposition()
+
+  reposition: ->
+    top = if @closed then (@cycleIndex * @itemHeight * -1) else 0
+    @$('ul').css(top: top)
 
 
 #### AboutView

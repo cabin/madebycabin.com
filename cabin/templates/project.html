@@ -66,6 +66,19 @@
     </div>
   </div>
 
+  {% if project.dev_shortlist %}
+    <div class="dev-shortlist">
+      <a class="dev-shortlist-toggle">Development Shortlist</a>
+      <div class="dev-shortlist-window">
+        <ul>
+        {% for item in project.dev_shortlist %}
+          <li>{{ item }}</li>
+        {% endfor %}
+        </ul>
+      </div>
+    </div>
+  {% endif %}
+
   <div class="images">
   {% for image in project.images %}
     <img src="{{ blank_img }}" alt

@@ -298,6 +298,7 @@ body.splash-transition
 // Project page  {{{2
 
 .page-project
+  overflow-x: hidden
   .info
     clearfix()
     margin: 30px 0 60px
@@ -336,6 +337,73 @@ body.splash-transition
     &.shadow
       border-radius: 4px 4px 0 0
       box-shadow: 0 0 2px 1px rgba(cabin_grey_dark, .2)
+
+  .dev-shortlist
+    margin-bottom: 60px
+    visibility: hidden  // avoid FOUC
+
+    .dev-shortlist-toggle
+      light-text()
+      background-color: cabin_black
+      border-radius: 2px
+      color: white
+      display: inline-block
+      font-weight: bold
+      line-height: 30px
+      margin-bottom: 1px
+      padding-right: 80px
+      text-transform: uppercase
+      // Breakout left.
+      margin-left: -200%
+      padding-left: 200%
+
+      // XXX TODO button
+      position: relative
+      &:after
+        background-color: cabin_black
+        border-radius: 2px
+        height: 100%
+        width: 30px
+        content: ""
+        display: inline-block
+        position: absolute
+        margin-left: 1px
+        left: 100%
+
+    .dev-shortlist-window, li
+      margin-left: -200%
+      margin-right: -200%
+      padding-left: 200%
+      padding-right: 200%
+
+    .dev-shortlist-window
+      overflow: hidden
+      position: relative
+
+    &.loaded
+      visibility: visible
+      .dev-shortlist-window
+        transition: height 300ms ease-in-out
+      ul
+        transition: top 300ms ease-in-out
+
+    ul
+      light-text()
+      color: white
+      font: 60px/2 headline_font
+      list-style: none
+      margin: 0
+      padding: 0
+      position: absolute
+      text-transform: uppercase
+      white-space: nowrap
+      width: 100%
+    li
+      background: cabin_black
+      // Since we're all in caps, the space for descenders leaves the text
+      // feeling un-centered vertically; pad the top to account for it.
+      span
+        padding-top: .05em
 
 
 // About page  {{{2
