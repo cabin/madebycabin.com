@@ -1,5 +1,11 @@
 Charts = Charts or {}
 
+# aboutInfographic
+# ----------------
+
+# Generates the his/hers timelines/infographics on the about page; input data
+# is a list of objects with `city`, `year` (a float, indicating the moved-to
+# date), `abbrCity` (for shorter labels), and `note` (displayed on hover).
 Charts.aboutInfographic = ->
   # Defaults.
   width = 500
@@ -41,6 +47,7 @@ Charts.aboutInfographic = ->
     if alignLeft then Math.ceil(padding / 2) else Math.floor(padding / 2)
   clipperId = (d, i) -> "clipper-#{idPrefix}#{i}"
 
+  #### paddedStackLayout
   # A helper for decorating a list of objects with y0 and y1 based on year.
   # (Because there is padding between each item in the stack, a linear scale
   # won't work.)
@@ -61,6 +68,7 @@ Charts.aboutInfographic = ->
       item.yearEnd = end
       item
 
+  #### animate
   # Build clip paths for animation.
   animate = (selection, data, invertY, yLabel) ->
     clipPaths = selection.selectAll('clipPath')
@@ -90,7 +98,7 @@ Charts.aboutInfographic = ->
           p = @parentNode
           p.parentNode.removeChild(p)
 
-  # Build the chart.
+  #### chart
   chart = (selection) -> selection.each (data) ->
     data = paddedStackLayout(data)
     extent = [data[0].y0, data[data.length - 1].y1]
@@ -122,11 +130,13 @@ Charts.aboutInfographic = ->
         .data(data, (d) -> d.year)
 
     # Each node is represented by a structure like this:
-    #   g.item
-    #     g.triangle
-    #       path.main
-    #       path.highlight
-    #     text
+    #
+    #     g.item
+    #       g.triangle
+    #         path.main
+    #         path.highlight
+    #       text
+
     itemsEnter = items
       .enter().append('g').classed('item', true)
         .attr('start', (d) -> d.year)  # used for ordering the cycler
@@ -189,7 +199,7 @@ Charts.aboutInfographic = ->
       text.attr('text-anchor', 'end')
 
 
-  ## Getter/setters  #########################################################
+  #### Getter/setters
 
   chart.width = (_) ->
     return width unless arguments.length
@@ -226,4 +236,5 @@ Charts.aboutInfographic = ->
     pixelsPerYear = _
     chart
 
-  chart  # chainable
+  # Make calls to the chart chainable.
+  chart

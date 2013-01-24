@@ -115,13 +115,11 @@ def register_assets(app):
 
     assets.register(
         'site.js',
-    #    Bundle(
-    #        '../templates/js/*',
-    #        depends='dummy',  # TODO: remove this once webassets fix is in
-    #        filters='handlebars', output='gen/templates.js'),
         Bundle(
             '../script/support.coffee',
             '../script/charts.coffee',
+            '../script/app.coffee',
             '../script/views.coffee',
+            '../script/admin.coffee',
             filters='coffeescript', output='gen/coffee.js'),
         filters='uglifyjs', output='gen/site-%(version)s.js')
