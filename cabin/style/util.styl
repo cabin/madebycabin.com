@@ -1,20 +1,27 @@
 // Set width and height at once.
 size(w, h = w)
-  width: unit(w, px)
-  height: unit(h, px)
+  w = unit(w, px) unless w is a 'unit'
+  h = unit(h, px) unless h is a 'unit'
+  width: w
+  height: h
 
-// TODO document
-inline-list(spacing = 20px)
+// An undecorated list.
+plain-list()
+  list-style: none
   margin: 0
   padding: 0
+
+// An undecorated list with inline (floated) items.
+inline-list(spacing = 20px)
+  plain-list()
   li
     float: left
     margin-right: spacing
-    list-style-type: none
   li:last-child
     margin-right: 0
 
 // Light text on a dark background looks much better antialiased.
+// TODO: rename to light-on-dark-text or something.
 light-text(reset = false)
   if reset
     -webkit-font-smoothing: subpixel-antialiased
