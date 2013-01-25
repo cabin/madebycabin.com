@@ -4,31 +4,28 @@
 #### EditProjectView
 # Handles drag and drop image/thumbnail upload, cohort fieldset management, and
 # hands off to `EditProjectImageView` children for per-image options.
-class EditProjectView extends Backbone.View
+class EditProjectView extends HierView
 
   initialize: ->
-    # XXX remove thumbnailDropper and imageDropper on remove()
     thumbnailDropper = new DropHandler(el: @$('fieldset.thumbnail'))
+    @addChild(thumbnailDropper)
     @listenTo(thumbnailDropper, 'drop', @dropThumbnail)
+
     imageDropper = new DropHandler(el: @$('fieldset.images .dropper'))
+    @addChild(imageDropper)
     @uploadFiles = imageDropper.uploadFiles
     @listenTo(imageDropper, 'drop', @dropImages)
+
     @previewContainer = @$('.images .preview')
     @projectImages = @initProjectImages(window.projectImages)
     @projectImages.each(@imageAdded)
     @listenTo(@projectImages, 'add', @imageAdded)
-    @$('.preview').sortable(handle: '.move', forcePlaceholderSize: true)
-
-  # Clean up any child views.
-  remove: ->
-    _(@imageViews).invoke('remove') if @imageViews
-    super()
 
   events:
     'click .cohort a.trash': 'removeCohort'
     'click .cohorts button': 'addCohort'
     'change .select-multiple-files input': 'selectFiles'
-    'sortupdate .preview': 'updateImageIndexes'
+    'sortupdate .preview': -> @trigger('rearrange')
 
   # Create a `ProjectImageCollection` whose members each have an `index`
   # attribute indicating order in the source array.
@@ -38,10 +35,10 @@ class EditProjectView extends Backbone.View
       item
 
   imageAdded: (model) =>
-    view = new EditProjectImageView(model: model)
-    @imageViews or= []
-    @imageViews.push(view)
+    view = @addChild(new EditProjectImageView(model: model))
+    view.listenTo(this, 'rearrange', view.updateIndex)
     @previewContainer.append(view.render().el)
+    @previewContainer.sortable(handle: '.move', forcePlaceholderSize: true)
 
   # When a new thumbnail is dropped, upload it immediately, update the preview,
   # and set the input's value to the filename from the upload response.
@@ -122,15 +119,11 @@ class EditProjectView extends Backbone.View
     oldInput = $(event.currentTarget)
     oldInput.replaceWith(oldInput.clone())
 
-  updateImageIndexes: ->
-    _(@imageViews).each (view) ->
-      view.model.set('index', view.$el.index())
-
 
 #### EditProjectImageView
 # Handles display and modification of the project image previews on the admin
 # page, including the (hidden) form fields for each.
-class EditProjectImageView extends Backbone.View
+class EditProjectImageView extends HierView
   tagName: 'figure'
   className: 'image'
   template: _.template('
@@ -166,7 +159,6 @@ class EditProjectImageView extends Backbone.View
 
   confirmRemove: ->
     if confirm("Are you sure you want to delete #{@model.get('file')}?")
-      # XXX remove from parent? HierView?
       @remove()
 
   updateName: (event, index) ->
@@ -175,6 +167,9 @@ class EditProjectImageView extends Backbone.View
       name = input.attr('name').split('-')
       name[1] = index
       input.attr('name', name.join('-'))
+
+  updateIndex: ->
+    @model.set('index', @$el.index())
 
 
 # Data models

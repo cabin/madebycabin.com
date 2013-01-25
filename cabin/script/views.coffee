@@ -5,7 +5,7 @@
 # Responsible for transitioning the splash header into/out of view. External
 # API is just the `show` and `hide` methods, which will return false if they
 # are called unnecessarily.
-class SplashView extends Backbone.View
+class SplashView extends HierView
   visibleClass: 'splash'
   transitionClass: 'splash-transition'
   el: document.body
@@ -65,7 +65,7 @@ class SplashView extends Backbone.View
 # the page via PJAX. This includes setting the document title, managing a
 # `page-*` class on its element, and performing the PJAX `.content`-element
 # replacement. It also manages a per-page view, when necessary.
-class MainView extends Backbone.View
+class MainView extends HierView
   el: $('.main')
 
   initialize: (options) ->
@@ -163,7 +163,8 @@ class MainView extends Backbone.View
     @_assignShortcuts(this)
     viewClass = @views[name]
     if viewClass
-      @pageView = new viewClass(el: @content, router: @router).render()
+      @pageView = @addChild(new viewClass(el: @content, router: @router))
+      @pageView.render()
       @_assignShortcuts(@pageView)
 
   _assignShortcuts: (obj) ->
@@ -178,7 +179,7 @@ class MainView extends Backbone.View
 
 #### WorkView
 # Applies jQuery Masonry on the collection of work.
-class WorkView extends Backbone.View
+class WorkView extends HierView
   containerSelector: '.bricks'
   itemSelector: '.work-thumb'
   itemWidth: 260
@@ -368,8 +369,7 @@ class DevShortlistView extends HierView
     @$el.addClass('loaded')
 
   remove: ->
-    if @cycleInterval
-      clearInterval(@cycleInterval)
+    clearInterval(@cycleInterval) if @cycleInterval
     super()
 
   events:
@@ -381,7 +381,7 @@ class DevShortlistView extends HierView
     if @closed
       @cycleInterval = setInterval(@cycle, 2000)
     else
-      clearInterval(@cycleInterval)
+      clearInterval(@cycleInterval) if @cycleInterval
       @cycleInterval = null
       @visibleWindow.css(height: @itemHeight * @itemCount)
     @reposition()
@@ -413,15 +413,14 @@ class DevShortlistView extends HierView
 
 
 #### AboutView
-class AboutView extends Backbone.View
+class AboutView extends HierView
 
   initialize: ->
     @sections = @$('section')
     @menu = @$('.menu')
     @menuArrow = @menu.find('.arrow')
     @adjustMenuArrow(@menu.find('a').first())
-    # XXX remove on remove
-    @chartView = new ChartView(el: @sections.filter('.graph'))
+    @chartView = @addChild(new ChartView(el: @sections.filter('.graph')))
     @chartView.render()
 
   events:
@@ -453,7 +452,7 @@ class AboutView extends Backbone.View
 
 #### ChartView
 # Data are arrays of three-tuples: [float year, short city name, note].
-class @ChartView extends Backbone.View
+class @ChartView extends HierView
   bekData: [
     [1978.5, 'Santa Barbara', 'X']
     [1996.66, 'New York City', 'X']
@@ -513,12 +512,16 @@ class @ChartView extends Backbone.View
     @cycle()
     @cycleInterval = setInterval(@cycle, 5000)
 
+  remove: ->
+    clearInterval(@cycleInterval) if @cycleInterval
+    super()
+
   cycle: =>
     @select(@cycleItems[@cycleIndex])
     @cycleIndex = (@cycleIndex + 1) % @cycleItems.length
 
   showDetails: (event) ->
-    clearInterval(@cycleInterval)
+    clearInterval(@cycleInterval) if @cycleInterval
     @select(event.currentTarget)
 
   select: (element) ->

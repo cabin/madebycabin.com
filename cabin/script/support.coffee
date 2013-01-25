@@ -23,7 +23,7 @@ class HierView extends Backbone.View
   # the parent step---useful for avoiding unnecessary bookkeeping when the
   # parent is also being removed.
   remove: (options = {}) ->
-    _(@_children).invoke('remove', ignoreParent: true)
+    _(@_children).invoke('remove', ignoreParent: true) if @_children?
     @_parent?._emancipate?(this) unless options.ignoreParent
     super()
 
