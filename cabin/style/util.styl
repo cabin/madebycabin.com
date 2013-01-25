@@ -1,7 +1,7 @@
 // Set width and height at once.
 size(w, h = w)
-  w = unit(w, px) unless w is a 'unit'
-  h = unit(h, px) unless h is a 'unit'
+  w = unit(w, px) if unit(w) is ''
+  h = unit(h, px) if unit(h) is ''
   width: w
   height: h
 

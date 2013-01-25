@@ -52,6 +52,7 @@ mini-text()
   background: cabin_black
   color: cabin_grey_dark
   font-size: 11px
+  font-weight: normal
   text-transform: uppercase
 
 .thin-text
@@ -344,33 +345,42 @@ body.splash-transition
     margin-bottom: 60px
     visibility: hidden  // avoid FOUC
 
-    .dev-shortlist-toggle
+    h3, .dev-shortlist-toggle
       light-text()
       background-color: cabin_black
       border-radius: 2px
       color: white
-      display: inline-block
-      font-weight: bold
-      line-height: 30px
-      margin-bottom: 1px
-      padding-right: 80px
+      float: left
       text-transform: uppercase
+    h3
+      line-height: 30px
+      margin: 0 1px 1px
+      padding-right: 80px
       // Breakout left.
       margin-left: -200%
       padding-left: 200%
-
-      // XXX TODO button
+    .dev-shortlist-toggle
+      box_width = 24
+      box_height = 30
+      hide-text()
+      float: left
       position: relative
-      &:after
-        background-color: cabin_black
-        border-radius: 2px
-        height: 100%
-        width: 30px
-        content: ""
+      size: box_width box_height
+      span
+        img = '../static/icons/plus-white@2x.png'
+        plus_size = image-size(img)[0] / 2  // assumed square
+        absolute: left ((box_width - plus_size) / 2) top ((box_height - plus_size) / 2)
+        background-image: url(img)
+        background-size: plus_size
         display: inline-block
-        position: absolute
-        margin-left: 1px
-        left: 100%
+        size: plus_size
+        transform: rotate(45deg) scale(1.1)  // scale improves the crispness
+      .no-touch &:hover
+        background-color: cabin_bronze
+    &.closed .dev-shortlist-toggle span
+      transform: none
+    &.loaded .dev-shortlist-toggle span
+      transition: transform 250ms ease-in-out
 
     .dev-shortlist-window, li
       margin-left: -200%
@@ -550,8 +560,10 @@ body.splash-transition
     .prev-next, .bottom
       display: none
 
-    .dev-shortlist-toggle
+    .dev-shortlist h3
       mini-text()
+      line-height: 28px
+      padding-top: 2px
 
 
   // About page  {{{2
@@ -956,6 +968,9 @@ body.splash-transition
       size: 38px button_height - 2px
       &:hover
         background-color: cabin_bronze
+
+    .dev-shortlist h3
+      font-size: 13px
 
     .bottom
       text-align: center
