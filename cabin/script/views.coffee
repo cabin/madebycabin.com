@@ -256,6 +256,7 @@ class ProjectView extends HierView
   events:
     'tapclick .tab-chooser a': 'selectTab'
     'tapclick .social a': 'share'
+    'tapclick .pinterest-image-picker a': 'sharePinterest'
 
   shortcuts:
     'left': 'goPrev'
@@ -298,21 +299,29 @@ class ProjectView extends HierView
   # Since we don't want to load a thousand external scripts and be forced to
   # display standard share buttons, this method catches clicks on our share
   # icons and pops up a centered, appropriately-sized window.
-  share: (event) ->
+  share: (event, network) ->
     event.preventDefault()
     target = $(event.currentTarget)
     url = target.attr('href')
     # Browser extensions might have added extra classes.
-    network = target.attr('class').split(' ')[0]
+    network = target.attr('class').split(' ')[0] unless network
+    # If Pinterest was clicked and there are images to choose from, pop up the
+    # image chooser; otherwise, just share the thumbnail from the target url.
+    if network is 'pinterest'
+      imagePicker = @$('.pinterest-image-picker')
+      return imagePicker.toggle() if imagePicker.length
     popup_sizes =
       facebook: [580, 325]
       twitter: [550, 420]
       pinterest: [632, 320]
+      pinterestPicker: [632, 320]
     [width, height] = popup_sizes[network]
     left = (screen.availWidth or screen.width) / 2 - width / 2
     top = (screen.availHeight or screen.height) / 2 - height / 2
     features = "width=#{width},height=#{height},left=#{left},top=#{top}"
     window.open(url, '_blank', features)
+
+  sharePinterest: (event) -> @share(event, 'pinterestPicker')
 
   goPrev: ->
     url = @$('.prev-next a').first().attr('href')
