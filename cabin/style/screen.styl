@@ -610,6 +610,7 @@ body.splash-transition
         background-color: cabin_grey_dark
         background-size: cover
         margin-bottom: 1px
+        position: relative
         padding-top: 25px
         h2, h3
           light-text()
@@ -619,6 +620,15 @@ body.splash-transition
           font-size: 24px
         h3
           body-text()
+        .toggle
+          img = 'icons/plus-about@2x.png'
+          s = image-size(img)
+          absolute: right 20px top 30px
+          display: inline-block
+          background-size: (s[0] / 2) (s[1] / 2)
+          replace-text: url(img)
+          size: (s[0] / 2) (s[1] / 2)
+          transition: transform 250ms ease-in-out
       // XXX should be using a cssrewrite filter instead of hardcoded
       &.bek hgroup
         background-image: url(/static/photos/bek-stripe@2x.jpg)
@@ -631,6 +641,8 @@ body.splash-transition
       &.open
         p, .social
           display: block
+        .toggle
+          transform: rotate(45deg)
 
     section.graph
       breakout()
