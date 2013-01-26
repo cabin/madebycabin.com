@@ -309,6 +309,8 @@ class ProjectView extends HierView
     # image chooser; otherwise, just share the thumbnail from the target url.
     if network is 'pinterest'
       imagePicker = @$('.pinterest-image-picker')
+      offset = target.outerWidth(true)
+      imagePicker.css(marginLeft: -(imagePicker.outerWidth() / 2) + offset)
       return imagePicker.toggle() if imagePicker.length
     popup_sizes =
       facebook: [580, 325]

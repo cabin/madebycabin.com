@@ -27,3 +27,18 @@ light-text(reset = false)
     -webkit-font-smoothing: subpixel-antialiased
   else
     -webkit-font-smoothing: antialiased
+
+
+// Create a pure-CSS arrow; credit http://cssarrowplease.com/.
+css-arrow(size = 9px, color = black, position = bottom, center = true)
+  opposite = opposite-position(position)
+  border: size solid transparent
+  border-{opposite}-color: color
+  width: 0
+  height: 0
+  if center
+    perpendicular = position in (left right) ? top : left
+    position: absolute
+    {opposite}: 100%
+    {perpendicular}: 50%
+    margin-{perpendicular}: -(size)
