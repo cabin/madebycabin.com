@@ -272,17 +272,22 @@ class ProjectView extends HierView
   # placeholder image should have data-src and data-height attributes, and can
   # have a data-class attribute for a class that will be applied after load.
   loadImages: ->
-    @$('img[data-src]').each (i, element) =>
+    @$('.images .placeholder').each (i, element) =>
       placeholder = $(element)
-      realSrc = placeholder.data('src')
-      fullHeight = placeholder.data('height')
-      placeholder.attr('height', Math.floor(fullHeight * @heightRatio))
-      img = new Image
-      img.onload = ->
-        placeholder.attr('src', realSrc)
-        placeholder.attr('class', placeholder.data('class'))
-        _.delay((-> placeholder.removeAttr('height')), 200)
-      img.src = realSrc
+      loadingView = @addChild(new LoadingView)
+      placeholder.append(loadingView.render().el)
+      img = placeholder.find('img')
+      realSrc = img.data('src')
+      fullHeight = img.data('height')
+      img.attr('height', Math.floor(fullHeight * @heightRatio))
+      imgLoader = new Image
+      imgLoader.onload = ->
+        loadingView.remove()
+        img.attr
+          src: realSrc
+          class: img.data('class')
+        _.delay((-> img.removeAttr('height')), 200)
+      imgLoader.src = realSrc
 
   selectTab: (event) ->
     # Unselect the previous item; hide its hr temporarily to avoid a shrinking
@@ -569,3 +574,16 @@ class @ChartView extends HierView
     @bekChart.width(bekWidth).textWidth(textWidth).padding(padding)(@bekSvg)
     @zakChart.width(zakWidth).textWidth(textWidth).padding(padding)(@zakSvg)
     @setupCycle()
+
+
+# Helpers
+# -------
+
+#### LoadingView
+# Renders a series of three dots that animate in color to indicate loading.
+class LoadingView extends HierView
+  className: 'loading-dots'
+
+  render: ->
+    _(3).times => @$el.append('<b>')
+    this

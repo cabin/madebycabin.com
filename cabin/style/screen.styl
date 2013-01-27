@@ -90,6 +90,28 @@ button, .button, .button-arrow
     content: ""
     display: block
 
+// <div class="loading-dots"><b></b><b></b><b></b></div>
+.loading-dots
+  font: bold 40px/10px ProximaNova
+  color: cabin_grey_med
+  b
+    animation-name: loading-dots
+    animation-duration: 1s
+    animation-timing-function: steps(1)
+    animation-iteration-count: infinite
+    &:before
+      content: "·"
+      display: inline-block
+  b:nth-child(2)
+    animation-delay: 200ms
+  b:nth-child(3)
+    animation-delay: 400ms
+@keyframes loading-dots
+  from
+    color: cabin_bronze
+  20%
+    color: cabin_grey_med
+
 
 // Set the overall page width either to a max value (if passed a single
 // argument) or bounded between min and max widths (with two arguments).
@@ -333,15 +355,19 @@ body.splash-transition
       color: cabin_bronze
     &:hover .arrow-mini
       background-color: cabin_bronze
-  .images img
-    background-color: cabin_grey_light
-    clear: both
-    width: 100%
-    margin-bottom: 60px
-    vertical-align: top
-    &.shadow
-      border-radius: 4px 4px 0 0
-      box-shadow: 0 0 2px 1px rgba(cabin_grey_dark, .2)
+  .images .placeholder
+    position: relative
+    .loading-dots
+      absolute: left 20px top 15px
+    img
+      background-color: cabin_grey_light
+      clear: both
+      width: 100%
+      margin-bottom: 60px
+      vertical-align: top
+      &.shadow
+        border-radius: 4px 4px 0 0
+        box-shadow: 0 0 2px 1px rgba(cabin_grey_dark, .2)
 
   .dev-shortlist
     margin-bottom: 60px

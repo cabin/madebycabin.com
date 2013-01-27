@@ -82,9 +82,11 @@
 
   <div class="images">
   {% for image in project.images %}
-    <img src="{{ blank_img }}" alt
-      {%- if image.shadow %} data-class="shadow"{% endif %}
-      data-src="{{ image_url(image.file) }}" data-height="{{ image.height }}">
+    <div class="placeholder">
+      <img src="{{ blank_img }}" alt
+        {%- if image.shadow %} data-class="shadow"{% endif %}
+        data-src="{{ image_url(image.file) }}" data-height="{{ image.height }}">
+    </div>
   {% endfor %}
   </div>
 
