@@ -1032,15 +1032,42 @@ body.splash-transition
           background-color: black
           &:hover
             background-color: cabin_bronze
+
       .pinterest-image-picker
         absolute: bottom 100% left 50%
-        background: cabin_grey_light
         margin-bottom: 20px
-        max-width: 500px
-        padding: 5px
+
+        // To create the bottom-pointing arrow with an uninterrupted box shadow
+        // and border, we use three layers. The container box is used as the
+        // background layer, and gets the border+shadow. Then is a small square
+        // (`&:before`) used for the arrow, which gets the same treatments. On
+        // top is a second container (`> div`) which holds the content and has
+        // a background color to hide the unwanted portion of the arrow's box.
+        &  // , > div (radiusing the inner container caused a hole
+          border-radius: 2px
+        &, &:before
+          box-shadow: 0 0 3px 0 rgba(cabin_black, 0.2)
+          border: cabin_grey_med
+        &:before, > div
+          background: cabin_grey_light
+        > div
+          clearfix()
+          padding: 10px 30px 30px 10px
+          transform: translateZ(0)  // z-index hack
+        &:before
+          absolute: left 50% top 100%
+          content: ""
+          display: block
+          transform: rotate(45deg)
+          width: 10px
+          height: @width
+          margin-top: -(@height / 2 + 1)
+          margin-left: 30px - (@width / 2)  // center on the pinterest icon
+
         a
+          outline: 1px solid cabin_grey_med
           float: left
-          margin: 10px
+          margin: 20px 0 0 20px
           min-height: 85px
           max-height: 170px
           overflow: hidden
@@ -1065,10 +1092,6 @@ body.splash-transition
             opacity: .3
           .button
             display: block
-        &:after
-          css-arrow(color: cabin_grey_light, position: bottom)
-          content: ""
-          display: block
 
 
   // About page  {{{2

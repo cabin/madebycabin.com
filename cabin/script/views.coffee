@@ -250,6 +250,7 @@ class ProjectView extends HierView
     @pageWidth = @$el.width()
     @heightRatio = @pageWidth / @fullImageWidth
     @loadImages()
+    @pinterestPicker = @$('.pinterest-image-picker')
     shortlist = @$('.dev-shortlist')
     @addChild(new DevShortlistView(el: shortlist)) if shortlist.length
 
@@ -312,11 +313,8 @@ class ProjectView extends HierView
     network = target.attr('class').split(' ')[0] unless network
     # If Pinterest was clicked and there are images to choose from, pop up the
     # image chooser; otherwise, just share the thumbnail from the target url.
-    if network is 'pinterest'
-      imagePicker = @$('.pinterest-image-picker')
-      offset = target.outerWidth(true)
-      imagePicker.css(marginLeft: -(imagePicker.outerWidth() / 2) + offset)
-      return imagePicker.toggle() if imagePicker.length
+    if network is 'pinterest' and @pinterestPicker.length
+      return @togglePinterestPicker()
     popup_sizes =
       facebook: [580, 325]
       twitter: [550, 420]
@@ -327,6 +325,30 @@ class ProjectView extends HierView
     top = (screen.availHeight or screen.height) / 2 - height / 2
     features = "width=#{width},height=#{height},left=#{left},top=#{top}"
     window.open(url, '_blank', features)
+
+  # Size the picker to fit all of its images, if possible; otherwise, size it
+  # to exactly fit the most possible images (the rest will wrap to following
+  # lines). Add a bottom-margin to each landscape-orientation image to ensure
+  # we wrap to clean rows. Don't bother to account for resizing the picker on
+  # window resizes; hardly worth the overhead. If the picker is already
+  # visible, just hide it.
+  togglePinterestPicker: ->
+    if @pinterestPicker.not(':visible')
+      images = @pinterestPicker.find('a')
+      w = images.outerWidth(true)
+      hMax = images.outerWidth()
+      hRatio = hMax / @fullImageWidth
+      images.each ->
+        a = $(this)
+        marginBottom = hMax - (hRatio * a.data('height'))
+        a.css(marginBottom: marginBottom) if marginBottom > 0
+      extraPadding = 40
+      containerWidth = @pinterestPicker.parent().width()
+      maxWidth = Math.min(w * images.length + extraPadding, containerWidth)
+      width = Math.floor((maxWidth - extraPadding) / w) * w + extraPadding
+      @pinterestPicker.width(width)
+        .css(marginLeft: -(@pinterestPicker.outerWidth() / 2))
+    @pinterestPicker.toggle()
 
   sharePinterest: (event) -> @share(event, 'pinterestPicker')
 
