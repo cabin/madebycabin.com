@@ -369,6 +369,17 @@ body.splash-transition
         border-radius: 4px 4px 0 0
         box-shadow: 0 0 2px 1px rgba(cabin_grey_dark, .2)
 
+  .arrow-left, .arrow-right
+    background-color: cabin_grey_light
+    border-radius: 2px
+    size: 38px button_height - 2px
+    .no-touch &:hover
+      background-color: cabin_bronze
+
+  .bottom
+    margin-bottom: 40px
+    text-align: center
+
   .dev-shortlist
     margin-bottom: 60px
     visibility: hidden  // avoid FOUC
@@ -586,7 +597,7 @@ body.splash-transition
 
   // Project page  {{{2
   .page-project
-    .prev-next, .bottom
+    .prev-next, .bottom .social
       display: none
 
     .dev-shortlist h3
@@ -1003,19 +1014,12 @@ body.splash-transition
       margin-right: 40px
     .tab-contents
       width: 520px
-    .arrow-left, .arrow-right
-      background-color: cabin_grey_light
-      border-radius: 2px
-      size: 38px button_height - 2px
-      &:hover
-        background-color: cabin_bronze
 
     .dev-shortlist h3
       font-size: 13px
 
     .bottom
       position: relative
-      text-align: center
       a, .social
         vertical-align: top
       .social
