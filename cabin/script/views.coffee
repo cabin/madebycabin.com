@@ -314,7 +314,7 @@ class ProjectView extends HierView
     # If Pinterest was clicked and there are images to choose from, pop up the
     # image chooser; otherwise, just share the thumbnail from the target url.
     if network is 'pinterest' and @pinterestPicker.length
-      return @togglePinterestPicker()
+      return @togglePinterestPicker(event)
     popup_sizes =
       facebook: [580, 325]
       twitter: [550, 420]
@@ -332,16 +332,16 @@ class ProjectView extends HierView
   # we wrap to clean rows. Don't bother to account for resizing the picker on
   # window resizes; hardly worth the overhead. If the picker is already
   # visible, just hide it.
-  togglePinterestPicker: ->
+  togglePinterestPicker: (event) ->
     if @pinterestPicker.not(':visible')
       images = @pinterestPicker.find('a')
-      w = images.outerWidth(true)
       hMax = images.outerWidth()
       hRatio = hMax / @fullImageWidth
       images.each ->
         a = $(this)
         marginBottom = hMax - (hRatio * a.data('height'))
         a.css(marginBottom: marginBottom) if marginBottom > 0
+      w = images.outerWidth(true)
       extraPadding = 40
       containerWidth = @pinterestPicker.parent().width()
       maxWidth = Math.min(w * images.length + extraPadding, containerWidth)
@@ -349,6 +349,7 @@ class ProjectView extends HierView
       @pinterestPicker.width(width)
         .css(marginLeft: -(@pinterestPicker.outerWidth() / 2))
     @pinterestPicker.toggle()
+    $(event.target).toggleClass('selected')
 
   sharePinterest: (event) -> @share(event, 'pinterestPicker')
 
