@@ -608,5 +608,5 @@ class LoadingView extends HierView
   className: 'loading-dots'
 
   render: ->
-    _(3).times => @$el.append('<b>')
+    @$el.html('<b></b><b></b><b></b><b class="x"></b>')
     this
