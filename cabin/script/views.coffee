@@ -19,8 +19,9 @@ class SplashView extends HierView
   hideMobileAddressBar: ->
     ua = navigator.userAgent
     iphone = ~ua.indexOf('iPhone') or ~ua.indexOf('iPod')
+    chrome = ~ua.indexOf('CriOS')
     fullscreen = navigator.standalone
-    if iphone and not fullscreen
+    if iphone and not fullscreen and not chrome
       de = document.documentElement
       htmlWrapper = $('html')
       fullHeightElements = $('body, body > header')
