@@ -120,8 +120,6 @@ class MainView extends HierView
     @title.text(titleChunks.join(' · '))
 
   pjax: (route) ->
-    startTime = new Date
-    @$el.addClass('loading')
     # Remove the old content immediately, which indicates that something is
     # happening, and scroll back to the top of the page.
     @content.empty()
@@ -129,25 +127,16 @@ class MainView extends HierView
     $.ajax
       url: "/#{route}"
       headers: {'X-PJAX': 'true'}
-      error: (xhr) => @_pjaxHandler(xhr.responseText, startTime)
-      success: (data) => @_pjaxHandler(data, startTime)
+      error: (xhr) => @_pjaxHandler(xhr.responseText)
+      success: (data) => @_pjaxHandler(data)
 
-  _pjaxHandler: (data, startTime) ->
+  _pjaxHandler: (data) ->
     @content.replaceWith(data)
     @content = $(@content.selector)  # DOM changed; need a re-query
-    @_endLoadingAnimation(startTime)
     @setTitle(@content.data('title'))
     page = @content.data('page')
     @_updatePageClass(page)
     @_updatePageView(page)
-
-  # Remove the `loading` class on the next multiple of the animation duration,
-  # so anything spinning finishes in a normal state. TODO: this will probably
-  # change drastically once we have a final animation design.
-  _endLoadingAnimation: (startTime) ->
-    duration = 750
-    finishDelay = (duration + (startTime - new Date)) % duration
-    _.delay((=> @$el.removeClass('loading')), finishDelay)
 
   # Sets a `page-<name>` class, useful for per-page CSS.
   _updatePageClass: (name) ->
