@@ -129,6 +129,15 @@ page-width(args...)
     else
       min-width: args[0]
       max-width: args[1]
+  // The splash page always gets full width. When transitioning,
+  // .splash-transition is applied during the transition, then .splash is
+  // toggled once it's complete. We want to show the appropriate width for the
+  // post-transition state, so: full width when not transitioning and on the
+  // splash page, or when transitioning but not *from* the splash page.
+  .splash:not(.splash-transition) & nav
+    max-width: none
+  .splash-transition:not(.splash) & nav
+    max-width: none
 
 
 // Lazy man's custom checkboxes; applying these styles allows styling the input
