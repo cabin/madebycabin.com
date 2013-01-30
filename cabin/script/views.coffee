@@ -80,6 +80,10 @@ class MainView extends HierView
       'about': AboutView
       'admin-project': EditProjectView
     @_updatePageView(@content.data('page'))
+    # iPhone only fires a scroll event on *completing* the scroll, so we also
+    # watch for touchmoves.
+    @checkScrollPosition()
+    $(window).on('scroll touchmove', _.throttle(@checkScrollPosition, 5))
 
   events:
     'tapclick a[href^="/"]': 'internalLink'
@@ -103,6 +107,9 @@ class MainView extends HierView
     event.stopPropagation()
     @router.navigate($(event.currentTarget).attr('href'), trigger: true)
     $(event.target).blur()  # kill focus outline
+
+  checkScrollPosition: (event) =>
+    @$el.toggleClass('scrolled', $(window).scrollTop() > 5)
 
   toggleSocial: (event) ->
     event.stopPropagation()

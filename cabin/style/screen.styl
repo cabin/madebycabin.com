@@ -548,7 +548,13 @@ body.splash-transition
     display: table
     width: 100%
     height: nav_height
-    line-height: @height
+    box-shadow: 0 0 2px 2px transparent
+    transition-properties: box-shadow, border
+    transition-duration: 500ms
+    transition-timing-function: ease-in-out
+    .scrolled &
+      border-bottom-color: transparent
+      box-shadow: 0 0 2px 2px rgba(cabin_grey_dark, .3)
 
     .logo
       background-size: 18px 15px
@@ -559,11 +565,19 @@ body.splash-transition
     .links
       display: table
       table-layout: fixed
+      margin-bottom: -1px  // Account for the extra-height children.
       width: 100%
       a
         border-left: 1px solid cabin_grey_light
         display: table-cell
         text-align: center
+        // Offset for the non-centered font.
+        padding-top: 3px
+        line-height: nav_height - @padding-top
+        // Extend the left border over the container's bottom border; that
+        // allows us to replace the bottom border with a box shadow without
+        // an awkward gap.
+        height: nav_height - @padding-top + 1
     .toggle, .social
       display: none
 
