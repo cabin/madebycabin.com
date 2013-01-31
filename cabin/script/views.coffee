@@ -246,14 +246,14 @@ class ProjectView extends HierView
     @contents = @$('.tab-contents').children()
     @pageWidth = @$el.width()
     @heightRatio = @pageWidth / @fullImageWidth
-    @setupSlideshow()
     @loadImages()
+    @setupSlideshow()
     @pinterestPicker = @$('.pinterest-image-picker')
     shortlist = @$('.dev-shortlist')
     @addChild(new DevShortlistView(el: shortlist)) if shortlist.length
 
   remove: ->
-    clearInterval(@slideshowInterval) if @slideshowInterval?
+    clearTimeout(@slideshowTimeout) if @slideshowTimeout?
     super()
 
   events:
@@ -272,12 +272,22 @@ class ProjectView extends HierView
     container = @$('.images')
     return unless container.data('slideshow')
     images = container.find('.placeholder')
+    interval = 4000
     index = 0
-    cycle = ->
-      images.hide().eq(index).show()
-      index = (index + 1) % images.length
+    # If the placeholder has a `.loading-dots` child, the image hasn't yet
+    # loaded. Check in every once in a while, and don't progress the slideshow
+    # until it's ready.
+    cycle = =>
+      next = images.eq(index)
+      if next.find('.loading-dots').length
+        wait = 200
+      else
+        images.hide()
+        next.show()
+        index = (index + 1) % images.length
+        wait = interval
+      @slideshowTimeout = setTimeout(cycle, wait)
     cycle()
-    @slideshowInterval = setInterval(cycle, 4000)
 
   # Because our work images are *huge* and Mobile Safari shows an ugly black
   # background while loading them, we set up placeholders here and swap in the
