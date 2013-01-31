@@ -23,3 +23,11 @@ def urlquote(s):
     if s:
         return urllib.quote_plus(s.encode('utf8'), safe='/')
     return ''
+
+
+def browser_version():
+    ua = request.user_agent
+    return [
+        ua.browser,
+        ua.version and int(ua.version.split('.')[0]),
+    ]

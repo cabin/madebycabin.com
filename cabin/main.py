@@ -1,8 +1,10 @@
 import collections
 import urllib2
 
+import flask
 from flask import abort, Blueprint, redirect, render_template, request, url_for
 
+from cabin import util
 from cabin.auth import get_current_user
 from cabin.models import grouped_services, Project
 
@@ -52,6 +54,25 @@ def about():
 @main.route('/lab')
 def lab():
     return render_template('lab.html')
+
+
+@main.route('/ie')
+def oldie():
+    if 'be_brave' in request.args:
+        flask.session['brave_soul'] = True
+        return redirect(url_for('main.index'))
+    return render_template('ie.html')
+
+
+@main.before_app_request
+def redirect_oldie():
+    browser, version = util.browser_version()
+    oldie = browser == 'msie' and version < 9
+    oldie_path = url_for('main.oldie')
+    brave = flask.session.get('brave_soul', False)
+    on_ie_page = request.path != oldie_path
+    if oldie and not (on_ie_page or brave):
+        return redirect(oldie_path)
 
 
 @main.app_errorhandler(404)
