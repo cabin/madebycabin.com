@@ -118,6 +118,7 @@ SCHEMAS['project'] = {
         'brief': {'type': 'string', 'required': True},
         'thumbnail_file': {'type': 'string', 'required': True},
         'external_url': {'type': 'string', 'format': 'uri'},
+        'is_slideshow': {'type': 'boolean', 'required': True, 'default': False},
         '_cohorts': SCHEMAS['cohorts'],
         '_services': SCHEMAS['services'],
         '_images': SCHEMAS['images'],

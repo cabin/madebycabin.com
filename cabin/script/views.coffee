@@ -246,10 +246,15 @@ class ProjectView extends HierView
     @contents = @$('.tab-contents').children()
     @pageWidth = @$el.width()
     @heightRatio = @pageWidth / @fullImageWidth
+    @setupSlideshow()
     @loadImages()
     @pinterestPicker = @$('.pinterest-image-picker')
     shortlist = @$('.dev-shortlist')
     @addChild(new DevShortlistView(el: shortlist)) if shortlist.length
+
+  remove: ->
+    clearInterval(@slideshowInterval) if @slideshowInterval?
+    super()
 
   events:
     'tapclick .tab-chooser a': 'selectTab'
@@ -260,6 +265,19 @@ class ProjectView extends HierView
     'left': 'goPrev'
     'right': 'goNext'
     '⌥+e': 'goAdmin'
+
+  # Some projects should cycle through their images one at a time, rather than
+  # displaying all images at once.
+  setupSlideshow: ->
+    container = @$('.images')
+    return unless container.data('slideshow')
+    images = container.find('.placeholder')
+    index = 0
+    cycle = ->
+      images.hide().eq(index).show()
+      index = (index + 1) % images.length
+    cycle()
+    @slideshowInterval = setInterval(cycle, 4000)
 
   # Because our work images are *huge* and Mobile Safari shows an ugly black
   # background while loading them, we set up placeholders here and swap in the

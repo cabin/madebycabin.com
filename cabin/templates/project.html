@@ -80,7 +80,7 @@
     </div>
   {% endif %}
 
-  <div class="images">
+  <div class="images"{% if project.is_slideshow %} data-slideshow="true"{% endif %}>
   {% for image in project.images %}
     <div class="placeholder">
       <img src="{{ blank_img }}" alt

@@ -53,6 +53,7 @@ class ProjectForm(Form):
     type = StringField('Project type', [InputRequired()])
     is_public = BooleanField('Public', default=False)
     is_featured = BooleanField('Featured', default=False)
+    is_slideshow = BooleanField('Slideshow', default=False)
     brief = TextAreaField('Brief', [InputRequired()],
                           description='Keep it that way.')
     thumbnail_file = HiddenField(validators=[InputRequired()])
