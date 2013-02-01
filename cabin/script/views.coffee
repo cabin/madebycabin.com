@@ -271,7 +271,8 @@ class ProjectView extends HierView
   setupSlideshow: ->
     container = @$('.images')
     return unless container.data('slideshow')
-    images = container.find('.placeholder')
+    images = container.find('.placeholder').hide()
+    images.first().show()
     interval = 4000
     index = 0
     # If the placeholder has a `.loading-dots` child, the image hasn't yet
