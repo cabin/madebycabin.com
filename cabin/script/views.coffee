@@ -246,6 +246,7 @@ class ProjectView extends HierView
     @contents = @$('.tab-contents').children()
     @pageWidth = @$el.width()
     @heightRatio = @pageWidth / @fullImageWidth
+    @images = @$('.images .placeholder')
     @loadImages()
     @setupSlideshow()
     @pinterestPicker = @$('.pinterest-image-picker')
@@ -262,30 +263,33 @@ class ProjectView extends HierView
     'tapclick .pinterest-image-picker a': 'sharePinterest'
 
   shortcuts:
-    'left': 'goPrev'
-    'right': 'goNext'
-    '⌥+e': 'goAdmin'
+    'left': 'previousProject'
+    'right': 'nextProject'
+    '⌥+e': 'adminProject'
+    'up': 'previousImage'
+    'down': 'nextImage'
+    'k': 'previousImage'
+    'j': 'nextImage'
 
   # Some projects should cycle through their images one at a time, rather than
   # displaying all images at once.
   setupSlideshow: ->
     container = @$('.images')
     return unless container.data('slideshow')
-    images = container.find('.placeholder').hide()
-    images.first().show()
+    @images.hide().first().show()
     interval = 4000
     index = 0
     # If the placeholder has a `.loading-dots` child, the image hasn't yet
     # loaded. Check in every once in a while, and don't progress the slideshow
     # until it's ready.
     cycle = =>
-      next = images.eq(index)
+      next = @images.eq(index)
       if next.find('.loading-dots').length
         wait = 200
       else
-        images.hide()
+        @images.hide()
         next.show()
-        index = (index + 1) % images.length
+        index = (index + 1) % @images.length
         wait = interval
       @slideshowTimeout = setTimeout(cycle, wait)
     cycle()
@@ -299,7 +303,7 @@ class ProjectView extends HierView
   # placeholder image should have data-src and data-height attributes, and can
   # have a data-class attribute for a class that will be applied after load.
   loadImages: ->
-    @$('.images .placeholder').each (i, element) =>
+    @images.each (i, element) =>
       placeholder = $(element)
       loadingView = @addChild(new LoadingView)
       placeholder.append(loadingView.render().el)
@@ -379,16 +383,55 @@ class ProjectView extends HierView
 
   sharePinterest: (event) -> @share(event, 'pinterestPicker')
 
-  goPrev: ->
+  previousProject: ->
     url = @$('.prev-next a').first().attr('href')
     @router.navigate(url, trigger: true) if url
 
-  goNext: ->
+  nextProject: ->
     url = @$('.prev-next a').last().attr('href')
     @router.navigate(url, trigger: true) if url
 
-  goAdmin: ->
+  adminProject: ->
     @router.navigate('admin/' + Backbone.history.fragment, trigger: true)
+
+  # Scroll to the top of the `n`th next image. Uses the jQuery 'fx' animation
+  # queue to handle multiple rapid calls; each new position isn't calculated
+  # until the previous animation is complete.
+  incrImage: (n = 1) ->
+    topPadding = @$el.offset().top + parseInt($('.main').css('padding-left'), 10)
+    @$el.queue (next) =>
+      # Compile a list of ordered scroll targets for each image, then insert
+      # the current scroll position into the list. Scroll to the current scroll
+      # position's index + n; this handles cases for being between images
+      # nicely.
+      imageTargets = _(@images).map (el) -> $(el).offset().top - topPadding
+      scrollY = $(window).scrollTop()
+      pos = _(imageTargets).sortedIndex(scrollY)
+      imageTargets.splice(pos, 0, null)
+      index = pos + n
+      index += n if scrollY is imageTargets[index]
+      # If we're above the first image, scroll to the top of the page. If below
+      # the last image, scroll to the bottom of the page.
+      scrollTo = if index < 0
+        0
+      else if index >= imageTargets.length
+        document.body.scrollHeight
+      else
+        imageTargets[index]
+      # Since we scroll two elements, the callback would be called twice;
+      # that'll bounce us through our animations too fast. We also defer to
+      # ensure the animation is *really* finished; without it, the callback was
+      # being called while the scrollTop was still 1px away from its target!
+      callback = _.once(-> _.defer(next))
+      $('html, body').animate({scrollTop: scrollTo}, 300, callback)
+
+  previousImage: (event) ->
+    event.preventDefault()
+    @incrImage(-1)
+
+  nextImage: (event) ->
+    event.preventDefault()
+    @incrImage()
 
 
 #### DevShortlistView
