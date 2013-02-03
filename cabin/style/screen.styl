@@ -152,6 +152,18 @@ custom-checkbox()
   cursor: pointer
 
 
+standard-shadow(inset = false,
+                x = 0, y = 0,
+                blur = 1px, spread = 1px,
+                color = cabin_grey_dark, alpha = 0.3)
+  color = color is 'transparent' ? color : rgba(color, alpha)
+  shadow = x y blur spread color
+  if inset
+    box-shadow: unquote("inset") shadow
+  else
+    box-shadow: shadow
+
+
 hover-hr(duration = 200ms)
   position: relative
   hr
@@ -244,9 +256,18 @@ body > header
     margin: 23px 0
 
 .nav-container
+  standard-shadow(color: transparent)
   background: white
+  border-bottom: 1px solid cabin_grey_light
   fixed: top left; right 0
+  transition-property: border, box-shadow
+  transition-duration: 500ms
+  transition-timing-function: ease-in-out
   z-index: 10
+  .scrolled &
+    standard-shadow()
+    border-bottom-color: transparent
+
 nav
   user-select: none
   position: relative
@@ -553,18 +574,9 @@ body.splash-transition
   nav_height = 40px
 
   nav
-    border-bottom: 1px solid cabin_grey_light
     display: table
     width: 100%
     height: nav_height
-    box-shadow: 0 0 2px 2px transparent
-    transition-properties: box-shadow, border
-    transition-duration: 500ms
-    transition-timing-function: ease-in-out
-    .scrolled &
-      border-bottom-color: transparent
-      box-shadow: 0 0 2px 2px rgba(cabin_grey_dark, .3)
-
     .logo
       background-size: 18px 15px
       background-position: center 12px
@@ -735,8 +747,7 @@ body.splash-transition
       breakout()
       div
         breakout()
-        border-bottom: 1px solid cabin_grey_dark
-        box-shadow: inset 0 -2px 2px -1px rgba(cabin_grey_dark, .5)
+        standard-shadow(inset: true, y: -2px, spread: -1px)
         height: 50px
         margin-bottom: 20px
         padding-bottom: 20px
@@ -806,8 +817,6 @@ body.splash-transition
   nav_height = 90px
   footer_height = 60px
 
-  .nav-container
-    box-shadow: 0 0 2px 2px rgba(cabin_grey_dark, .3)
   nav
     height: (nav_height / 3)
     line-height: @height
@@ -904,9 +913,9 @@ body.splash-transition
     white-space: pre
 
   .footer-container
+    standard-shadow(inset: true, y: 2px, spread: -1px)
     absolute: bottom left; right: 0
     background: cabin_grey_light
-    box-shadow: inset 0 2px 2px -2px cabin_grey_dark
   footer
     height: footer_height
     line-height: @height
@@ -1203,8 +1212,8 @@ body.splash-transition
 
     section.graph
       breakout()
-      background: #ebebe7  // XXX
-      box-shadow: inset 0 0 3px 2px rgba(cabin_grey_dark, .3)
+      standard-shadow(inset: true)
+      background: cabin_grey_light
       min-height: 400px
       padding-top: 40px
       padding-bottom: 60px
@@ -1230,7 +1239,7 @@ body.splash-transition
 
     section.clients
       breakout()
-      box-shadow: 0 2px 3px 0 rgba(cabin_grey_dark, .3)
+      standard-shadow(y: 2px, spread: -1px)
       padding-top: 40px
       padding-bottom: 40px
       z-index: 2
