@@ -345,6 +345,9 @@ class ProjectView extends HierView
     # image chooser; otherwise, just share the thumbnail from the target url.
     if network is 'pinterest' and @pinterestPicker.length
       return @togglePinterestPicker(event)
+    # If we just shared from the Pinterest chooser, close it.
+    if network is 'pinterestPicker'
+      @togglePinterestPicker(target: @$('.bottom .pinterest'))
     popup_sizes =
       facebook: [580, 325]
       twitter: [550, 420]
