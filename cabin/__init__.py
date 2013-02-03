@@ -6,6 +6,7 @@ from flask.ext.uploads import UploadSet, configure_uploads
 from redis import StrictRedis as Redis
 
 from cabin import util
+from cabin.util import session
 
 PROD_INSTANCE_PATH = '/srv/http/cabin/instance'
 
@@ -29,6 +30,7 @@ def create_app():
         UPLOADS_DEFAULT_URL='/u/',
     )
     app.config.from_pyfile('settings.cfg', silent=True)
+    app.session_interface = util.session.ItsdangerousSessionInterface()
 
     register_assets(app)
     configure_uploads(app, [images])

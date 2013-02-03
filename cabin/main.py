@@ -67,10 +67,10 @@ def oldie():
 @main.before_app_request
 def redirect_oldie():
     browser, version = util.browser_version()
-    oldie = browser == 'msie' and version < 9
+    oldie = browser == 'msie' and version < 10
     oldie_path = url_for('main.oldie')
     brave = flask.session.get('brave_soul', False)
-    on_ie_page = request.path != oldie_path
+    on_ie_page = request.path == oldie_path
     if oldie and not (on_ie_page or brave):
         return redirect(oldie_path)
 
