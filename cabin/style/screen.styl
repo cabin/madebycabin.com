@@ -185,13 +185,15 @@ hover-hr(duration = 200ms)
   position: relative
   hr
     absolute: top left
-    background: cabin_black
+    background: cabin_hl_light
     border: none
     margin: 0
     size: 0 1px
     transition: width duration
   .no-touch &:hover hr, &.selected hr
     width: 100%
+  &.selected hr
+    background: cabin_black
 
 
 // Apply centered text on top of a horizontal rule, with padding. For example:
