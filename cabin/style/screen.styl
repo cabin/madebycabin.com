@@ -364,6 +364,13 @@ body.splash-transition
 
 // Project page  {{{2
 
+.icon-plus, .page-project .linkhunter .lh-install:before
+  img = '../static/icons/plus-white@2x.png'
+  plus_size = image-size(img)[0] / 2  // assumed square
+  background-image: url(img)
+  background-size: plus_size
+  size: plus_size
+
 .page-project
   overflow-x: hidden
   .info
@@ -446,13 +453,10 @@ body.splash-transition
       position: relative
       size: box_width box_height
       span
-        img = '../static/icons/plus-white@2x.png'
-        plus_size = image-size(img)[0] / 2  // assumed square
+        @extend .icon-plus
+        plus_size = image-size('../static/icons/plus-white@2x.png')[0] / 2
         absolute: left ((box_width - plus_size) / 2) top ((box_height - plus_size) / 2)
-        background-image: url(img)
-        background-size: plus_size
         display: inline-block
-        size: plus_size
         transform: rotate(45deg) scale(1.1)  // scale improves the crispness
       .no-touch &:hover
         background-color: cabin_bronze
@@ -999,6 +1003,26 @@ body.splash-transition
         color: cabin_black
       &.selected
         cursor: default
+
+    .linkhunter
+      margin-top: 1em
+      .lh-installed
+        background-image: url(linkhunter-symbol.png)
+        background-repeat: no-repeat
+        background-position: left center
+        line-height: 19px
+        padding-left: 24px
+      .lh-install
+        light-text()
+        background-color: cabin_bronze
+        color: white
+        &:hover
+          background-color: cabin_black
+        &:before
+          // @extend .icon-plus  (faked elsewhere due to media query)
+          content: ""
+          display: inline-block
+          margin-right: 8px
 
     .services
       font-weight: bold

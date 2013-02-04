@@ -252,6 +252,8 @@ class ProjectView extends HierView
     @pinterestPicker = @$('.pinterest-image-picker')
     shortlist = @$('.dev-shortlist')
     @addChild(new DevShortlistView(el: shortlist)) if shortlist.length
+    if @$el.data('title') is 'Linkhunter'
+      @$('.brief').append(@renderChild(new LinkhunterView))
 
   remove: ->
     clearTimeout(@slideshowTimeout) if @slideshowTimeout?
@@ -521,6 +523,43 @@ class DevShortlistView extends HierView
   reposition: ->
     top = if @closed then (@cycleIndex * @itemHeight * -1) else 0
     @$('ul').css(top: top)
+
+
+#### LinkhunterView
+# Allows for inline installation of the extension for Chrome-using visitors.
+class LinkhunterView extends HierView
+  extensionID: 'ndjggnnohdkheiijjhbklkanjcpibbng'
+  logoURL: 'browser-action.png'
+  className: 'linkhunter'
+
+  # There's no great way to check whether a Chrome extension is installed; apps
+  # get a chrome.app.isInstalled, but it doesn't work for extensions. Instead,
+  # we attempt to load a linkhunter resource into a hidden img and report
+  # success or failure.
+  initialize: ->
+    return unless window.chrome?.webstore?
+    img = document.createElement('img')
+    img.onload = @renderInstalled
+    img.onerror = @renderNotInstalled
+    img.style.display = 'none'
+    img.src = "chrome-extension://#{@extensionID}/#{@logoURL}"
+    document.body.appendChild(img)
+
+  events:
+    'click .lh-install': 'install'
+
+  renderInstalled: =>
+    @$el.html('<p class="lh-installed">Installed / ready to hunt</p>')
+
+  # https://developers.google.com/chrome/web-store/docs/inline_installation
+  renderNotInstalled: =>
+    l = $('<link rel="chrome-webstore-item">')
+    l.attr('href', "https://chrome.google.com/webstore/detail/#{@extensionID}")
+    $('head').append(l)
+    @$el.append('<button class="lh-install">Add to Chrome</button>')
+
+  install: (event) ->
+    chrome.webstore.install(undefined, @renderInstalled)
 
 
 #### AboutView
