@@ -6,8 +6,9 @@ cabin_black = #2b2b2b
 cabin_grey_dark = #929292
 cabin_grey_med = #d2d2d2
 cabin_grey_light = #f2f2f2
-cabin_mustard = #edbc13
-cabin_bronze = #ab9960
+cabin_hl_light = #ab7050
+cabin_hl_dark = #8a5a3a
+
 default_tap_highlight_color = rgba(26, 26, 26, 0.3)
 body_font = ProximaNova, Helvetica Neue, Helvetica, sans-serif
 headline_font = 'YWFT Ultramagnetic Light'  // XXX backup?
@@ -62,9 +63,16 @@ h1
   @extend .headline-text
   margin: 30px 0
 
-button, .button, .button-arrow
+
+hl-background()
+  background-color: cabin_hl_light
+  background-image: linear-gradient(top, cabin_hl_light, cabin_hl_dark)
+
+// Default button is black on grey; use .button-black or .button-hl to get
+// black button or inverted-black buttons.
+button, .button
   @extend .small-header-text
-  background: cabin_grey_light
+  background-color: cabin_grey_light
   border: none
   border-radius: 2px
   color: cabin_black
@@ -72,15 +80,12 @@ button, .button, .button-arrow
   line-height: button_height - 2px
   padding: button_height - @line-height 12px 0
   white-space: nowrap
-  &[type="submit"]
-    light-text()
-    background: cabin_black
-    color: white
   &:hover
     light-text()
-    background: cabin_bronze
+    hl-background()
     color: white
 .button-arrow
+  @extend button
   padding-right: 26px
   position: relative
   &:after
@@ -89,6 +94,18 @@ button, .button, .button-arrow
     background-repeat: no-repeat
     content: ""
     display: block
+.button-black, button[type="submit"]
+  @extend button
+  light-text()
+  background-color: cabin_black
+  color: white
+.button-hl
+  @extend button
+  light-text()
+  hl-background()
+  color: white
+  &:hover
+    background: cabin_black
 
 // <div class="loading-dots"><b></b><b></b><b></b><b class="x"></b></div>
 .loading-dots
@@ -108,7 +125,7 @@ button, .button, .button-arrow
     animation-duration: 1s
     animation-timing-function: steps(1)
     animation-iteration-count: infinite
-    color: cabin_bronze
+    color: cabin_hl_light
 @keyframes loading-dots
   0%
     left: 0
@@ -168,15 +185,13 @@ hover-hr(duration = 200ms)
   position: relative
   hr
     absolute: top left
-    background: cabin_bronze
+    background: cabin_black
     border: none
     margin: 0
     size: 0 1px
     transition: width duration
   .no-touch &:hover hr, &.selected hr
     width: 100%
-  &.selected hr
-    background: cabin_black
 
 
 // Apply centered text on top of a horizontal rule, with padding. For example:
@@ -399,9 +414,9 @@ body.splash-transition
       background-color: cabin_black
       vertical-align: middle
     &:hover
-      color: cabin_bronze
+      color: cabin_hl_light
     &:hover .arrow-mini
-      background-color: cabin_bronze
+      background-color: cabin_hl_light
   .images .placeholder
     position: relative
     .loading-dots
@@ -419,9 +434,10 @@ body.splash-transition
   .arrow-left, .arrow-right
     background-color: cabin_grey_light
     border-radius: 2px
+    display: inline-block
     size: 38px button_height - 2px
     .no-touch &:hover
-      background-color: cabin_bronze
+      hl-background()
 
   .bottom
     margin-bottom: 40px
@@ -459,7 +475,7 @@ body.splash-transition
         display: inline-block
         transform: rotate(45deg) scale(1.1)  // scale improves the crispness
       .no-touch &:hover
-        background-color: cabin_bronze
+        hl-background()
     &.closed .dev-shortlist-toggle span
       transform: none
     &.loaded .dev-shortlist-toggle span
@@ -522,7 +538,7 @@ body.splash-transition
       float: left
       margin-right: 5px
       .no-touch &:hover
-        background-color: cabin_bronze
+        hl-background()
   .graph
     .svg
       white-space: nowrap
@@ -563,13 +579,8 @@ body.splash-transition
     line-height: 30px
     width: 80px
   .button, .button-arrow
-    light-text()
-    background-color: cabin_black
-    color: white
     float: left
     margin: 0 5px 10px 0
-    &:hover
-      background-color: cabin_bronze
 
 
 // <= iPhone 5 landscape  {{{1
@@ -841,7 +852,7 @@ body.splash-transition
         margin-right: 20px
         padding: 0 10px
         &:hover
-          color: cabin_bronze
+          color: cabin_hl_light
 
     .social
       transition_duration = 400ms
@@ -857,7 +868,7 @@ body.splash-transition
         relative: left 100% top
         transition: left transition_duration ease transition_duration
         &:hover
-          background-color: cabin_bronze
+          hl-background()
       a:first-child
         left: 0
     // Inside the toggle is a `b` used for creating a little border on hover,
@@ -1013,11 +1024,6 @@ body.splash-transition
         line-height: 19px
         padding-left: 24px
       .lh-install
-        light-text()
-        background-color: cabin_bronze
-        color: white
-        &:hover
-          background-color: cabin_black
         &:before
           // @extend .icon-plus  (faked elsewhere due to media query)
           content: ""
@@ -1088,9 +1094,9 @@ body.splash-transition
         > a
           float: left
           margin-left: 5px
-          background-color: black
+          background-color: cabin_black
           &:hover, &.selected
-            background-color: cabin_bronze
+            hl-background()
 
       .pinterest-image-picker
         absolute: bottom 100% left 50%
@@ -1135,11 +1141,8 @@ body.splash-transition
           img
             max-width: 100%
             max-height: 100%
-          .button
-            light-text()
+          span
             display: none
-            background-color: cabin_black
-            color: white
             absolute: left 50% top 50%
             margin-top: -(button_height / 2)
             width: 60px
@@ -1149,8 +1152,10 @@ body.splash-transition
         a:hover
           img
             opacity: .3
-          .button
+          span
             display: block
+            &:hover
+              background: cabin_black
 
 
   // About page  {{{2
@@ -1205,12 +1210,7 @@ body.splash-transition
         font-family: Georgia, serif
         font-size: 20px
       .email
-        light-text()
-        background: cabin_bronze
-        color: white
         text-transform: none
-        &:hover
-          background: cabin_black
 
     .summary, .partners
       float: right
@@ -1273,7 +1273,7 @@ body.splash-transition
         overflow: hidden
         white-space: nowrap
       a
-        background-color: cabin_bronze
+        background-color: cabin_hl_light
         float: left
         margin-left: 27px
         &:first-child
@@ -1410,7 +1410,7 @@ body.splash-transition
       custom-checkbox()
       position: relative
     [name="is_public"]
-      background-color: cabin_mustard
+      background-color: cabin_hl_light
       margin-right: 10px
       top: 3px
       &:checked
@@ -1420,7 +1420,7 @@ body.splash-transition
       margin-right: 20px
       top: 4px
       &:checked
-        background-color: cabin_mustard
+        background-color: cabin_hl_light
 
     [name="title"]
       float: left

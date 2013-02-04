@@ -111,7 +111,7 @@
       {% for image in project.images %}
         <a href="http://pinterest.com/pin/create/button/?url={{ url }}&description={{ title }}&media={{ image_url(image.file)|external_url|urlquote }}" data-height="{{ image.height }}">
           <img src="{{ image_url(image.file) }}" alt>
-          <span class="button">Pin it</span>
+          <span class="button-black">Pin it</span>
         </a>
       {% endfor %}
     </div></div>

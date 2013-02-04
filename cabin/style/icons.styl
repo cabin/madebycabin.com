@@ -16,8 +16,14 @@ icon(filename, retina = false)
 
 social-icon(network, retina = false)
   fnSuffix = retina ? '@2x' : ''
-  .social .{network}, .icon.{network}, .connect li.{network}:before
-    background-image: url('icons/social/' + network + fnSuffix + '.png')
+  .social .{network}, .icon.{network}, .connect li.{network}
+    position: relative
+    &:before
+      background-image: url('icons/social/' + network + fnSuffix + '.png')
+  .icon.{network}:before
+    absolute: left top
+    content: ""
+    icon-base(16px)
 
 
 .icon-30
@@ -26,8 +32,14 @@ social-icon(network, retina = false)
 .icon
   icon-base(16px)
 
-.social > a, .connect li:before
-  icon-base(26px)
+.social > a, .connect li
+  hide-text()
+  width: 26px
+  height: 26px
+  &:before
+    icon-base(26px)
+    absolute: left top
+    content: ""
 
 icon(arrow-mini)
 icon(browser-shadow)
@@ -42,14 +54,21 @@ icon(public)
 icon(trash)
 
 .arrow-left, .arrow-right
-  icon-base(14px, 13px)
+  hide-text()
+  position: relative
+  &:before
+    icon-base(14px, 13px)
+    absolute: left 12px top 7px
+    content: ""
 .arrow-left
-  background-image: url('icons/arrow-left-grey.png')
-  &:hover
+  &:before
+    background-image: url('icons/arrow-left-grey.png')
+  &:hover:before
     background-image: url('icons/arrow-left-white.png')
 .arrow-right
-  background-image: url('icons/arrow-right-grey.png')
-  &:hover
+  &:before
+    background-image: url('icons/arrow-right-grey.png')
+  &:hover:before
     background-image: url('icons/arrow-right-white.png')
 .button-arrow:after
   img = 'icons/button-arrow-white.png'

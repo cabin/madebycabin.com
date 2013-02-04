@@ -556,7 +556,7 @@ class LinkhunterView extends HierView
     l = $('<link rel="chrome-webstore-item">')
     l.attr('href', "https://chrome.google.com/webstore/detail/#{@extensionID}")
     $('head').append(l)
-    @$el.append('<button class="lh-install">Add to Chrome</button>')
+    @$el.append('<button class="lh-install button-hl">Add to Chrome</button>')
 
   install: (event) ->
     chrome.webstore.install(undefined, @renderInstalled)
