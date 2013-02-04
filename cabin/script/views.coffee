@@ -698,15 +698,20 @@ class @ChartView extends HierView
       # Match the width of my half of the chart to my bio's current width.
       zakWidth = $('.bio.zak').width() + 15
       bekWidth = width - zakWidth
+      pixelsPerYear = 8
       textWidth = 100
       padding = 5
     else
       padding = 1
       bekWidth = Math.floor((width - padding) / 2)
       zakWidth = width - bekWidth
+      pixelsPerYear = 6
       textWidth = 25
-    @bekChart.width(bekWidth).textWidth(textWidth).padding(padding)(@bekSvg)
-    @zakChart.width(zakWidth).textWidth(textWidth).padding(padding)(@zakSvg)
+    d = (chart) ->
+      chart.textWidth(textWidth).padding(padding).pixelsPerYear(pixelsPerYear)
+      chart
+    d(@bekChart).width(bekWidth)(@bekSvg)
+    d(@zakChart).width(zakWidth)(@zakSvg)
     @setupCycle()
 
 
