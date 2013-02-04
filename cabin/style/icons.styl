@@ -109,12 +109,14 @@ social-icon(twitter)
   icon(trash, true)
 
   .arrow-left
-    background-image: url('icons/arrow-left-grey@2x.png')
-    &:hover
+    &:before
+      background-image: url('icons/arrow-left-grey@2x.png')
+    &:hover:before
       background-image: url('icons/arrow-left-white@2x.png')
   .arrow-right
-    background-image: url('icons/arrow-right-grey@2x.png')
-    &:hover
+    &:before
+      background-image: url('icons/arrow-right-grey@2x.png')
+    &:hover:before
       background-image: url('icons/arrow-right-white@2x.png')
   .button-arrow:after
     background-image: url('icons/button-arrow-white@2x.png')
