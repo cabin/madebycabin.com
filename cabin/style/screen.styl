@@ -392,7 +392,7 @@ body.splash-transition
   overflow-x: hidden
   .info
     clearfix()
-    margin: 30px 0 60px
+    margin: 30px 0
   hgroup
     h1
       line-height: 1
@@ -658,6 +658,9 @@ body.splash-transition
 
   // Project page  {{{2
   .page-project
+    .tabs
+      margin-top: 10px
+
     .prev-next, .bottom .social
       display: none
 
@@ -1064,6 +1067,7 @@ body.splash-transition
 
     .info
       position: relative
+      margin-bottom: 60px
       .prev-next
         absolute: top right
     hgroup
@@ -1605,7 +1609,7 @@ body.splash-transition
 // At full width, tabs and the tab-chooser are displayed horizontally. As the
 // browser width decreases, first we tuck the tabs underneath the title, then
 // hide the tab-chooser altogether.
-@media only screen and (max-width: 1159px)
+@media only screen and (min-width: 569px) and (max-width: 1159px)
   .page-project .tabs
     border-right: none
     clear: left
