@@ -132,7 +132,7 @@ class MainView extends HierView
     @content.empty()
     window.scroll(0, 0)
     $.ajax
-      url: "/#{route}"
+      url: "/#{route}?_pjax=1"
       headers: {'X-PJAX': 'true'}
       error: (xhr) => @_pjaxHandler(xhr.responseText)
       success: (data) => @_pjaxHandler(data)
