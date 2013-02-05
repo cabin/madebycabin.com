@@ -547,11 +547,13 @@ body.splash-transition
       svg
         vertical-align: top
         display: inline-block
+        #gradient .top
+          stop-color: cabin_hl_light
+        #gradient .bottom
+          stop-color: cabin_hl_dark
         .selected
-          &, path.main, text
-            fill: cabin_bronze
-          path.highlight
-            fill: #b8a878
+          text
+            fill: cabin_hl_light
           &, g
             fill-opacity: 1
     .notes

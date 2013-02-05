@@ -105,6 +105,26 @@ Charts.aboutInfographic = ->
     height = extent[1]
     labelAdj = labelAdjustments[if textWidth < 50 then 'small' else 'normal']
 
+    defsEnter = selection.selectAll('defs')
+        .data([1])
+      .enter().append('defs')
+    # Browsers disagree about what relative url references in external
+    # stylesheets should be relative *to*. WebKit makes the pragmatic choice;
+    # Firefox makes the pedantic one (quelle surprise):
+    #   https://bugzilla.mozilla.org/show_bug.cgi?id=632004
+    defsEnter.append('style')
+        .text('.selected, .item.selected path.main { fill: url(#gradient); }')
+    gradientEnter = defsEnter.append('linearGradient')
+        .attr('id', 'gradient')
+        .attr('x1', 0)
+        .attr('y1', 0)
+        .attr('x2', 0)
+        .attr('y2', 1)
+    gradientEnter.append('stop').classed('top', true)
+        .attr('offset', '0%')
+    gradientEnter.append('stop').classed('bottom', true)
+        .attr('offset', '100%')
+
     g = selection
         .attr('width', width)
         .style('width', width)  # Chrome wouldn't reflow inline-block otherwise
@@ -114,8 +134,9 @@ Charts.aboutInfographic = ->
     g.enter().append('g').classed('items', true)
     g.attr('transform', "translate(0, #{iconHeight + padding})")
 
-    # Such a hack. May the gods have mercy on my soul.
+    # Build the little his/hers icon.
     iconPath = selection.selectAll('path.icon')
+        # Such a hack. May the gods have mercy on my soul.
         .data([if alignLeft then 'hers' else 'his'])
     iconPath
       .enter().append('path').classed('icon', true)
@@ -134,7 +155,7 @@ Charts.aboutInfographic = ->
     #     g.item
     #       g.triangle
     #         path.main
-    #         path.highlight
+    #         path.endcap
     #       text
 
     itemsEnter = items
@@ -142,7 +163,7 @@ Charts.aboutInfographic = ->
         .attr('start', (d) -> d.year)  # used for ordering the cycler
     trianglesEnter = itemsEnter.append('g').classed('triangle', true)
     trianglesEnter.append('path').classed('main', true)
-    trianglesEnter.append('path').classed('highlight', true)
+    trianglesEnter.append('path').classed('endcap', true)
     itemsEnter.append('text')
 
     items.exit().remove()
@@ -173,12 +194,15 @@ Charts.aboutInfographic = ->
           [xLabel(), yLabel(i)]
           [xPoint(), yLabel(i)]
           [xTriangleEdge(), invertY(d.y0)]
+          [xEndcapEdge(), invertY(d.y0)]
+          [xEndcapEdge(), invertY(d.y1)]
           [xTriangleEdge(), invertY(d.y1)]
           [xPoint(), yLabel(i) - .5]
           [xLabel(), yLabel(i) - .5]
         ])
-    items.select('path.highlight')
-        .attr('fill', d3.rgb(fillColor).brighter(1))
+    items.select('path.endcap')
+        .attr('fill', 'white')
+        .attr('fill-opacity', '.15')
         .attr 'd', (d, i) -> line([
           [xTriangleEdge(), invertY(d.y0)]
           [xEndcapEdge(), invertY(d.y0)]
