@@ -705,7 +705,7 @@ class @ChartView extends HierView
       padding = 1
       bekWidth = Math.floor((width - padding) / 2)
       zakWidth = width - bekWidth
-      pixelsPerYear = 6
+      pixelsPerYear = 7
       textWidth = 25
     d = (chart) ->
       chart.textWidth(textWidth).padding(padding).pixelsPerYear(pixelsPerYear)
