@@ -289,9 +289,18 @@ nav
   user-select: none
   position: relative
   .logo
-    replace-text: url('cabin-symbol.svg')
-    .no-svg &
+    hide-text()
+    position: relative
+    &:before
+      background-image: url(/static/cabin-symbol.svg)
+      background-position: 0 0
+      background-size: 200%
+      content: ""
+      display: block
+      position: absolute
+    .no-svg &:before
       background-image: url('cabin-symbol.png')
+      background-size: auto
   .links a
     @extend .small-header-text
     color: cabin_black
@@ -597,8 +606,12 @@ body.splash-transition
     width: 100%
     height: nav_height
     .logo
-      background-size: 18px 15px
-      background-position: center 12px
+      &:before
+        left: 50%; top: 12px
+        margin-left: -9px
+        size: 18px 16px
+      .svg &:hover:before
+        background-position: -18px 0
       display: table-cell
       text-indent: -999px
       width: 25%
@@ -846,9 +859,12 @@ body.splash-transition
     margin: 0 auto
 
     .logo
-      background-size: 35px 30px
       float: left
       size: 35px 30px
+      &:before
+        size: 100%
+      .svg &:hover:before
+        background-position: -35px 0
     .links
       float: right
       overflow: hidden
