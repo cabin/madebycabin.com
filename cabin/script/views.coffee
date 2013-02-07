@@ -636,13 +636,13 @@ class @ChartView extends HierView
     'Washington, DC': 'DC'
 
   initialize: ->
-    $(window).on('resize', _.debounce(@render, 100))
-    @graph = @$el.find('.svg').get(0)
-    @notes = @$el.find('.notes')
-    @bekSvg = d3.select(@graph).append('svg').datum(@decorateData(@bekData))
-    @zakSvg = d3.select(@graph).append('svg').datum(@decorateData(@zakData))
-    @bekChart = Charts.aboutInfographic().idPrefix('b')
-    @zakChart = Charts.aboutInfographic().idPrefix('z').alignLeft(false)
+    $(window).on('resize.pageview', _.debounce(@render, 100))
+    @container = @$('.svg')
+    @notes = @$('.notes')
+    @chart = Charts.aboutInfographic()
+        .selectedFill(['#ab7050', '#8a5a3a'])
+    @svg = d3.select(@container.get(0)).append('svg')
+        .datum([@decorateData(@bekData), @decorateData(@zakData)])
 
   decorateData: (data) ->
     _(data).map (item) =>
@@ -664,6 +664,7 @@ class @ChartView extends HierView
 
   remove: ->
     clearInterval(@cycleInterval) if @cycleInterval
+    $(window).off('.pageview')
     super()
 
   cycle: =>
@@ -679,9 +680,13 @@ class @ChartView extends HierView
     # support for SVG.
     target = d3.select(element)
     return unless target.classed('item')
-    d3.select(@graph).selectAll('.item, .icon').classed('selected', false)
-    d3.select(target.node().parentNode.parentNode).selectAll('.icon')
-      .classed('selected', true)
+    container = d3.select(@container.get(0))
+    container.selectAll('.item, .icon').classed('selected', false)
+    side = if d3.select(target.node().parentNode).classed('left')
+      'left'
+    else
+      'right'
+    container.select("##{side}-icon").classed('selected', true)
     target.classed('selected', true).each (d) =>
       from = Math.floor(d.year)
       to = Math.floor(d.yearEnd)
@@ -691,27 +696,24 @@ class @ChartView extends HierView
     @notes.show()
 
   render: =>
-    graph = $(@graph)
-    return unless graph.is(':visible')
-    width = graph.width()
+    return unless @container.is(':visible')
+    width = @container.width()
     if width > 528  # iPhone 5 landscape - padding
       # Match the width of my half of the chart to my bio's current width.
-      zakWidth = $('.bio.zak').width() + 15
-      bekWidth = width - zakWidth
-      pixelsPerYear = 8
-      textWidth = 100
-      padding = 5
+      @chart
+        .rightColumn(-> width - $('.bio.zak').width())
+        .label(size: 10, padding: 6, adjust: '-.5em', attr: 'city')
+        .textWidth(100)
+        .height(350)
+        .padding(5)
     else
-      padding = 1
-      bekWidth = Math.floor((width - padding) / 2)
-      zakWidth = width - bekWidth
-      pixelsPerYear = 7
-      textWidth = 25
-    d = (chart) ->
-      chart.textWidth(textWidth).padding(padding).pixelsPerYear(pixelsPerYear)
-      chart
-    d(@bekChart).width(bekWidth)(@bekSvg)
-    d(@zakChart).width(zakWidth)(@zakSvg)
+      @chart
+        .rightColumn(-> Math.floor(width / 2))
+        .label(size: 10, padding: 2, adjust: '-.28em', attr: 'abbrCity')
+        .textWidth(25)
+        .height(250)
+        .padding(1)
+    @chart.width(width)(@svg)
     @setupCycle()
 
 
