@@ -250,6 +250,7 @@ Charts.aboutInfographic = ->
     now = new Date
     now = now.getFullYear() + (now.getMonth() / 12)
     data.map (d, i) ->
+      side = lr(i)
       d.sort((a, b) -> d3.descending(a.year, b.year)).map (item, i) ->
         lastItem = d[i - 1] or null
         start = item.year
@@ -258,6 +259,7 @@ Charts.aboutInfographic = ->
         item.y0 = if lastItem? then lastItem.y1 + opts.padding else 0
         item.y1 = item.y0 + height
         item.yearEnd = end
+        item.side = side
         item
 
 

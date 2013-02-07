@@ -682,12 +682,8 @@ class @ChartView extends HierView
     return unless target.classed('item')
     container = d3.select(@container.get(0))
     container.selectAll('.item, .icon').classed('selected', false)
-    side = if d3.select(target.node().parentNode).classed('left')
-      'left'
-    else
-      'right'
-    container.select("##{side}-icon").classed('selected', true)
     target.classed('selected', true).each (d) =>
+      container.select("##{d.side}-icon").classed('selected', true)
       from = Math.floor(d.year)
       to = Math.floor(d.yearEnd)
       range = if from is to then from else "#{from}&ndash;#{to}"
