@@ -550,8 +550,11 @@ body.splash-transition
       margin-right: 5px
       .no-touch &:hover
         hl-background()
-  .graph .notes
-    display: none
+  .graph
+    svg .selected text
+      fill: cabin_hl_light
+    .notes
+      display: none
     // XXX fallback png for lame-os
   // Hide these until their image stylesheet is loaded.
   .clients a

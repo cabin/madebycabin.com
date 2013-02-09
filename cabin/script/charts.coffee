@@ -99,7 +99,7 @@ Charts.aboutInfographic = ->
     defs.select('style')
         .text("
           svg .icon, svg .item { fill: #{opts.fill}; }
-          svg .icon.selected, svg .selected text {
+          svg .icon.selected {
             fill: url(#selected-fill);
             fill-opacity: 1;
           }")
