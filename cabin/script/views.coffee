@@ -674,7 +674,9 @@ class @ChartView extends HierView
     @cycleIndex = (@cycleIndex + 1) % @cycleItems.length
 
   showDetails: (event) ->
-    clearInterval(@cycleInterval) if @cycleInterval
+    if @cycleInterval
+      clearInterval(@cycleInterval)
+      delete @cycleInterval
     @select(event.currentTarget)
 
   select: (element) ->
