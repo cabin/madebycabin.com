@@ -680,10 +680,8 @@ class @ChartView extends HierView
     # support for SVG.
     target = d3.select(element)
     return unless target.classed('item')
-    container = d3.select(@container.get(0))
-    container.selectAll('.item, .icon').classed('selected', false)
-    target.classed('selected', true).each (d) =>
-      container.select("##{d.side}-icon").classed('selected', true)
+    @chart.select(@svg, target)
+    target.each (d) =>
       from = Math.floor(d.year)
       to = Math.floor(d.yearEnd)
       range = if from is to then from else "#{from}&ndash;#{to}"

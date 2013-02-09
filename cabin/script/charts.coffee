@@ -20,7 +20,7 @@ Charts.aboutInfographic = ->
     leftIcon: 'M4.535,2.438C4.535,1.091,5.646,0,7.016,0c1.371,0,2.482,1.091,2.482,2.438 c0,1.345-1.111,2.436-2.482,2.436C5.646,4.874,4.535,3.782,4.535,2.438z M7.016,2.438 M8.072,28.859l1.602-8.535h3.114L9.435,9.021 H10l1.953,6.434c0.465,1.47,2.419,0.845,1.984-0.662l-2.171-7.007c-0.268-0.789-1.302-2.218-3.068-2.218H6.927l0,0H5.283 c-1.783,0-2.814,1.417-3.046,2.218L0.066,14.8c-0.45,1.507,1.519,2.086,1.984,0.679l1.955-6.458h0.521L1.208,20.324h3.101 l1.603,8.524C5.912,30.382,8.072,30.382,8.072,28.859z'
     rightIcon: 'M7.963,5.559C9.789,5.559,11,7.156,11,8.787v7.491c0.004,1.477-2.037,1.477-2.037,0V9.387H8.488 L6.744,28.483c0,2.022-2.463,2.022-2.463,0L2.537,9.387H2.052v6.892c0,1.465-2.052,1.465-2.052,0V8.742 c0-1.769,1.337-3.188,3.001-3.188L7.963,5.559z M5.494,4.871c1.306,0,2.363-1.091,2.363-2.436S6.8,0,5.494,0 C4.189,0,3.13,1.091,3.13,2.436S4.189,4.871,5.494,4.871z M5.494,2.436'
 
-  chartHeight = pixelsPerYear = null  # computed later
+  chartHeight = pixelsPerYear = selectionNode = null  # globals constructed later
   line = d3.svg.line()
   yLabel = d3.scale.linear()
   opacityScale = d3.scale.linear().range([.9, .1])
@@ -54,6 +54,15 @@ Charts.aboutInfographic = ->
     buildChart(charts.filter('.left'), 0)
     buildChart(charts.filter('.right'), 1)
 
+    # Build a single, reusable selection node.
+    g.selectAll('use')
+        .data([1])
+      .enter().append('use')
+        .attr('fill', 'url(#selected-fill)')
+        .attr('fill-opacity', 1)
+        .attr('xlink:href', '#selected-path')
+    selectionNode = g.select('use')
+
 
   #### buildDefs
   # Construct the `defs` element, necessary for styles and gradients.
@@ -61,6 +70,11 @@ Charts.aboutInfographic = ->
     defs = g.selectAll('defs')
         .data([true])
     defsEnter = defs.enter().append('defs')
+
+    # Define a clipPath that will be reused for each selection.
+    defsEnter.append('clipPath')
+        .attr('id', 'selected-clip')
+      .append('rect')
 
     # Define a top-down linear gradient for the selection color.
     defsEnter.append('linearGradient')
@@ -82,7 +96,13 @@ Charts.aboutInfographic = ->
     # Firefox makes the pedantic one (quelle surprise):
     #   https://bugzilla.mozilla.org/show_bug.cgi?id=632004
     defsEnter.append('style')
-        .text('.selected, .item.selected path.main { fill: url(#selected-fill); }')
+    defs.select('style')
+        .text("
+          svg .icon, svg .item { fill: #{opts.fill}; }
+          svg .icon.selected, svg .selected text {
+            fill: url(#selected-fill);
+            fill-opacity: 1;
+          }")
 
 
   #### buildIcons
@@ -97,7 +117,6 @@ Charts.aboutInfographic = ->
         .attr('fill-opacity', 0.2)
     paths
         .attr('d', (d) -> d)
-        .attr('fill', opts.fill)
         # Center the icon over its endcap.
         .attr 'transform', (d, i) ->
           x = xPositions(i)
@@ -137,6 +156,7 @@ Charts.aboutInfographic = ->
     items = g.selectAll('g.item').data((d) -> d)
     itemsEnter = items.enter().append('g').classed('item', true)
     trianglesEnter = itemsEnter.append('g').classed('triangle', true)
+        .attr('clip-path', (d, j) -> "url(#clip-#{i}-#{j})")
     trianglesEnter.append('path').classed('main', true)
     trianglesEnter.append('path').classed('endcap', true)
     itemsEnter.append('text')
@@ -170,15 +190,17 @@ Charts.aboutInfographic = ->
         .duration((d, i) -> animateDuration(i))
         .delay((d, i) -> animateDelay(i))
         .attr(x.animateAttr, x.edge)
+        # Remove the clip path after animating so resizes work.
+        .each 'end.transition', (d, j) ->
+          g.select("[clip-path*=clip-#{i}-#{j}]")
+              .attr('clip-path', null)
 
     # Configure shapes.
     items
         .attr('start', (d) -> d.year)  # used for ordering the cycler
       .select('g.triangle')
         .attr('fill-opacity', (d, i) -> opacityScale(i))
-        .attr('clip-path', (d, j) -> "url(#clip-#{i}-#{j})")
     items.select('path.main')
-        .attr('fill', opts.fill)
         .attr('d', trianglePath(x))
     items.select('path.endcap')
         .attr('fill', 'white')
@@ -192,7 +214,6 @@ Charts.aboutInfographic = ->
       .attr('y', (d, i) -> yLabel(i))
       .attr('dy', opts.label.adjust)
       .attr('font-size', opts.label.size)
-      .attr('fill', opts.fill)
     if lr(i) is 'right'
       text.attr('text-anchor', 'end')
 
@@ -250,6 +271,7 @@ Charts.aboutInfographic = ->
     now = new Date
     now = now.getFullYear() + (now.getMonth() / 12)
     data.map (d, i) ->
+      column = i
       side = lr(i)
       d.sort((a, b) -> d3.descending(a.year, b.year)).map (item, i) ->
         lastItem = d[i - 1] or null
@@ -259,11 +281,48 @@ Charts.aboutInfographic = ->
         item.y0 = if lastItem? then lastItem.y1 + opts.padding else 0
         item.y1 = item.y0 + height
         item.yearEnd = end
+        item.column = column
         item.side = side
         item
 
 
   #### External interface
+
+  # Animate selection color and update the selected icon for the given element.
+  # A single `use` element (`selectionNode`) is used to animate the selection
+  # color in; its href is always set to `#selected-path`. When a given item is
+  # selected, that item's `path.main` has its `id` set, and `selectionNode` is
+  # inserted in the DOM above the main path but beneath the endcap path.
+  chart.select = (g, target) ->
+    return unless target.select('use').empty()
+    x = null
+    g.selectAll('.icon, .item').classed('selected', false)
+    target.classed('selected', true).each (d) ->
+      x = xPositions(d.column)
+      g.select("##{d.side}-icon").classed('selected', true)
+
+    triangle = target.select('g.triangle')
+
+    g.selectAll('#selected-path').attr('id', null)
+    triangle.select('.main').attr('id', 'selected-path')
+    triangle.node().insertBefore(
+      selectionNode.node(), triangle.select('.endcap').node())
+
+    selectionNode.attr('clip-path', 'url(#selected-clip)')
+    g.select('#selected-clip rect')
+        .attr('x', x.text)
+        .attr('y', 0)
+        .attr('width', x.clipWidth)
+        .attr('height', chartHeight)
+      .transition()
+        .duration(300)
+        .attr(x.animateAttr, x.edge)
+        # Remove the clip path after animating so resizes work.
+        .each 'end.transition', (d, j) ->
+          g.select("[clip-path*=selected-clip]")
+              .attr('clip-path', null)
+
+
   # Provide chainable getters/setters for all `opts`, and return `chart`.
   getset = (attr) -> (value) ->
     return opts[attr] unless arguments.length
