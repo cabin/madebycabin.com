@@ -591,10 +591,12 @@ class AboutView extends HierView
       connect: '.connect'
     window.scrollTo(0, 0)
     selected = $(event.currentTarget)
+    selectedName = selected.data('name')
     @adjustMenuArrow(selected)
     @sections.removeClass('selected')
-      .filter(classMap[selected.data('name')]).addClass('selected')
-    @chartView.render()
+      .filter(classMap[selectedName]).addClass('selected')
+    if selectedName is 'partners'
+      @chartView.reanimate()
 
   toggleBio: (event) ->
     $(event.currentTarget).parent('.bio').toggleClass('open')
@@ -660,7 +662,7 @@ class @ChartView extends HierView
     @cycleItems = _(@$('g.item')).sortBy (item) ->
       parseFloat($(item).attr('start'))
     @cycle()
-    @cycleInterval = setInterval(@cycle, 5000)
+    @cycleInterval = setInterval(@cycle, 5000) unless @cycleInterval
 
   remove: ->
     clearInterval(@cycleInterval) if @cycleInterval
@@ -688,6 +690,12 @@ class @ChartView extends HierView
       @notes.find('.year').html(range)
       @notes.find('.note').text(d.note)
     @notes.show()
+
+  reanimate: ->
+    @svg.selectAll('.item').remove()
+    @render()
+    delete @cycleItems
+    @setupCycle()
 
   render: =>
     return unless @container.is(':visible')
