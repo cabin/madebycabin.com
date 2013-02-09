@@ -987,6 +987,16 @@ body.splash-transition
       content: ""
       display: block
       size: s[0] s[1]
+    &.shadow-top:after
+      img = 'photos/shadow-top.png'
+      s = image-size(img)
+      absolute: left -7px top -18px
+      background-image: url(img)
+      background-position: left top
+      background-repeat: no-repeat
+      content: ""
+      display: block
+      size: s[0] s[1]
 
 
   // Work page  {{{2
