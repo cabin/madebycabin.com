@@ -54,11 +54,6 @@ Charts.aboutInfographic = ->
     buildChart(charts.filter('.left'), 0)
     buildChart(charts.filter('.right'), 1)
 
-    # Set up selection event handlers.
-    g.selectAll('g.item')
-        .on('mouseover', mouseover)
-        .on('mouseout', mouseout)
-
 
   #### buildDefs
   # Construct the `defs` element, necessary for styles and gradients.
@@ -90,7 +85,7 @@ Charts.aboutInfographic = ->
     defs.select('style')
         .text("
           svg .icon, svg .item { fill: #{opts.fill}; }
-          svg .icon.selected {
+          svg .icon.selected, svg .selected path.main {
             fill: url(#selected-fill);
             fill-opacity: 1;
           }")
@@ -138,7 +133,6 @@ Charts.aboutInfographic = ->
   #       g.item ... (one per datum)
   #         g.triangle
   #           path.main
-  #           use (for selection color/animation)
   #           path.endcap
   #         text
   #         clipPath (for animation)
@@ -150,12 +144,6 @@ Charts.aboutInfographic = ->
     trianglesEnter = itemsEnter.append('g').classed('triangle', true)
         .attr('clip-path', (d, j) -> "url(#clip-#{i}-#{j})")
     trianglesEnter.append('path').classed('main', true)
-        .attr('id', (d, j) -> "path-#{i}-#{j}")
-    trianglesEnter.append('use')
-        .attr('visibility', 'hidden')
-        .attr('fill', 'url(#selected-fill)')
-        .attr('fill-opacity', 1)
-        .attr('xlink:href', (d, j) -> "#path-#{i}-#{j}")
     trianglesEnter.append('path').classed('endcap', true)
     itemsEnter.append('text')
 
@@ -179,10 +167,6 @@ Charts.aboutInfographic = ->
     # column, then animate `x` leftwards.
     itemsEnter.append('clipPath')
         .attr('id', (d, j) -> "clip-#{i}-#{j}")
-        # Adding a class since we need to select this later, and WebKit can't
-        # select on camelCase element names:
-        # https://bugs.webkit.org/show_bug.cgi?id=83438
-        .attr('class', 'clip-path')
       .append('rect')
         .attr('x', x.text)
         .attr('y', 0)
@@ -283,110 +267,11 @@ Charts.aboutInfographic = ->
         item.y0 = if lastItem? then lastItem.y1 + opts.padding else 0
         item.y1 = item.y0 + height
         item.yearEnd = end
-        item.column = column
         item.side = side
         item
 
 
   #### External interface
-
-
-  selectedList = []
-  mouseover = (d, i) ->
-    item = d3.select(this)
-    return if item.classed('selected')  # don't re-select
-
-    # When selecting a new item, first ensure all previous items are
-    # de-selected. If a selection transition is still in progress, allow it to
-    # complete (by chaining a new transition) before hiding; otherwise, hide
-    # immediately.
-    deselect = (rectNode) ->
-      c = d3.select(rectNode.parentNode.parentNode.parentNode)
-      use = d3.select(rectNode.parentNode.parentNode).select('use')
-          .attr('clip-path', "url(##{d3.select(rectNode.parentNode).attr('id')})")
-      if c.classed('left')
-        x = xPositions(0)
-      else
-        x = xPositions(1)
-      d3.select(rectNode)
-          .attr(x.animateAttr, x.edge)
-        .transition()
-          .duration(300)
-          .attr('x', x.text)
-          .attr('width', x.clipWidth)
-      #rectNode.transition()
-      #    .
-      #d3.select(rectNode.parentNode.parentNode)
-      #  .select('use')
-      #    .attr('visibility', 'hidden')
-    while selectedList.length
-      sel = selectedList.shift()
-      node = sel.node()
-      if node.__transition__
-        sel.transition().each('end.transition', -> deselect(this))
-      else
-        deselect(node)
-
-    x = null
-    g = d3.select('.svg svg')  # XXX
-    g.selectAll('.icon, .item').classed('selected', false)
-    item.classed('selected', true).each (d) ->
-      x = xPositions(d.column)
-      g.select("##{d.side}-icon").classed('selected', true)
-
-    clipPath = item.select('.clip-path')
-    use = item.select('use')
-        .attr('clip-path', "url(##{clipPath.attr('id')})")
-        .attr('visibility', null)
-    transition = clipPath.select('rect')
-        .attr('x', x.text)
-        .attr('width', x.clipWidth)
-      .transition()
-        .duration(300)
-        .attr(x.animateAttr, x.edge)
-        # Remove the clip path after animating so resizes work.
-        .each('end.transition', -> use.attr('clip-path', null))
-    selectedList.push(transition)
-
-  mouseout = ->
-
-
-  # Animate selection color and update the selected icon for the given element.
-  # A single `use` element (`selectionNode`) is used to animate the selection
-  # color in; its href is always set to `#selected-path`. When a given item is
-  # selected, that item's `path.main` has its `id` set, and `selectionNode` is
-  # inserted in the DOM above the main path but beneath the endcap path.
-  chart.select = (g, target) ->
-    return
-    #XXX return unless target.select('use').empty()
-    x = null
-    g.selectAll('.icon, .item').classed('selected', false)
-    target.classed('selected', true).each (d) ->
-      x = xPositions(d.column)
-      g.select("##{d.side}-icon").classed('selected', true)
-
-    triangle = target.select('g.triangle')
-
-    g.selectAll('#selected-path').attr('id', null)
-    triangle.select('.main').attr('id', 'selected-path')
-    triangle.node().insertBefore(
-      selectionNode.node(), triangle.select('.endcap').node())
-
-    selectionNode.attr('clip-path', 'url(#selected-clip)')
-    g.select('#selected-clip rect')
-        .attr('x', x.text)
-        .attr('y', 0)
-        .attr('width', x.clipWidth)
-        .attr('height', chartHeight)
-      .transition()
-        .duration(300)
-        .attr(x.animateAttr, x.edge)
-        # Remove the clip path after animating so resizes work.
-        .each 'end.transition', (d, j) ->
-          g.select("[clip-path*=selected-clip]")
-              .attr('clip-path', null)
-
-
   # Provide chainable getters/setters for all `opts`, and return `chart`.
   getset = (attr) -> (value) ->
     return opts[attr] unless arguments.length
