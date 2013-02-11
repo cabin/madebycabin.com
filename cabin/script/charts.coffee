@@ -20,7 +20,7 @@ Charts.aboutInfographic = ->
     leftIcon: 'M4.535,2.438C4.535,1.091,5.646,0,7.016,0c1.371,0,2.482,1.091,2.482,2.438 c0,1.345-1.111,2.436-2.482,2.436C5.646,4.874,4.535,3.782,4.535,2.438z M7.016,2.438 M8.072,28.859l1.602-8.535h3.114L9.435,9.021 H10l1.953,6.434c0.465,1.47,2.419,0.845,1.984-0.662l-2.171-7.007c-0.268-0.789-1.302-2.218-3.068-2.218H6.927l0,0H5.283 c-1.783,0-2.814,1.417-3.046,2.218L0.066,14.8c-0.45,1.507,1.519,2.086,1.984,0.679l1.955-6.458h0.521L1.208,20.324h3.101 l1.603,8.524C5.912,30.382,8.072,30.382,8.072,28.859z'
     rightIcon: 'M7.963,5.559C9.789,5.559,11,7.156,11,8.787v7.491c0.004,1.477-2.037,1.477-2.037,0V9.387H8.488 L6.744,28.483c0,2.022-2.463,2.022-2.463,0L2.537,9.387H2.052v6.892c0,1.465-2.052,1.465-2.052,0V8.742 c0-1.769,1.337-3.188,3.001-3.188L7.963,5.559z M5.494,4.871c1.306,0,2.363-1.091,2.363-2.436S6.8,0,5.494,0 C4.189,0,3.13,1.091,3.13,2.436S4.189,4.871,5.494,4.871z M5.494,2.436'
 
-  chartHeight = pixelsPerYear = selectionNode = null  # globals constructed later
+  chartHeight = pixelsPerYear = null  # globals constructed later
   line = d3.svg.line()
   yLabel = d3.scale.linear()
   opacityScale = d3.scale.linear().range([.9, .1])
@@ -54,14 +54,10 @@ Charts.aboutInfographic = ->
     buildChart(charts.filter('.left'), 0)
     buildChart(charts.filter('.right'), 1)
 
-    # Build a single, reusable selection node.
-    g.selectAll('use')
-        .data([1])
-      .enter().append('use')
-        .attr('fill', 'url(#selected-fill)')
-        .attr('fill-opacity', 1)
-        .attr('xlink:href', '#selected-path')
-    selectionNode = g.select('use')
+    # Set up selection event handlers.
+    g.selectAll('g.item')
+        .on('mouseover', mouseover)
+        .on('mouseout', mouseout)
 
 
   #### buildDefs
@@ -70,11 +66,6 @@ Charts.aboutInfographic = ->
     defs = g.selectAll('defs')
         .data([true])
     defsEnter = defs.enter().append('defs')
-
-    # Define a clipPath that will be reused for each selection.
-    defsEnter.append('clipPath')
-        .attr('id', 'selected-clip')
-      .append('rect')
 
     # Define a top-down linear gradient for the selection color.
     defsEnter.append('linearGradient')
@@ -147,6 +138,7 @@ Charts.aboutInfographic = ->
   #       g.item ... (one per datum)
   #         g.triangle
   #           path.main
+  #           use (for selection color/animation)
   #           path.endcap
   #         text
   #         clipPath (for animation)
@@ -158,6 +150,12 @@ Charts.aboutInfographic = ->
     trianglesEnter = itemsEnter.append('g').classed('triangle', true)
         .attr('clip-path', (d, j) -> "url(#clip-#{i}-#{j})")
     trianglesEnter.append('path').classed('main', true)
+        .attr('id', (d, j) -> "path-#{i}-#{j}")
+    trianglesEnter.append('use')
+        .attr('visibility', 'hidden')
+        .attr('fill', 'url(#selected-fill)')
+        .attr('fill-opacity', 1)
+        .attr('xlink:href', (d, j) -> "#path-#{i}-#{j}")
     trianglesEnter.append('path').classed('endcap', true)
     itemsEnter.append('text')
 
@@ -181,6 +179,10 @@ Charts.aboutInfographic = ->
     # column, then animate `x` leftwards.
     itemsEnter.append('clipPath')
         .attr('id', (d, j) -> "clip-#{i}-#{j}")
+        # Adding a class since we need to select this later, and WebKit can't
+        # select on camelCase element names:
+        # https://bugs.webkit.org/show_bug.cgi?id=83438
+        .attr('class', 'clip-path')
       .append('rect')
         .attr('x', x.text)
         .attr('y', 0)
@@ -288,13 +290,75 @@ Charts.aboutInfographic = ->
 
   #### External interface
 
+
+  selectedList = []
+  mouseover = (d, i) ->
+    item = d3.select(this)
+    return if item.classed('selected')  # don't re-select
+
+    # When selecting a new item, first ensure all previous items are
+    # de-selected. If a selection transition is still in progress, allow it to
+    # complete (by chaining a new transition) before hiding; otherwise, hide
+    # immediately.
+    deselect = (rectNode) ->
+      c = d3.select(rectNode.parentNode.parentNode.parentNode)
+      use = d3.select(rectNode.parentNode.parentNode).select('use')
+          .attr('clip-path', "url(##{d3.select(rectNode.parentNode).attr('id')})")
+      if c.classed('left')
+        x = xPositions(0)
+      else
+        x = xPositions(1)
+      d3.select(rectNode)
+          .attr(x.animateAttr, x.edge)
+        .transition()
+          .duration(300)
+          .attr('x', x.text)
+          .attr('width', x.clipWidth)
+      #rectNode.transition()
+      #    .
+      #d3.select(rectNode.parentNode.parentNode)
+      #  .select('use')
+      #    .attr('visibility', 'hidden')
+    while selectedList.length
+      sel = selectedList.shift()
+      node = sel.node()
+      if node.__transition__
+        sel.transition().each('end.transition', -> deselect(this))
+      else
+        deselect(node)
+
+    x = null
+    g = d3.select('.svg svg')  # XXX
+    g.selectAll('.icon, .item').classed('selected', false)
+    item.classed('selected', true).each (d) ->
+      x = xPositions(d.column)
+      g.select("##{d.side}-icon").classed('selected', true)
+
+    clipPath = item.select('.clip-path')
+    use = item.select('use')
+        .attr('clip-path', "url(##{clipPath.attr('id')})")
+        .attr('visibility', null)
+    transition = clipPath.select('rect')
+        .attr('x', x.text)
+        .attr('width', x.clipWidth)
+      .transition()
+        .duration(300)
+        .attr(x.animateAttr, x.edge)
+        # Remove the clip path after animating so resizes work.
+        .each('end.transition', -> use.attr('clip-path', null))
+    selectedList.push(transition)
+
+  mouseout = ->
+
+
   # Animate selection color and update the selected icon for the given element.
   # A single `use` element (`selectionNode`) is used to animate the selection
   # color in; its href is always set to `#selected-path`. When a given item is
   # selected, that item's `path.main` has its `id` set, and `selectionNode` is
   # inserted in the DOM above the main path but beneath the endcap path.
   chart.select = (g, target) ->
-    return unless target.select('use').empty()
+    return
+    #XXX return unless target.select('use').empty()
     x = null
     g.selectAll('.icon, .item').classed('selected', false)
     target.classed('selected', true).each (d) ->
