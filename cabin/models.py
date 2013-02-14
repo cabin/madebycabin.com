@@ -221,12 +221,13 @@ class Project(ValidatedHash):
     def _save_publicity(self, is_new):
         value = getattr(self, '_is_public', False if is_new else None)
         if value is not None:
+            op = 'lpush' if is_new else 'rpush'  # new items in front
             from_key, to_key = ['projects:public', 'projects:private']
             if value:
                 from_key, to_key = ['projects:private', 'projects:public']
             with redis.pipeline() as pipe:
                 pipe.lrem(from_key, 0, self._id)
-                pipe.rpush(to_key, self._id)
+                getattr(pipe, op)(to_key, self._id)
                 pipe.execute()
 
     def save(self):
