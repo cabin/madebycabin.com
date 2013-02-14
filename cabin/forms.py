@@ -47,10 +47,10 @@ class ImageForm(SimpleForm):
 
 
 class ProjectForm(Form):
-    slug = StringField('URL slug', [InputRequired(), Length(max=64)],
+    slug = StringField('URL slug', [InputRequired(), Length(min=2, max=64)],
                        filters=[lambda s: s and s.strip()])
-    title = TextAreaField('Title', [InputRequired()])
-    type = StringField('Project type', [InputRequired()])
+    title = TextAreaField('Title', [InputRequired(), Length(min=2)])
+    type = StringField('Project type', [InputRequired(), Length(min=2)])
     is_public = BooleanField('Public', default=False)
     is_featured = BooleanField('Featured', default=False)
     is_slideshow = BooleanField('Be the movie', default=False)
