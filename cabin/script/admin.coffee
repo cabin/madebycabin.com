@@ -219,6 +219,7 @@ class ManageWorkView extends WorkView
   saveOrder: (order) ->
     $.ajax
       type: 'POST'
+      url: '/admin/work'
       contentType: 'application/json; charset=utf-8',
       data: JSON.stringify({order: order})
 
