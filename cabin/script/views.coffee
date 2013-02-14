@@ -469,7 +469,7 @@ class DevShortlistView extends HierView
         biggest = span
     @biggest = biggest
     @visibleWindow = @$('.dev-shortlist-window')
-    $(window).on('resize', @resize); @resize()
+    $(window).on('resize.dev-shortlist', @resize); @resize()
 
     # Each item's opacity differs from the last by a set amount, variable based
     # on the number of items. The first item will be set to `opacity`, and the
@@ -491,6 +491,7 @@ class DevShortlistView extends HierView
 
   remove: ->
     clearInterval(@cycleInterval) if @cycleInterval
+    $(window).off('.dev-shortlist')
     super()
 
   events:
