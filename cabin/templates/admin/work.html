@@ -36,21 +36,23 @@
     {% endfor %}
   </section>
 
-  <section class="private">
-    <h1>Private</h1>
+  {% if private_projects %}
+    <section class="private">
+      <h1>Private</h1>
 
-    <div class="bricks">
-    {% for project in private_projects %}
-      <div class="work-thumb" data-slug="{{ project.slug }}">
-        <div class="work-controls">
-          <a href="{{ url_for('.project', slug=project.slug) }}" class="icon edit">Edit</a>
-          <input type="checkbox" name="is_public" class="icon public">
+      <div class="bricks">
+      {% for project in private_projects %}
+        <div class="work-thumb" data-slug="{{ project.slug }}">
+          <div class="work-controls">
+            <a href="{{ url_for('.project', slug=project.slug) }}" class="icon edit">Edit</a>
+            <input type="checkbox" name="is_public" class="icon public">
+          </div>
+          <hr><h2>{{ project.title }}</h2><h3>{{ project.type }}</h3>
+          <img src="{{ project.thumbnail_url }}" alt>
         </div>
-        <hr><h2>{{ project.title }}</h2><h3>{{ project.type }}</h3>
-        <img src="{{ project.thumbnail_url }}" alt>
+      {% endfor %}
       </div>
-    {% endfor %}
-    </div>
-  </section>
+    </section>
+  {% endif %}
 
 {% endblock %}
