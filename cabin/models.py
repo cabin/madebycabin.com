@@ -139,7 +139,11 @@ class Project(ValidatedHash):
             for _id in ids:
                 pipe.hmget('project:%s' % _id, *cls.summary_attrs)
             results = pipe.execute()
-        return [cls.decode(dict(zip(cls.summary_attrs, r))) for r in results]
+        projects = [cls.decode(dict(zip(cls.summary_attrs, r)))
+                    for r in results]
+        for project, _id in zip(projects, ids):
+            project._id = _id
+        return projects
 
     @classmethod
     def get(cls, _id, allow_private=False):

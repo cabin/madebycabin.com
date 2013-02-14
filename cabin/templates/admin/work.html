@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% set title = 'Manage Work' %}
+{% set page = 'admin-work' %}
+
+{% block content %}
+
+  <a class="button-black create-project" href="{{ url_for('.create') }}">Create a project</a>
+
+  <section class="public">
+    <h1>Manage Work</h1>
+
+    <div class="bricks">
+    {% for project in projects %}
+      <div class="work-thumb {%- if project.is_featured %} feature{% endif %}"
+        data-id="{{ project._id }}" data-slug="{{ project.slug }}">
+        <div class="work-controls">
+          <a href="{{ url_for('.project', slug=project.slug) }}" class="icon edit">Edit</a>
+          <input type="checkbox" name="is_public" class="icon public" checked>
+          <input type="checkbox" name="is_featured" class="icon feature"
+            {%- if project.is_featured %} checked{% endif %}>
+        </div>
+      
+        <hr><h2>{{ project.title }}</h2><h3>{{ project.type }}</h3>
+        <img src="{{ project.thumbnail_url }}" alt>
+      </div>
+    {% endfor %}
+    </div>
+  </section>
+
+  <section class="rearrange">
+    <h1>Rearrange</h1>
+    {% for project in projects %}
+      <div class="work-thumb" data-id="{{ project._id }}">
+        <hr><h2>{{ project.title }}</h2><h3>{{ project.type }}</h3>
+      </div>
+    {% endfor %}
+  </section>
+
+  <section class="private">
+    <h1>Private</h1>
+
+    <div class="bricks">
+    {% for project in private_projects %}
+      <div class="work-thumb" data-slug="{{ project.slug }}">
+        <div class="work-controls">
+          <a href="{{ url_for('.project', slug=project.slug) }}" class="icon edit">Edit</a>
+          <input type="checkbox" name="is_public" class="icon public">
+        </div>
+        <hr><h2>{{ project.title }}</h2><h3>{{ project.type }}</h3>
+        <img src="{{ project.thumbnail_url }}" alt>
+      </div>
+    {% endfor %}
+    </div>
+  </section>
+
+{% endblock %}

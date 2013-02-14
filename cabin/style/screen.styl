@@ -1004,7 +1004,7 @@ body.splash-transition
 
   // Work page  {{{2
 
-  .page-work
+  .page-work, .page-admin-work
     .work-thumb
       &.feature
         width: 540px
@@ -1380,6 +1380,18 @@ body.splash-transition
   // TODO: Consider pulling this out into its own stylesheet; load it only if
   // the user is logged in.
 
+  .page-admin-project, .page-admin-work
+    [name="is_public"], [name="is_featured"]
+      custom-checkbox()
+    [name="is_public"]
+      background-color: cabin_hl_light
+      &:checked
+        background-color: cabin_grey_med
+    [name="is_featured"]
+      background-color: cabin_grey_med
+      &:checked
+        background-color: cabin_hl_light
+
   .page-admin-project
     page-width(940px, 1100px)
     input_height = 38px
@@ -1429,20 +1441,13 @@ body.splash-transition
         width: 80px
 
     [name="is_public"], [name="is_featured"]
-      custom-checkbox()
       position: relative
     [name="is_public"]
-      background-color: cabin_hl_light
       margin-right: 10px
       top: 3px
-      &:checked
-        background-color: grey
     [name="is_featured"]
-      background-color: grey
       margin-right: 20px
       top: 4px
-      &:checked
-        background-color: cabin_hl_light
 
     [name="title"]
       float: left
@@ -1609,6 +1614,42 @@ body.splash-transition
         background-color: #f77
         &:hover
           background-color: cabin_black
+
+
+  .page-admin-work
+    .create-project
+      float: right
+      margin-top: 35px
+    .work-controls
+      absolute: right top 10px
+      background-image: linear-gradient(left, rgba(white, .1), white 30px)
+      opacity: 0
+      padding-left: 30px
+      transition: opacity 150ms ease-in-out
+      .icon
+        margin-left: 10px
+      a.icon
+        background-color: cabin_grey_med
+        vertical-align: top
+        &:hover
+          background-color: cabin_hl_light
+    .work-thumb:hover .work-controls
+      opacity: 1
+    section.public, section.rearrange, section.private
+      clearfix()
+    section.rearrange
+      margin-bottom: 40px
+      .sortable-placeholder
+        background-color: cabin_grey_light
+        float: left
+        margin-right: 20px
+        width: 260px
+      .work-thumb
+        margin-bottom: 0
+        padding-bottom: 0
+        cursor: move !important
+        &:hover hr
+          display: none
 
 
 // Assorted media queries  {{{1

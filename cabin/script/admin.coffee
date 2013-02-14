@@ -172,6 +172,57 @@ class EditProjectImageView extends HierView
     @model.set('index', @$el.index())
 
 
+#### ManageWorkView
+class ManageWorkView extends WorkView
+
+  initialize: ->
+    super
+    @$('.rearrange').sortable(items: '.work-thumb', forcePlaceholderSize: true)
+
+  events:
+    'change [name=is_public]': 'togglePublic'
+    'change [name=is_featured]': 'toggleFeatured'
+    'sortupdate': 'sortupdate'
+
+  togglePublic: (event) ->
+    target = $(event.target)
+    work = target.parents('.work-thumb')
+    @saveWork(work, is_public: target.is(':checked'))
+
+  toggleFeatured: (event) ->
+    target = $(event.target)
+    work = target.parents('.work-thumb')
+    @saveWork(work, is_featured: target.is(':checked'))
+
+  sortupdate: (event, item) ->
+    order = @$('.rearrange .work-thumb').map(-> $(this).data('id'))
+    container = @$('.public .bricks')
+    order.each (index, id) ->
+      container.append(container.find("[data-id=#{id}]"))
+    @masonryContainer.masonry('reload')
+    @saveOrder(order.get())
+
+  # HACK: I should really be using proper Backbone models here, and probably a
+  # template for rendering them with. However, this is quick 'n' dirty to get
+  # it out the door.
+  # Given a `work` jQuery object (which should have a `data-slug` attribute),
+  # sets all keys in `attributes` on the work, then pjax-reloads the page to
+  # ensure our rendering is up to date.
+  saveWork: (work, attributes) ->
+    $.ajax
+      type: 'PUT'
+      url: "/admin/work/#{work.data('slug')}"
+      data: attributes
+      context: this
+      complete: -> @_parent.pjax(Backbone.history.fragment)
+
+  saveOrder: (order) ->
+    $.ajax
+      type: 'POST'
+      contentType: 'application/json; charset=utf-8',
+      data: JSON.stringify({order: order})
+
+
 # Data models
 # -----------
 

@@ -79,6 +79,7 @@ class MainView extends HierView
       'project': ProjectView
       'about': AboutView
       'admin-project': EditProjectView
+      'admin-work': ManageWorkView
     @_updatePageView(@content.data('page'))
     # iPhone only fires a scroll event on *completing* the scroll, so we also
     # watch for touchmoves.
@@ -182,7 +183,8 @@ class WorkView extends HierView
   itemWidth: 260
   gutterWidth: 20
 
-  initialize: ->
+  initialize: (options) ->
+    @router = options.router
     @masonryContainer = $(@containerSelector)
     @items = @masonryContainer.find(@itemSelector)
     @featuredItems = @items.filter('.feature')
@@ -191,6 +193,12 @@ class WorkView extends HierView
       columnWidth: @computeColumnWidth
       gutterWidth: @gutterWidth
       isFitWidth: true
+
+  shortcuts:
+    '⌥+e': 'adminWork'
+
+  adminWork: ->
+    @router.navigate('admin/work', trigger: true)
 
   # Compute the page width required to display the given number of columns and
   # their gutters at full scale.
