@@ -662,7 +662,7 @@ class @ChartView extends HierView
       note: item[2]
 
   events:
-    'mouseover g': 'showDetails'
+    'mouseover g[class~=item]': 'showDetails'
 
   setupCycle: ->
     return if @cycleItems?
@@ -691,7 +691,6 @@ class @ChartView extends HierView
     # Using d3 instead of jQuery objects, since jQuery doesn't have any decent
     # support for SVG.
     target = d3.select(element)
-    return unless target.classed('item')
     @svg.selectAll('.item, .icon').classed('selected', false)
     target.classed('selected', true).each (d) =>
       @svg.select("##{d.side}-icon").classed('selected', true)
