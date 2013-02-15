@@ -93,7 +93,7 @@
   <div class="bottom">
   {% with %}
     {% set url = url_for('main.project', slug=project.slug, _external=true)|urlquote %}
-    {% set title = ("%s by Cabin" % project.title)|urlquote %}
+    {% set title = ("%s: %s by Cabin" % (project.title, project.type))|urlquote %}
     {# If there are no project images (dev-only projects), share the thumbnail
        image, which is required. If there is one image, share that image. If there
        is more than one image, we'll be popping open the picker, so just use the
