@@ -588,7 +588,7 @@ class AboutView extends HierView
 
   setupChart: ->
     @window = $(window)
-    @chartTop = @$('.svg').offset().top
+    @chart = @$('.svg')
     @chartInterval = setInterval(@renderChartWhenVisible, 200)
     @renderChartWhenVisible()
 
@@ -599,7 +599,7 @@ class AboutView extends HierView
       clearInterval(@chartInterval)
 
   isChartVisible: ->
-    @window.scrollTop() + @window.height() - @chartTop > 100
+    @window.scrollTop() + @window.height() - @chart.offset().top > 100
 
   adjustMenuArrow: (relativeTo) ->
     elementCenter = (el) ->
