@@ -682,11 +682,13 @@ class @ChartView extends HierView
 
   setupCycle: ->
     return if @cycleItems?
-    @cycleIndex = 0
-    @cycleItems = _(@$('g.item')).sortBy (item) ->
-      parseFloat($(item).attr('start'))
-    @cycle()
-    @cycleInterval = setInterval(@cycle, 5000) unless @cycleInterval
+    f = =>
+      @cycleIndex = 0
+      @cycleItems = _(@$('g.item')).sortBy (item) ->
+        parseFloat($(item).attr('start'))
+      @cycle()
+      @cycleInterval = setInterval(@cycle, 5000) unless @cycleInterval
+    setTimeout(f, 2000)
 
   remove: ->
     clearInterval(@cycleInterval) if @cycleInterval

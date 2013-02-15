@@ -100,7 +100,7 @@ Charts.aboutInfographic = ->
     paths.enter().append('path')
         .classed('icon', true)
         .attr('id', (d, i) -> "#{lr(i)}-icon")
-        .attr('fill-opacity', 0.2)
+        .attr('fill-opacity', 0)  # load hidden until animation completes
     paths
         .attr('d', (d) -> d)
         # Center the icon over its endcap.
@@ -180,6 +180,11 @@ Charts.aboutInfographic = ->
         .each 'end.transition', (d, j) ->
           g.select("[clip-path*=clip-#{i}-#{j}]")
               .attr('clip-path', null)
+          if j is 0  # last transition; expose icons
+            d3.select(g.node().parentNode).selectAll('.icon')
+              .transition()
+                .duration(100)
+                .attr('fill-opacity', 0.2)
 
     # Configure shapes.
     items
