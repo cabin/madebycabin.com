@@ -580,12 +580,26 @@ class AboutView extends HierView
     @menu = @$('.menu')
     @menuArrow = @menu.find('.arrow')
     @adjustMenuArrow(@menu.find('a').first())
-    @chartView = @addChild(new ChartView(el: @sections.filter('.graph')))
-    @chartView.render()
+    @setupChart()
 
   events:
     'tapclick .menu a': 'selectSection'
     'tapclick .bio hgroup': 'toggleBio'
+
+  setupChart: ->
+    @window = $(window)
+    @chartTop = @$('.svg').offset().top
+    @chartInterval = setInterval(@renderChartWhenVisible, 200)
+    @renderChartWhenVisible()
+
+  renderChartWhenVisible: =>
+    if @isChartVisible()
+      @chartView = @addChild(new ChartView(el: @sections.filter('.graph')))
+      @chartView.render()
+      clearInterval(@chartInterval)
+
+  isChartVisible: ->
+    @window.scrollTop() + @window.height() - @chartTop > 100
 
   adjustMenuArrow: (relativeTo) ->
     elementCenter = (el) ->
