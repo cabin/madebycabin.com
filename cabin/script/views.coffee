@@ -720,7 +720,7 @@ class @ChartView extends HierView
     @notes.show()
 
   reanimate: ->
-    @svg.selectAll('.item').remove()
+    @svg.selectAll('.item, .icon').remove()
     @render()
     delete @cycleItems
     @setupCycle()
