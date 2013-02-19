@@ -89,13 +89,15 @@ class ValidatedHash(object):
 
     def encode(self, skip_json=False):
         obj = {}
-        for name in self.schema['properties']:
-            if name.startswith('_'):
-                item = getattr(self, name[1:])
-                if not skip_json:
-                    item = json.dumps(item)
-            else:
-                item = getattr(self, name)
+        for name, schema in self.schema['properties'].items():
+            is_complex = name.startswith('_')
+            attr = name[1:] if is_complex else name
+            required = getattr(schema, 'required', False)
+            if not hasattr(self, attr) and not required:
+                continue
+            item = getattr(self, attr)
+            if is_complex and not skip_json:
+                item = json.dumps(item)
             obj[name] = item
         return obj
 

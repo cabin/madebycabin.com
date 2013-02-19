@@ -51,6 +51,18 @@ class Nested(ValidatedHash):
     }
 
 
+class Required(ValidatedHash):
+    schema = {
+        'type': 'object',
+        'additionalProperties': False,
+        'properties': {
+            'req': {'type': 'string', 'required': True},
+            'notreq': {'type': 'string', 'required': False},
+        }
+    }
+
+
+
 def test_ignore_bad_input():
     obj = Empty.decode({'no': 'valid', 'properties': 'here'})
     assert obj.__dict__ == {}
@@ -100,3 +112,8 @@ def test_nested_json():
 
 def test_validation():
     pytest.skip('TODO')
+
+
+def test_not_required():
+    obj = Required(req='x').encode()
+    assert 'notreq' not in obj
