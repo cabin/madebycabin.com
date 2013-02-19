@@ -2,7 +2,8 @@ import collections
 from itertools import groupby
 import json
 
-import jsonschema
+from flask import current_app as app
+import requests
 
 from cabin import images, redis
 from cabin.util.validated_hash import ValidatedHash
@@ -240,3 +241,149 @@ class Project(ValidatedHash):
         redis.hmset(key, self.encode())
         self._save_publicity(is_new)
         self._save_slug()
+
+
+SCHEMAS['feed'] = {
+    'type': 'object',
+    'additionalProperties': False,
+    'properties': {
+        'id': {'type': 'string', 'required': True},
+        'link': {'type': 'string', 'required': True},
+        'image_url': {'type': 'string', 'required': True},
+        '_image_size': {
+            'type': 'array',
+            'minItems': 2,
+            'maxItems': 2,
+            'items': {'type': 'integer', 'required': True},
+        },
+        'title': {'type': 'string', 'required': False},
+    }
+}
+
+
+# Subclasses must set `source` and implement `sync()`. Source is simply a
+# string indicating the service on which these feed items are stored. Sync
+# should fetch new items and update old items if necessary.
+class FeedItem(ValidatedHash):
+    schema = SCHEMAS['feed']
+
+    @classmethod
+    def get_latest(cls, n=10):
+        keys = redis.zrevrange(cls.list_key(), 0, n - 1)
+        instances = []
+        for key in keys:
+            instances.append(cls.decode(redis.hgetall(key)))
+        return instances
+
+    @classmethod
+    def sync(cls):
+        raise NotImplementedError
+
+    @classmethod
+    def list_key(self):
+        return 'feeds:%s' % self.source
+
+    @property
+    def key(self):
+        return '%s:%s' % (self.source, self.id)
+
+    def save(self):
+        if not self.is_valid():
+            print self.errors
+            raise ValueError('invalid objects cannot be saved')
+        redis.hmset(self.key, self.encode())
+        redis.zadd(self.list_key(), self._timestamp, self.key)
+
+
+# http://www.tumblr.com/docs/en/api/v2#posts
+class Tumblr(FeedItem):
+    source = 'tumblr'
+    blog_domain = 'madebycabin.tumblr.com'
+
+    @classmethod
+    def sync(cls):
+        url = 'http://api.tumblr.com/v2/blog/%s/posts' % cls.blog_domain
+        params = {
+            'api_key': app.config['TUMBLR_API_KEY'],
+            'filter': 'text',
+        }
+        r = requests.get(url, params=params)
+        posts = cls.parse_api_response(r.json())
+        for post in posts:
+            post.save()
+
+    @classmethod
+    def parse_api_response(cls, data):
+        posts = data['response']['posts']
+        items = []
+        for post in posts:
+            attrs = {
+                'id': str(post['id']),
+                'link': post['post_url'],
+                '_timestamp': post['timestamp'],
+            }
+            attrs.update(getattr(cls, '_parse_%s' % post['type'])(post))
+            items.append(cls(**attrs))
+        return items
+
+    @classmethod
+    def _parse_photo(cls, post):
+        first_photo = post['photos'][0]
+        image = {}
+        for alt in first_photo['alt_sizes']:
+            if alt['width'] > image.get('width', 0):
+                image = alt
+        return {
+            'image_url': image['url'],
+            'image_size': [image['width'], image['height']],
+            'title': post['caption'],
+        }
+
+    @classmethod
+    def _parse_text(cls, post):
+        raise NotImplementedError
+        # XXX parse image from body ... which means no filter=text?
+        return {
+            'image_url': image['url'],
+            'image_size': [image['width'], image['height']],
+            'title': post['title'],
+        }
+
+
+# http://instagram.com/developer/endpoints/users/#get_users_media_recent
+class Instagram(FeedItem):
+    source = 'instagram'
+    user_ids = [5155, 6973533]
+    tags = {'cabin'}
+
+    @classmethod
+    def sync(cls):
+        url = 'https://api.instagram.com/v1/users/%d/media/recent/'
+        params = {'access_token': app.config['INSTAGRAM_ACCESS_TOKEN']}
+        for user_id in cls.user_ids:
+            r = requests.get(url % user_id, params=params)
+            media = cls.parse_api_response(r.json())
+            for m in media:
+                m.save()
+
+    @classmethod
+    def parse_api_response(cls, data):
+        items = []
+        for item in data['data']:
+            # Filter by tags.
+            if not cls.tags.intersection(item['tags']):
+                continue
+            image = item['images']['low_resolution']
+            items.append(cls(
+                id=str(item['id']),
+                link=item['link'],
+                _timestamp=int(item['created_time']),
+                image_url=image['url'],
+                image_size=[image['width'], image['height']],
+            ))
+        return items
+
+
+# http://www.flickr.com/services/api/flickr.people.getPublicPhotos.html
+class Flickr(FeedItem):
+    source = 'flickr'
