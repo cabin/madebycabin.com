@@ -5,7 +5,6 @@
   
   .content
     clearfix()
-    padding-bottom: 40px
     visibility: hidden
     &.loaded
       visibility: visible
@@ -27,8 +26,14 @@
       color: cabin_black
       float: left
       margin-top: gutter
-      .no-touch &:hover
-        color: cabin_hl_light
+      .no-touch &:hover .img-wrapper
+        position: relative
+        &:after
+          absolute: top left; bottom: 0; right: 0
+          background-color: cabin_black
+          content: ""
+          display: block
+          opacity: .4
 
     img
       width: 100%
@@ -38,6 +43,9 @@
       font: normal 40px/1.1 headline_font
       text-transform: uppercase
       margin: 20px 0
+
+    section.tumblr, section.instagram, section.facebook
+      margin-bottom: 40px
 
     section.tumblr a
       border-top: 1px solid cabin_grey_light

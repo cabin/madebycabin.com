@@ -766,7 +766,7 @@ class BlogView extends HierView
     @masonryContainers = @$('section > .bricks')
     @masonryContainers.imagesLoaded =>
       @masonryContainers.masonry(gutterWidth: @gutterWidth)
-      @resize()
+    @resize()
     $(window).on('resize.pageview', _.debounce(@resize, 100))
 
   remove: ->
@@ -802,9 +802,10 @@ class BlogView extends HierView
         @instagram.width(cols(Math.ceil(n / 2))).css(marginLeft: @gutterWidth)
         @flickr.width(cols(Math.floor(n / 2))).css(marginLeft: @gutterWidth)
     # Update masonry.
-    @masonryContainers
-      .children().width(cols(1)).end()
-      .masonry(columnWidth: cols(1))
+    @masonryContainers.imagesLoaded =>
+      @masonryContainers
+        .children().width(cols(1)).end()
+        .masonry(columnWidth: cols(1))
     @$el.addClass('loaded').width(width)
 
   # Compute the page width required to display the given number of columns and
