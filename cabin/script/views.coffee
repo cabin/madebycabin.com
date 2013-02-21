@@ -78,6 +78,7 @@ class MainView extends HierView
       'work': WorkView
       'project': ProjectView
       'about': AboutView
+      'blog': BlogView
       'admin-project': EditProjectView
       'admin-work': ManageWorkView
     @_updatePageView(@content.data('page'))
@@ -745,6 +746,72 @@ class @ChartView extends HierView
         .padding(1)
     @chart.width(width)(@svg)
     @setupCycle()
+
+
+#### BlogView
+# The blog is made up of three visible columns, one each for Tumblr, Instagram,
+# and Flickr. The Instagram and Flickr columns contain elements of width `n`;
+# Tumblr is (2n + margin). When there is enough room for the Instagram/Flickr
+# columns to expand to (2n + margin) -- or (3n + 2margin), etc. -- they do so.
+# When there is less room than (2n + margin), Instagram and Flickr tuck
+# underneath.
+class BlogView extends HierView
+  columnWidth: 260
+  gutterWidth: 20
+
+  initialize: ->
+    @tumblr = @$('section.tumblr')
+    @instagram = @$('section.instagram')
+    @flickr = @$('section.flickr')
+    @masonryContainers = @$('section > .bricks')
+    @masonryContainers.imagesLoaded =>
+      @masonryContainers.masonry(gutterWidth: @gutterWidth)
+      @resize()
+    $(window).on('resize.pageview', _.debounce(@resize, 100))
+
+  remove: ->
+    $(window).off('.pageview')
+
+  resize: =>
+    @$el.width('auto')
+    width = @$el.width()
+    for n in [1..100]
+      break if @maxWidthAt(n) >= width
+    columnSpace = width - @gutterWidth * (n - 1)
+    columnWidth = Math.floor(columnSpace / n)
+    cols = (n) => columnWidth * n + @gutterWidth * (n - 1)
+
+    # Reset everything we might set below, so window resizes work.
+    @$('section.tumblr, section.instagram, section.flickr')
+      .show()
+      .css(marginLeft: 0)
+    switch n
+      when 1
+        $(@tumblr, @instagram, @flickr).width(cols(n))
+      when 2
+        @tumblr.width(cols(2))
+        @instagram.width(cols(1))
+        @flickr.width(cols(1)).css(marginLeft: @gutterWidth)
+      when 3
+        @tumblr.width(cols(2))
+        @instagram.width(cols(1)).css(marginLeft: @gutterWidth)
+        @flickr.hide()
+      else
+        @tumblr.width(cols(2))
+        n -= 2
+        @instagram.width(cols(Math.ceil(n / 2))).css(marginLeft: @gutterWidth)
+        @flickr.width(cols(Math.floor(n / 2))).css(marginLeft: @gutterWidth)
+    # Update masonry.
+    @masonryContainers
+      .children().width(cols(1)).end()
+      .masonry(columnWidth: cols(1))
+    @$el.addClass('loaded').width(width)
+
+  # Compute the page width required to display the given number of columns and
+  # their gutters at full scale.
+  maxWidthAt: (cols) ->
+    @columnWidth * cols + @gutterWidth * (cols - 1)
+
 
 
 # Helpers

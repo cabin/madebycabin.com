@@ -1,0 +1,47 @@
+@import site
+
+.page-blog
+  gutter = 20px
+  
+  .content
+    clearfix()
+    padding-bottom: 40px
+    visibility: hidden
+    &.loaded
+      visibility: visible
+    section
+      float: left
+
+    hgroup
+      border-top: 1px solid cabin_black
+      padding: 10px 0
+      h1, h2
+        margin: 0
+      h1
+        font: bold 13px body_font
+      h2
+        color: cabin_grey_dark
+        font: normal 13px body_font
+
+    a
+      color: cabin_black
+      float: left
+      margin-top: gutter
+      .no-touch &:hover
+        color: cabin_hl_light
+
+    img
+      width: 100%
+      height: auto
+
+    h3
+      font: normal 40px/1.1 headline_font
+      text-transform: uppercase
+      margin: 20px 0
+
+    section.tumblr a
+      border-top: 1px solid cabin_grey_light
+      padding-top: 20px
+      &:first-of-type
+        border-top: none
+        padding-top: 0

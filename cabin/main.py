@@ -6,7 +6,7 @@ from flask import abort, Blueprint, redirect, render_template, request, url_for
 
 from cabin import util
 from cabin.auth import get_current_user
-from cabin.models import grouped_services, Project
+from cabin.models import grouped_services, Project, Tumblr, Instagram, Flickr
 
 main = Blueprint('main', __name__)
 
@@ -54,6 +54,16 @@ def about():
 @main.route('/lab')
 def lab():
     return render_template('lab.html')
+
+
+@main.route('/blog')
+def blog():
+    return render_template(
+        'blog.html',
+        tumblr=Tumblr.get_latest(3),
+        instagram=Instagram.get_latest(12),
+        flickr=Flickr.get_latest(12),
+    )
 
 
 @main.route('/ie')

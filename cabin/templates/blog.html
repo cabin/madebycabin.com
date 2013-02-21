@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% set title = 'Blog' %}
+{% set page = 'blog' %}
+
+{% macro img(item) %}
+  <img src="{{ item.image_url }}" width="{{ item.image_size[0] }}" height="{{ item.image_size[1] }}" alt>
+{% endmacro %}
+
+{% block content %}
+
+  <h1>Cabin HQ</h1>
+
+  <section class="tumblr">
+    <hgroup>
+      <h1>Tumblr</h1>
+      <h2>@madebycabin</h2>
+    </hgroup>
+
+    {% for post in tumblr * 3 %}
+      <a href="{{ post.link }}" target="_blank">
+        {{ img(post) }}
+        <h3>{{ post.title }}</h3>
+      </a>
+    {% endfor %}
+  </section>
+
+  <section class="instagram">
+    <hgroup>
+      <h1>Instagram</h1>
+      <h2>#cabin</h2>
+    </hgroup>
+
+    <div class="bricks">
+      {% for post in instagram %}
+        <a href="{{ post.link }}" target="_blank">
+          {{ img(post) }}
+        </a>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="flickr">
+    <hgroup>
+      <h1>Flickr</h1>
+      <h2>@madebycabin</h2>
+    </hgroup>
+
+    <div class="bricks">
+      {% for post in flickr %}
+        <a href="{{ post.link }}" target="_blank">
+          {{ img(post) }}
+        </a>
+      {% endfor %}
+    </div>
+  </section>
+
+{% endblock %}
