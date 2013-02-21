@@ -1,0 +1,120 @@
+// Site-wide variables and functions.
+// No actual styles should live in this file, since it will be imported in
+// multiple places and that would cause wasteful duplication.
+
+cabin_black = #2b2b2b
+cabin_grey_dark = #929292
+cabin_grey_med = #d2d2d2
+cabin_grey_light = #f2f2f2
+cabin_hl_light = #ab7050
+cabin_hl_dark = #8a5a3a
+
+default_tap_highlight_color = rgba(26, 26, 26, 0.3)
+body_font = ProximaNova, Helvetica Neue, Helvetica, sans-serif
+headline_font = 'YWFT Ultramagnetic Light'  // XXX backup?
+headline_size = 32px
+headline_lh = 1.33
+headline_height = headline_size * headline_lh
+button_height = 28px
+
+
+body-text()
+  font: 14px/1.3 body_font
+
+mini-text()
+  light-text()
+  background: cabin_black
+  color: cabin_grey_dark
+  font-size: 11px
+  font-weight: normal
+  text-transform: uppercase
+
+
+hl-background()
+  background-color: cabin_hl_light
+  background-image: linear-gradient(top, cabin_hl_light, cabin_hl_dark)
+
+
+// Set the overall page width either to a max value (if passed a single
+// argument) or bounded between min and max widths (with two arguments).
+page-width(args...)
+  nav, .content, footer
+    if length(args) == 1
+      max-width: args[0]
+    else
+      min-width: args[0]
+      max-width: args[1]
+  // The splash page always gets full width. When transitioning,
+  // .splash-transition is applied during the transition, then .splash is
+  // toggled once it's complete. We want to show the appropriate width for the
+  // post-transition state, so: full width when not transitioning and on the
+  // splash page, or when transitioning but not *from* the splash page.
+  .splash:not(.splash-transition) & nav
+    max-width: none
+  .splash-transition:not(.splash) & nav
+    max-width: none
+
+
+// Lazy man's custom checkboxes; applying these styles allows styling the input
+// element as a normal element on WebKit browsers. Falls back to a normal
+// checkbox in other browsers. If we need to support other browsers later,
+// another option would be display: none on the checkbox, and then use sibling
+// selectors to style a label.
+custom-checkbox()
+  -webkit-appearance: none
+  border-radius: 0
+  border: none
+  cursor: pointer
+
+
+standard-shadow(inset = false, x = 0, y = 0, blur = 1px, spread = 1px, color = cabin_grey_dark, alpha = 0.3)
+  color = color is 'transparent' ? color : rgba(color, alpha)
+  shadow = x y blur spread color
+  if inset
+    box-shadow: unquote("inset") shadow
+  else
+    box-shadow: shadow
+
+
+hover-hr(duration = 200ms)
+  position: relative
+  hr
+    absolute: top left
+    background: cabin_hl_light
+    border: none
+    margin: 0
+    size: 0 1px
+    transition: width duration
+  .no-touch &:hover hr, &.selected hr
+    width: 100%
+  &.selected hr
+    background: cabin_black
+
+
+// Apply centered text on top of a horizontal rule, with padding. For example:
+//
+//     <h1><span>My heading</span></h1>
+//
+//     h1
+//       rule-behind(span)
+//
+// Renders:
+// ------- My heading -------
+//
+rule-behind(text_container_element, color = cabin_black)
+  overflow: hidden
+  text-align: center
+  & > {text_container_element}
+    position: relative
+    &:before, &:after
+      border-top: 1px solid color
+      content: ""
+      display: block
+      margin: 0 1em
+      position: absolute
+      top: 50%
+      width: 200%
+    &:before
+      right: 100%
+    &:after
+      left: 100%
