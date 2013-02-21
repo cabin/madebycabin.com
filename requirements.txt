@@ -9,3 +9,4 @@ redis==2.7.2
 jsonschema==0.7
 cssmin==0.1.4
 requests==1.0.4
+uwsgi==1.2.3
