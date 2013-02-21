@@ -387,3 +387,7 @@ class Instagram(FeedItem):
 # http://www.flickr.com/services/api/flickr.people.getPublicPhotos.html
 class Flickr(FeedItem):
     source = 'flickr'
+
+    @classmethod
+    def sync(cls):
+        return  # XXX TODO
