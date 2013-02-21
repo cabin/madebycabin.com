@@ -787,7 +787,9 @@ class BlogView extends HierView
       .css(marginLeft: 0)
     switch n
       when 1
-        $(@tumblr, @instagram, @flickr).width(cols(n))
+        @tumblr.width(cols(1))
+        @instagram.width(cols(1))
+        @flickr.width(cols(1))
       when 2
         @tumblr.width(cols(2))
         @instagram.width(cols(1))
@@ -812,7 +814,6 @@ class BlogView extends HierView
   # their gutters at full scale.
   maxWidthAt: (cols) ->
     @columnWidth * cols + @gutterWidth * (cols - 1)
-
 
 
 # Helpers
