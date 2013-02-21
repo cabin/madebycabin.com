@@ -16,7 +16,7 @@
       <h2>@madebycabin</h2>
     </hgroup>
 
-    {% for post in tumblr * 3 %}
+    {% for post in tumblr %}
       <a href="{{ post.link }}" target="_blank">
         {{ img(post) }}
         <h3>{{ post.title }}</h3>
