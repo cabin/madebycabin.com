@@ -287,7 +287,7 @@ class FeedItem(ValidatedHash):
     def key(self):
         return '%s:%s' % (self.source, self.id)
 
-    def save(self):
+    def save(self, redis=redis):
         if not self.is_valid():
             print self.errors
             raise ValueError('invalid objects cannot be saved')
@@ -385,9 +385,46 @@ class Instagram(FeedItem):
 
 
 # http://www.flickr.com/services/api/flickr.people.getPublicPhotos.html
+# http://www.flickr.com/services/api/flickr.photosets.getPhotos.html
 class Flickr(FeedItem):
     source = 'flickr'
+    photoset = 72157632827493349
 
     @classmethod
     def sync(cls):
-        return  # XXX TODO
+        url = 'http://api.flickr.com/services/rest/'
+        params = {
+            'api_key': app.config['FLICKR_API_KEY'],
+            'method': 'flickr.photosets.getPhotos',
+            'photoset_id': cls.photoset,
+            'extras': 'url_m,date_taken,path_alias',
+            'media': 'photos',
+            'format': 'json',
+            'per_page': 30,
+            'nojsoncallback': 1,
+        }
+        r = requests.get(url, params=params)
+        data = r.json()
+        if data['stat'] != 'ok':
+            raise Exception(data)
+        photos = cls.parse_api_response(data)
+        with redis.pipeline() as pipe:
+            pipe.delete(cls.list_key())
+            for photo in photos:
+                photo.save(pipe)
+            pipe.execute()
+
+    @classmethod
+    def parse_api_response(cls, data):
+        items = []
+        link_template = 'http://www.flickr.com/photos/%s/%s'
+        # Arrange them in reverse-set order, faking index as the timestamp.
+        for i, photo in enumerate(reversed(data['photoset']['photo'])):
+            items.append(cls(
+                id=str(photo['id']),
+                link=link_template % (photo['pathalias'], photo['id']),
+                _timestamp=i,
+                image_url=photo['url_m'],
+                image_size=[int(photo['width_m']), int(photo['height_m'])],
+            ))
+        return reversed(items)

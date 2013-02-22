@@ -156,6 +156,14 @@ INSTAGRAM_RESPONSE = json.loads('''
   }]
 }''')
 
+FLICKR_RESPONSE = json.loads('''
+{ "photoset": { "id": "72157625318124931", "primary": "5197783792", "owner": "53937539@N07", "ownername": "Church of Zek",
+    "photo": [
+      { "id": "5197783792", "secret": "128a1d3c72", "server": "4111", "farm": 5, "title": "", "isprimary": 0, "url_m": "http:\/\/farm5.staticflickr.com\/4111\/5197783792_128a1d3c72.jpg", "height_m": "333", "width_m": "500", "datetaken": "2010-08-20 23:06:57", "datetakengranularity": 0, "pathalias": "churchofzek" },
+      { "id": "5197784012", "secret": "9e8b9f9552", "server": "4145", "farm": 5, "title": "", "isprimary": 0, "url_m": "http:\/\/farm5.staticflickr.com\/4145\/5197784012_9e8b9f9552.jpg", "height_m": "333", "width_m": "500", "datetaken": "2010-08-20 23:07:00", "datetakengranularity": 0, "pathalias": "churchofzek" },
+      { "id": "5197784242", "secret": "43e1c7e988", "server": "4133", "farm": 5, "title": "", "isprimary": 0, "url_m": "http:\/\/farm5.staticflickr.com\/4133\/5197784242_43e1c7e988.jpg", "height_m": "333", "width_m": "500", "datetaken": "2010-08-20 23:10:48", "datetakengranularity": 0, "pathalias": "churchofzek" }
+    ], "page": 1, "per_page": 3, "perpage": 3, "pages": 66, "total": "198" }, "stat": "ok" }
+''')
 
 
 def test_tumblr():
@@ -163,6 +171,7 @@ def test_tumblr():
     assert len(posts) == 1
     post = posts[0]
     assert isinstance(post, Tumblr)
+    assert post.is_valid()
     assert post.image_size == [512, 342]
     assert post.image_url == u'http://25.media.tumblr.com/8d0d3e8925e12c53e8221b63411b40ed/tumblr_mfnglshzWY1qz6f9yo1_1280.jpg'
     assert post.title == u'nevver:\n\nKnock loud, I\u2019m home.'
@@ -172,3 +181,16 @@ def test_tumblr():
 
 def test_instagram():
     media = Instagram.parse_api_response(INSTAGRAM_RESPONSE)
+
+
+def test_flickr():
+    photos = list(Flickr.parse_api_response(FLICKR_RESPONSE))
+    assert len(photos) == 3
+    photo = photos[0]
+    assert isinstance(photo, Flickr)
+    assert photo.is_valid()
+    assert photo.image_size == [500, 333]
+    assert photo.image_url == 'http://farm5.staticflickr.com/4111/5197783792_128a1d3c72.jpg'
+    assert photo.link == 'http://www.flickr.com/photos/churchofzek/5197783792'
+    assert photo.id is not None
+    assert photo._timestamp is not None
