@@ -61,8 +61,8 @@ def blog():
     return render_template(
         'blog.html',
         tumblr=Tumblr.get_latest(3),
-        instagram=Instagram.get_latest(12),
-        flickr=Flickr.get_latest(12),
+        instagram=Instagram.get_latest(24),  # 6 rows x 4 columns
+        flickr=Flickr.get_latest(18),  # 6 rows x 3 columns
     )
 
 
