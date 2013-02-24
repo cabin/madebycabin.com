@@ -805,7 +805,7 @@ class BlogView extends HierView
         @flickr.width(cols(Math.floor(m / 2))).css(marginLeft: @gutterWidth)
     @$el.addClass('loaded').width(width)
 
-    # Update masonry.
+    # Update masonry and trim excess Instagram/Flickr items.
     @masonryContainers.imagesLoaded =>
       @masonryContainers
         .children().removeClass('overflow').width(cols(1)).end()
