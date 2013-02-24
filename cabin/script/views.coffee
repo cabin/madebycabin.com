@@ -765,7 +765,7 @@ class BlogView extends HierView
     @flickr = @$('section.flickr')
     @masonryContainers = @$('section > .bricks')
     @masonryContainers.imagesLoaded =>
-      @masonryContainers.masonry(gutterWidth: @gutterWidth)
+      @masonryContainers.masonry(gutterWidth: @gutterWidth, isResizable: false)
     @resize()
     $(window).on('resize.pageview', _.debounce(@resize, 100))
 
@@ -800,15 +800,30 @@ class BlogView extends HierView
         @flickr.hide()
       else
         @tumblr.width(cols(2))
-        n -= 2
-        @instagram.width(cols(Math.ceil(n / 2))).css(marginLeft: @gutterWidth)
-        @flickr.width(cols(Math.floor(n / 2))).css(marginLeft: @gutterWidth)
+        m = n - 2
+        @instagram.width(cols(Math.ceil(m / 2))).css(marginLeft: @gutterWidth)
+        @flickr.width(cols(Math.floor(m / 2))).css(marginLeft: @gutterWidth)
+    @$el.addClass('loaded').width(width)
+
     # Update masonry.
     @masonryContainers.imagesLoaded =>
       @masonryContainers
-        .children().width(cols(1)).end()
+        .children().removeClass('overflow').width(cols(1)).end()
         .masonry(columnWidth: cols(1))
-    @$el.addClass('loaded').width(width)
+      return unless n >= 3  # only trim columns if they're next to tumblr
+      cutoff = @tumblr.height() - @tumblr.children().first().position().top
+      masonryHeight = 0
+      @masonryContainers.children().each ->
+        el = $(this)
+        # jQuery returns the computed style, which will be changing as this
+        # element is currently in transition. We want the masonry-set target
+        # value.
+        top = parseInt(this.style.top, 10)
+        if top > cutoff
+          el.addClass('overflow')
+        else
+          masonryHeight = Math.max(masonryHeight, top + el.outerHeight(true))
+      @masonryContainers.css(height: masonryHeight)
 
   # Compute the page width required to display the given number of columns and
   # their gutters at full scale.
