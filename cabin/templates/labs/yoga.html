@@ -1,0 +1,14 @@
+{% for date, classes in schedule.items() %}
+  <figure>
+    <legend>{{ date.strftime('%A') }}</legend>
+    <table>
+    {% for class in classes %}
+      <tr>
+        <td>{{ timeformat(class.time) }}
+        <td>{{ class.type }} {{ class.duration }}
+        <td>{{ class.teacher }}
+      </tr>
+    {% endfor %}
+    </table>
+  </figure>
+{% endfor %}
