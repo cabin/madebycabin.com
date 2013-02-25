@@ -53,7 +53,7 @@ def create_app():
     from cabin.auth import auth
     app.register_blueprint(auth, url_prefix='/auth')
 
-    from cabin.labs import labs
+    from cabin.labs.views import labs
     app.register_blueprint(labs, url_prefix='/labs')
 
     from cabin.admin import admin

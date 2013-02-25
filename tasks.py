@@ -1,7 +1,7 @@
 from uwsgidecorators import timer
 
 from cabin import create_app, models, redis
-from cabin.labs.yoga import sync_schedule
+from cabin.labs import yoga
 
 MINUTE = 60
 HOUR = 60 * MINUTE
@@ -17,4 +17,4 @@ def update_feeds(signum):
 
 @timer(3 * HOUR)
 def update_yoga(signum):
-    sync_schedule(redis)
+    yoga.sync_schedule(redis)
