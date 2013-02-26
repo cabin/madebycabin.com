@@ -10,6 +10,7 @@ jsonschema==0.7
 cssmin==0.1.4
 requests==1.0.4
 uwsgi==1.2.3
+pytz==2012j
 
 # For parsing the HYFL schedule.
 lxml==3.1.0

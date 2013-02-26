@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import json
 
 import lxml.html
+import pytz
 import requests
 
 
@@ -71,7 +72,7 @@ def schedule_week_of(day):
 
 
 def sync_schedule(redis):
-    today = datetime.now().date()
+    today = datetime.now(pytz.timezone('US/Pacific')).date()
     schedule = schedule_week_of(today)
     # To ensure we have tomorrow's data, if today ends a week, also fetch next
     # week's data.

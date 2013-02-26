@@ -2,6 +2,7 @@ import datetime
 import json
 
 import flask
+import pytz
 
 from cabin import auth, redis
 from cabin.auth import admin_required
@@ -11,7 +12,8 @@ labs = flask.Blueprint('labs', __name__)
 
 @labs.route('/yoga')
 def yoga():
-    today = datetime.date.today()
+    now = datetime.datetime.now(pytz.timezone('US/Pacific'))
+    today = now.date()
     tomorrow = today + datetime.timedelta(days=1)
     today_classes, tomorrow_classes, selected = redis.hmget(
         'yoga', today.isoformat(), tomorrow.isoformat(), 'selected')
@@ -19,7 +21,7 @@ def yoga():
     tomorrow_classes = load_classes(tomorrow_classes)
     return flask.render_template(
         'labs/yoga.html',
-        now=datetime.datetime.now().time(),
+        now=now.time(),
         selected=json.loads(selected) if selected else {},
         schedule=[(today, today_classes), (tomorrow, tomorrow_classes)],
         timeformat=timeformat)
