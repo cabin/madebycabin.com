@@ -1,0 +1,53 @@
+@import site
+
+.page-labs-yoga
+  table
+    light-text()
+    border-top: 1px solid cabin_black
+    float: left
+    font: normal 30px/1 ProximaNova
+    &:first-of-type
+      margin-right: 20px
+
+  tr
+    border-bottom: 1px solid cabin_grey_light
+  tr.past
+    opacity: .3
+  td, th
+    padding: 20px
+
+  .small, .circle
+    font-size: 14px
+    line-height: 30px
+    position: relative
+    size: 80px
+    > span
+      absolute: left 40px top 40px
+      font-weight: bold
+      margin-left: -40px
+      padding-top: 3px
+      text-align: center
+      text-transform: uppercase
+      width: 80px
+      &:first-child
+        border-bottom: 1px solid cabin_black
+        bottom: 39px; top: auto
+
+  .day
+    font: normal 80px/1 headline_font
+    text-transform: uppercase
+
+  .circle
+    border: 1px solid cabin_black
+    border-radius: 80px
+    > span
+      margin-left: -20px
+      width: 40px
+
+  .authed tr:not(.past):hover .circle, tr.sel .circle
+    background-color: cabin_black
+    color: white
+    &, > span
+      border-color: white
+  .authed tr:not(.past):hover
+    cursor: pointer

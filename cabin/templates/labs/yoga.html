@@ -1,14 +1,43 @@
-{% for date, classes in schedule.items() %}
-  <figure>
-    <legend>{{ date.strftime('%A') }}</legend>
-    <table>
-    {% for class in classes %}
-      <tr>
-        <td>{{ timeformat(class.time) }}
-        <td>{{ class.type }} {{ class.duration }}
-        <td>{{ class.teacher }}
-      </tr>
-    {% endfor %}
+{% extends "base.html" %}
+{% set title = 'Yoga' %}
+{% set page = 'labs-yoga' %}
+
+{% block content %}
+
+  <h1>Hot Yoga</h1>
+
+  {% for date, classes in schedule %}
+    {% set today = loop.first %}
+    <table
+    {%- if current_user.is_admin %}
+      class="authed" data-date="{{ date.isoformat() }}"
+    {% endif %}>
+      <thead><tr>
+        <th>
+          <div class="small">
+            <span>{% if today %}Today{% else %}Tomorrow{% endif %}</span>
+            <span>{{ date.strftime('%b %d') }}</span>
+          </div>
+        </th>
+        <th colspan="2" class="day">{{ date.strftime('%A') }}</th>
+      </tr></thead>
+      <tbody>
+      {% for class in classes %}
+        <tr class="
+        {%- if today and class.time < now %} past{% endif -%}
+        {%- if selected.date == date.isoformat() and selected.index == loop.index0 %} sel{% endif -%}
+        ">
+          <td>
+            <div class="circle">
+              <span>{{ class.duration }}</span>
+              <span>{{ class.type|first }}</span>
+            </div>
+          <td>{{ timeformat(class.time) }}
+          <td>{{ class.teacher }}
+        </tr>
+      {% endfor %}
+      </tbody>
     </table>
-  </figure>
-{% endfor %}
+  {% endfor %}
+
+{% endblock %}

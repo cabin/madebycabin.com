@@ -81,6 +81,7 @@ class MainView extends HierView
       'blog': BlogView
       'admin-project': EditProjectView
       'admin-work': ManageWorkView
+      'labs-yoga': YogaView
     @_updatePageView(@content.data('page'))
     # iPhone only fires a scroll event on *completing* the scroll, so we also
     # watch for touchmoves.
@@ -829,6 +830,23 @@ class BlogView extends HierView
   # their gutters at full scale.
   maxWidthAt: (cols) ->
     @columnWidth * cols + @gutterWidth * (cols - 1)
+
+
+#### YogaView
+class YogaView extends HierView
+  events:
+    'click .authed tr:not(.past)': 'selectClass'
+
+  selectClass: (event) ->
+    row = $(event.currentTarget)
+    $.ajax
+      url: '/labs/yoga/select'
+      method: 'POST'
+      data:
+        date: row.parents('table').data('date')
+        index: row.index()
+    @$('tr').removeClass('sel')
+    row.addClass('sel')
 
 
 # Helpers
