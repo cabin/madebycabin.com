@@ -410,38 +410,6 @@ body.splash-transition
         padding-top: .05em
 
 
-// About page  {{{2
-.page-about
-  .content section
-    body-text()
-  hgroup
-    margin-bottom: 1em
-    h2
-      @extend h1
-      line-height: 1
-      margin: 0 0 5px
-    h3
-      @extend .dim-text
-      margin: 0
-  .bio .social
-    clearfix()
-    a
-      background-color: cabin_black
-      float: left
-      margin-right: 5px
-      .no-touch &:hover
-        hl-background()
-  .graph
-    svg .selected text
-      fill: cabin_hl_light
-    .notes
-      display: none
-    // XXX fallback png for lame-os
-  // Hide these until their image stylesheet is loaded.
-  .clients a
-    display: none
-
-
 // Error pages  {{{2
 .page-error
   h1
@@ -468,7 +436,7 @@ body.splash-transition
 // <= iPhone 5 landscape  {{{1
 @media only screen and (max-width: 568px)
   // nav/splash  {{{2
-  nav_height = 40px
+  nav_height = mobile_nav_height
 
   nav
     display: table
@@ -530,12 +498,6 @@ body.splash-transition
 
 
   // Work page  {{{2
-  breakout(page_padding = 20px)
-    padding-left: page_padding
-    padding-right: page_padding
-    margin-left: -(page_padding)
-    margin-right: -(page_padding)
-
   .single-column .work-thumb
     breakout()
 
@@ -554,171 +516,10 @@ body.splash-transition
       padding-top: 2px
 
 
-  // About page  {{{2
-  .page-about
-    .menu
-      clearfix()
-      mini-text()
-      fixed: left 0 top nav_height; right 0
-      text-align: center
-      user-select: none
-      z-index: 2
-      a
-        float: left
-        line-height: 37px
-        padding-top: 40 - @line-height  // adjust for all-caps
-        width: 30%
-        &:nth-child(2)
-          width: 40%
-      .arrow
-        absolute: left top 100%
-        border: 9px solid transparent
-        border-top-color: cabin_black
-        display: none
-        margin-left: -9px  // offset so `left` can position the center
-        size: 0 0
-        transition: left 200ms ease-in-out
-
-    .content > h1, .sections section, .sections section > h1
-      display: none
-    .sections
-      clearfix()
-      margin-top: 40px  // .menu
-      padding-bottom: 20px
-      section.selected
-        display: block
-
-    section.partners .bio
-      breakout()
-      hgroup
-        breakout()
-        height: 65px
-        background-color: cabin_grey_dark
-        background-size: cover
-        margin-bottom: 1px
-        position: relative
-        padding-top: 25px
-        h2, h3
-          light-text()
-          color: white
-          margin: 0
-        h2
-          font-size: 24px
-        h3
-          body-text()
-        .toggle
-          img = 'icons/plus-about@2x.png'
-          s = image-size(img)
-          absolute: right 20px top 30px
-          display: inline-block
-          background-size: (s[0] / 2) (s[1] / 2)
-          replace-text: url(img)
-          size: (s[0] / 2) (s[1] / 2)
-          transition: transform 250ms ease-in-out
-      // XXX should be using a cssrewrite filter instead of hardcoded
-      &.bek hgroup
-        background-image: url(/static/photos/bek-stripe@2x.jpg)
-      &.zak hgroup
-        background-image: url(/static/photos/zak-stripe@2x.jpg)
-      .social
-        margin-bottom: 20px
-      p, .social
-        display: none
-      &.open
-        p, .social
-          display: block
-        .toggle
-          transform: rotate(45deg)
-
-    section.graph
-      breakout()
-      border-top: 1px solid cabin_grey_light
-      padding-top: 20px
-      > h2
-        display: none
-      hgroup
-        h2, h3
-          margin: 0
-        h2
-          font-size: 24px
-          line-height: 1
-        h3
-          body-text()
-      .notes
-        margin-top: 20px
-
-    section.clients
-      breakout()
-      div
-        breakout()
-        standard-shadow(inset: true, y: -2px, spread: -1px)
-        height: 50px
-        margin-bottom: 20px
-        padding-bottom: 20px
-        padding-top: 20px
-        white-space: nowrap
-        overflow-x: scroll
-        -webkit-overflow-scrolling: touch
-      a
-        background-color: cabin_grey_dark
-        margin-left: 20px
-        &:first-child
-          margin-left: 0
-      // Fake the grey background.
-      position: relative
-      &:after
-        absolute: left top; bottom 0; width: 100%
-        background: cabin_grey_dark
-        content: ""
-        display: block
-        opacity: .5
-        pointer-events: none
-
-    section.services
-      ol
-        font-weight: bold
-        list-style: none
-        margin: 0
-        padding: 0
-        ol
-          body-text()
-          margin: 5px 0 20px
-          li
-            display: inline
-            &:before
-              content: ",\0020"
-            &:first-child:before
-              content: ""
-
-    section.connect
-      ol
-        list-style: none
-        margin: 0
-        padding: 0
-      li
-        breakout()
-        border-bottom: 1px solid cabin_grey_light
-        font: 40px headline_font
-        line-height: 87px
-        padding-top: (90px - @line-height)  // correct not-quite-centered font
-        padding-left: 60px
-        position: relative
-        text-transform: uppercase
-      li:before
-        absolute: left 20px top 32px
-        background-color: cabin_black
-        content: ""
-        display: block
-        outline: 1px solid white
-      a
-        color: cabin_black
-        display: block
-
-
 // > iPhone 5 landscape  {{{1
 @media only screen and (min-width: 569px)
   // Common  {{{2
-  nav_height = 90px
+  nav_height = desktop_nav_height
   footer_height = 60px
 
   nav
@@ -1061,173 +862,6 @@ body.splash-transition
               background: cabin_black
 
 
-  // About page  {{{2
-
-  .page-about
-    page-width(1100px)
-    overflow-x: hidden
-
-    breakout()
-      margin-left: -200%
-      margin-right: -200%
-      padding-left: 200%
-      padding-right: 200%
-
-    .menu
-      display: none
-
-    .content > h1
-      font-size: 80px
-      line-height: 1.1
-      width: auto
-
-    .content section
-      clear: both
-      padding-left: 80px + 40px
-      position: relative
-      > h1
-        absolute: top left
-        border-top: 1px solid cabin_black
-        font: bold 13px body_font
-        line-height: 30px
-        margin: 0
-        width: 80px
-      p
-        margin: 0 0 1em
-
-    .content
-      position: relative
-      .photo
-        position: absolute
-        &.bek
-          background-image: url(/static/photos/bek.jpg)
-          left: -140px; top: 410px
-          transform: rotate(15deg)
-        &.zak
-          background-image: url(/static/photos/zak.jpg)
-          right: -120px; top: -145px
-          transform: rotate(-30deg)
-
-    section.summary
-      > h1
-        font-family: Georgia, serif
-        font-size: 20px
-      .email
-        text-transform: none
-
-    .summary, .partners
-      float: right
-      margin-top: 60px
-      max-width: 80px + 40px + 630px - (80 + 40)
-
-    .partners
-      margin-bottom: 60px
-      .bio
-        float: left
-        width: 47%
-        padding-bottom: 30px
-        &:first-of-type
-          margin-right: 6%
-      .social
-        position: absolute
-        bottom: 0
-
-    section.graph
-      breakout()
-      standard-shadow(inset: true)
-      background: cabin_grey_light
-      min-height: 400px
-      padding-top: 40px
-      padding-bottom: 60px
-      h2
-        font: 40px/1.1 headline_font
-        margin: 0
-        text-transform: uppercase
-      hgroup.small
-        display: none
-      .notes
-        margin-top: 30px
-        position: absolute
-        top: 120px
-        .year
-          absolute: left top
-          border-top: 1px solid cabin_black
-          font-weight: bold
-          line-height: 30px
-          width: 80px
-        .note
-          margin-left: 120px
-          width: 300px
-
-    section.clients
-      breakout()
-      standard-shadow(y: 2px, spread: -1px)
-      padding-top: 40px
-      padding-bottom: 40px
-      z-index: 2
-
-      > h1
-        float: left
-        margin-right: 40px
-        margin-top: 10px
-        position: static
-      > div
-        height: 50px
-        overflow: hidden
-        white-space: nowrap
-      a
-        hl-background()
-        float: left
-        margin-left: 27px
-        &:first-child
-          margin-left: 0
-        &:hover
-          background: cabin_black
-
-    section.services
-      font-size: 13px
-      float: left
-      margin-top: 50px
-      ol.services
-        font-weight: bold
-        margin: 0
-        &, ol
-          list-style: none
-          padding: 0
-        > li
-          float: left
-          margin-left: 20px
-          width: 160px
-          &:first-child
-            margin-left: 0
-        ol
-          font-weight: normal
-          margin-top: 5px
-
-    section.colophon
-      background-color: cabin_black
-      clear: none
-      color: white
-      float: right
-      margin-bottom: -50px
-      padding: 50px 20px
-      width: 300px
-      > h1
-        light-text()
-        border-top-color: white
-        position: relative
-        top: -7px
-      .signature
-        img = 'signed-cabin.png'
-        background-image: url(img)
-        s = image-size(img)
-        background-size: s[0] s[1]
-        size: s[0] s[1]
-
-    section.connect
-      display: none
-
-
   // Error pages  {{{2
   .page-error
     page-width(1100px)
@@ -1562,60 +1196,6 @@ body.splash-transition
     border-radius: 2px 2px 0 0
 
 
-// Wrap the about page's colophon when it can no longer fit next to services.
-@media only screen and (min-width: 569px) and (max-width: 1070px)
-  .page-about .sections section.colophon
-    clear: left
-    float: left
-    margin-top: 40px
-    width: 100%
-    p
-      max-width: 640px
-    // breakout
-    margin-left: -200%
-    margin-right: -200%
-    padding-left: 200%
-    padding-right: 200%
-
-
-// Reshuffle and resize the about-page images when there's too little space to
-// show them full size.
-@media only screen and (max-width: 1100px)
-  .page-about .content
-    > .photo
-      &.bek
-        left: auto
-        right: 0
-        top: 40px
-        transform: scale(.5) rotate(15deg)
-      &.zak
-        transform: scale(.7) rotate(-30deg)
-@media only screen and (max-width: 940px)
-  .page-about .content
-    > h1
-      max-width: 500px
-@media only screen and (max-width: 800px)
-  .page-about .content
-    > .photo
-      &.bek
-        right: -90px
-        top: 100px
-      &.zak
-        right: -200px
-        top: -65px
-        transform: scale(.6) rotate(-30deg)
-@media only screen and (max-width: 680px)
-  .page-about .content
-    > .photo
-      display: none
-
-
-// When the graph's top point would be bumping into the title, add margin.
-@media only screen and (max-width: 920px)
-  .page-about section.graph h2
-    margin-bottom: 40px
-
-
 // Let the secondary error message take up the screen width when it fits.
 @media only screen and (min-width: 950px)
   .page-error h2 br
@@ -1633,5 +1213,6 @@ body.splash-transition
 
 
 // Page-specific imports {{{1
+@import 'pages/about'
 @import 'pages/blog'
 @import 'pages/yoga'

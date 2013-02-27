@@ -16,6 +16,12 @@ headline_size = 32px
 headline_lh = 1.33
 headline_height = headline_size * headline_lh
 button_height = 28px
+mobile_nav_height = 40px
+desktop_nav_height = 90px
+
+// Common media queries.
+mobile = "only screen and (max-width: 568px)"
+desktop = "only screen and (min-width: 569px)"
 
 
 body-text()
@@ -53,6 +59,20 @@ page-width(args...)
     max-width: none
   .splash-transition:not(.splash) & nav
     max-width: none
+
+
+// Allow an element to escape the page boundaries by the given amount.
+breakout(page_padding = 20px)
+  margin-left: -(page_padding)
+  margin-right: -(page_padding)
+  padding-left: page_padding
+  padding-right: page_padding
+
+mobile-breakout()
+  breakout(20px)
+
+desktop-breakout()
+  breakout(200%)
 
 
 // Lazy man's custom checkboxes; applying these styles allows styling the input
