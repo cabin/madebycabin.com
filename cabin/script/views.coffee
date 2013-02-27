@@ -580,6 +580,7 @@ class AboutView extends HierView
   initialize: ->
     @sections = @$('section')
     @menu = @$('.menu')
+    @loadPhotos()
     @menuArrow = @menu.find('.arrow')
     @adjustMenuArrow(@menu.find('a').first())
     @setupChart()
@@ -587,6 +588,17 @@ class AboutView extends HierView
   events:
     'tapclick .menu a': 'selectSection'
     'tapclick .bio hgroup': 'toggleBio'
+
+  loadPhotos: ->
+    urlMatch = /^url\(['"]?(.+)['"]?\)$/
+    photos = @$('.photo')
+    photos.each ->
+      el = $(this)
+      src = el.css('background-image').replace(urlMatch, '$1')
+      photos.add($('<img>').attr('src', src))
+    photos.imagesLoaded ->
+      photos.filter('.bek').addClass('loaded')
+      _.delay((-> photos.filter('.zak').addClass('loaded')), 250)
 
   setupChart: ->
     @window = $(window)

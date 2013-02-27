@@ -220,15 +220,54 @@
     .content
       position: relative
       .photo
+        animation-duration: 500ms
+        animation-iteration-count: 1
         position: absolute
+        display: none
         &.bek
           background-image: url(/static/photos/bek.jpg)
           left: -140px; top: 410px
           transform: rotate(15deg)
+          &.loaded
+            animation-name: animate-photo-bek
         &.zak
           background-image: url(/static/photos/zak.jpg)
           right: -120px; top: -145px
           transform: rotate(-30deg)
+          &.loaded
+            animation-name: animate-photo-zak
+      .photo.loaded
+        display: block
+        &.shadow-left:before, &.shadow-right:before,  &.shadow-top:after
+          animation-name: animate-photo-shadow
+          animation-duration: 1s
+          animation-iteration-count: 1
+
+    @keyframes animate-photo-bek
+      from
+        left: -500px
+        transform: rotate(0)
+        opacity: 0
+      to
+        left: -140px
+        transform: rotate(15deg)
+        opacity: 1
+    @keyframes animate-photo-zak
+      from
+        top: -500px
+        transform: rotate(-60deg)
+        opacity: 0
+      to
+        top: -145px
+        transform: rotate(-30deg)
+        opacity: 1
+    @keyframes animate-photo-shadow
+      from
+        opacity: 0
+      50%
+        opacity: 0
+      to
+        opacity: 1
 
     section.summary
       > h1
@@ -359,8 +398,12 @@
       right: 0
       top: 40px
       transform: scale(.5) rotate(15deg)
+      &.loaded
+        animation-name: animate-photo-bek-small
     &.zak
       transform: scale(.7) rotate(-30deg)
+      &.loaded
+        animation-name: animate-photo-zak-small
 @media only screen and (max-width: 940px)
   .page-about .content > h1
     max-width: 500px
@@ -369,13 +412,60 @@
     &.bek
       right: -90px
       top: 100px
+      &.loaded
+        animation-name: animate-photo-bek-tiny
     &.zak
       right: -200px
       top: -65px
       transform: scale(.6) rotate(-30deg)
+      &.loaded
+        animation-name: animate-photo-zak-tiny
 @media only screen and (max-width: 680px)
-  .page-about .content > .photo
+  .page-about .content > .photo.loaded
     display: none
+
+@keyframes animate-photo-bek-small
+  from
+    right: -200px
+    top: -20px
+    transform: scale(.5) rotate(0)
+    opacity: 0
+  to
+    right: 0
+    top: 40px
+    transform: scale(.5) rotate(15deg)
+    opacity: 1
+@keyframes animate-photo-zak-small
+  from
+    top: -500px
+    transform: scale(.7) rotate(-60deg)
+    opacity: 0
+  to
+    top: -145px
+    transform: scale(.7) rotate(-30deg)
+    opacity: 1
+@keyframes animate-photo-bek-tiny
+  from
+    right: -200px
+    top: 0
+    transform: scale(.5) rotate(0)
+    opacity: 0
+  to
+    right: -90px
+    top: 100px
+    transform: scale(.5) rotate(15deg)
+    opacity: 1
+@keyframes animate-photo-zak-tiny
+  from
+    top: -300px
+    right: -300px
+    transform: scale(.6) rotate(-60deg)
+    opacity: 0
+  to
+    top: -65px
+    right: -200px
+    transform: scale(.6) rotate(-30deg)
+    opacity: 1
 
 
 // When the graph's top point would be bumping into the title, add margin.
