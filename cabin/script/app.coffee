@@ -33,6 +33,7 @@ class @AppRouter extends Backbone.Router
 
   splash: ->
     return unless @splashView.show()
+    @trigger('showSplash')
     @mainView.setTitle()
 
   closeSplash: -> @navigate(@currentPath, trigger: true)

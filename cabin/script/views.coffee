@@ -577,11 +577,14 @@ class LinkhunterView extends HierView
 #### AboutView
 class AboutView extends HierView
 
-  initialize: ->
+  initialize: (options) ->
+    @router = options.router
     @sections = @$('section')
     @menu = @$('.menu')
-    @loadPhotos()
     @menuArrow = @menu.find('.arrow')
+
+  render: ->
+    @loadPhotos()
     @adjustMenuArrow(@menu.find('a').first())
     @setupChart()
 
@@ -596,9 +599,18 @@ class AboutView extends HierView
       el = $(this)
       src = el.css('background-image').replace(urlMatch, '$1')
       photos.add($('<img>').attr('src', src))
+    @listenTo(@router, 'showSplash', -> photos.removeClass('loaded'))
     photos.imagesLoaded ->
-      photos.filter('.bek').addClass('loaded')
-      _.delay((-> photos.filter('.zak').addClass('loaded')), 250)
+      body = $('body')
+      # Don't start animating the photos in until the splash transition is
+      # complete.
+      f = ->
+        if body.hasClass('splash-transition')
+          _.delay(f, 30)
+        else
+          photos.filter('.bek').addClass('loaded')
+          _.delay((-> photos.filter('.zak').addClass('loaded')), 250)
+      f()
 
   setupChart: ->
     @window = $(window)
