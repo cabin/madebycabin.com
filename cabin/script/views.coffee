@@ -582,11 +582,11 @@ class AboutView extends HierView
     @sections = @$('section')
     @menu = @$('.menu')
     @menuArrow = @menu.find('.arrow')
+    @adjustMenuArrow(@menu.find('a').first())
+    @setupChart()
 
   render: ->
     @loadPhotos()
-    @adjustMenuArrow(@menu.find('a').first())
-    @setupChart()
 
   events:
     'tapclick .menu a': 'selectSection'
