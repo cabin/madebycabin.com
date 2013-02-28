@@ -253,6 +253,8 @@ class ProjectView extends HierView
 
   initialize: (options) ->
     @router = options.router
+
+  render: ->
     @tabs = @$('.tab-chooser a')
     @contents = @$('.tab-contents').children()
     @pageWidth = @$el.width()
@@ -264,7 +266,8 @@ class ProjectView extends HierView
     shortlist = @$('.dev-shortlist')
     @addChild(new DevShortlistView(el: shortlist)) if shortlist.length
     if @$el.data('title') is 'Linkhunter'
-      @$('.brief').append(@renderChild(new LinkhunterView))
+      if @$('.brief').find('.linkhunter').length is 0
+        @$('.brief').append(@renderChild(new LinkhunterView))
 
   remove: ->
     clearTimeout(@slideshowTimeout) if @slideshowTimeout?
@@ -274,6 +277,10 @@ class ProjectView extends HierView
     'tapclick .tab-chooser a': 'selectTab'
     'tapclick .social a': 'share'
     'tapclick .pinterest-image-picker a': 'sharePinterest'
+    'tapclick .prev-next .arrow-left': 'previousProject'
+    'tapclick .prev-next .arrow-right': 'nextProject'
+    'tapclick .bottom .arrow-left': 'previousProject'
+    'tapclick .bottom .arrow-right': 'nextProject'
 
   shortcuts:
     'left': 'previousProject'
@@ -399,13 +406,53 @@ class ProjectView extends HierView
 
   sharePinterest: (event) -> @share(event, 'pinterestPicker')
 
-  previousProject: ->
+  previousProject: (event) ->
     url = @$('.prev-next a').first().attr('href')
-    @router.navigate(url, trigger: true) if url
+    @navigateProject(event, url, 'right')
 
-  nextProject: ->
+  nextProject: (event) ->
     url = @$('.prev-next a').last().attr('href')
-    @router.navigate(url, trigger: true) if url
+    @navigateProject(event, url, 'left')
+
+  navigateProject: (event, url, direction) ->
+    # Avoid the site-wide `internalLink` behavior.
+    if event.type is 'tapclick'
+      event.stopPropagation()
+      event.preventDefault()
+    $.ajax
+      method: 'GET'
+      url: url
+      data: _pjax: 1
+      headers: {'X-PJAX': 'true'}
+      dataType: 'html'
+      success: (data) => @transitionProject(data, direction)
+    @router.navigate(url)
+
+  transitionProject: (project, direction) ->
+    project = $(project)
+    promises = []
+    replace = (selector) ->
+      @$(selector).replaceWith(project.find(selector))
+    replaceFade = (selector) ->
+      d = new jQuery.Deferred()
+      old = @$(selector)
+      old.fadeOut 150, ->
+        old.replaceWith(project.find(selector).fadeIn(150))
+        d.resolve()
+      promises.push(d.promise())
+    @$el.data('title', project.data('title'))
+    @_parent.setTitle(project.data('title'))
+    replaceFade('.info hgroup')
+    replaceFade('.info .tabs')
+    replace('.info .prev-next')
+    replace('.bottom')
+    @$('.dev-shortlist, .images')
+      #.css('animation-name', 'project-out-' + direction)
+      .remove()
+    project.find('.dev-shortlist, .images')
+      .insertBefore(@$('.bottom'))
+      #.css('animation-name', 'project-in-' + direction)
+    $.when.apply($, promises).then(=> @render())
 
   adminProject: ->
     @router.navigate('admin/' + Backbone.history.fragment, trigger: true)
