@@ -1,53 +1,75 @@
 @import site
 
+setup-sizes(date_size, padding)
+  table:first-of-type
+    margin-right: padding
+  td, th
+    padding: padding
+  .small
+    line-height: ((date_size - padding) / 2)
+    size: date_size
+    > span
+      absolute: left (date_size / 2) top (date_size / 2)
+      margin-left: -(date_size / 2)
+      width: date_size
+      &:first-child
+        bottom: (date_size / 2 - 1); top: auto
+  .day
+    font: normal date_size/1 headline_font
+
 .page-labs-yoga
+  setup-sizes(80px, 20px)
+
   table
     light-text()
     border-top: 1px solid cabin_black
     float: left
     font: normal 30px/1 ProximaNova
-    &:first-of-type
-      margin-right: 20px
+    margin-bottom: 40px
 
   tr
     border-bottom: 1px solid cabin_grey_light
   tr.past
     opacity: .3
   td, th
-    padding: 20px
+    text-align: left
+  td
+    vertical-align: baseline
 
-  .small, .circle
+  .small
     font-size: 14px
-    line-height: 30px
     position: relative
-    size: 80px
     > span
-      absolute: left 40px top 40px
       font-weight: bold
-      margin-left: -40px
       padding-top: 3px
       text-align: center
       text-transform: uppercase
-      width: 80px
       &:first-child
         border-bottom: 1px solid cabin_black
-        bottom: 39px; top: auto
 
   .day
-    font: normal 80px/1 headline_font
     text-transform: uppercase
 
-  .circle
-    border: 1px solid cabin_black
-    border-radius: 80px
-    > span
-      margin-left: -20px
-      width: 40px
-
-  .authed tr:not(.past):hover .circle, tr.sel .circle
-    background-color: cabin_black
-    color: white
+  .type
+    font-size: 40px
+    font-weight: bold
+    text-transform: uppercase
     span
-      border-color: white
-  .authed tr:not(.past):hover
-    cursor: pointer
+      font-weight: normal
+      margin: 0 3px
+
+
+@media mobile
+  .page-labs-yoga
+    setup-sizes(60px, 10px)
+    table
+      font-size: 20px
+    .type
+      font-size: 30px
+    .d
+      display: none
+
+
+@media desktop
+  .page-labs-yoga .m
+    display: none
