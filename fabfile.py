@@ -10,7 +10,7 @@ from fabric.contrib.project import rsync_project
 
 env.app_name = 'cabin'
 env.branch = 'master'
-env.hosts = ['23.23.212.200']  # XXX
+env.hosts = ['nox.cx']  # XXX
 
 env.user = 'root'
 env.key_filename = os.path.expanduser('~/.ssh/cabin.pem')
@@ -114,3 +114,16 @@ def manage(cmd):
     require('virtualenv_dir', 'current_dir')
     manage = '%(virtualenv_dir)s/bin/python %(current_dir)s/manage' % env
     run('%s %s' % (manage, cmd))
+
+
+@task
+def sync():
+    "Copy the production data to the local instance."
+    require('app_dir')
+    local_instance = '$(git rev-parse --show-toplevel)/instance'
+    local('cp %s/dump.rdb %s/dump.rdb.backup' % (
+        local_instance, local_instance))
+    local('rsync %s:/var/lib/redis/dump.rdb %s' % (
+        env.host_string, local_instance))
+    local('rsync -rv %s:%s/instance/images/ %s/images' % (
+        env.host_string, env.app_dir, local_instance))
