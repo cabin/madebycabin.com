@@ -326,18 +326,18 @@ class ProjectView extends HierView
     @images.each (i, element) =>
       placeholder = $(element)
       loadingView = @addChild(new LoadingView)
-      placeholder.append(loadingView.render().el)
+      placeholder.prepend(loadingView.render().el)
       img = placeholder.find('img')
       realSrc = img.data('src')
       fullHeight = img.data('height')
       img.attr('height', Math.floor(fullHeight * @heightRatio))
       imgLoader = new Image
       imgLoader.onload = ->
-        loadingView.remove()
         img.attr
           src: realSrc
           class: img.data('class')
         _.delay((-> img.removeAttr('height')), 200)
+        loadingView.remove()
       imgLoader.src = realSrc
 
   selectTab: (event) ->
