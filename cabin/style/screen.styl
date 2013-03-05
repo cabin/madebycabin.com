@@ -334,6 +334,32 @@ body.splash-transition
     .no-touch &:hover
       hl-background()
 
+  // Animations for transitioning between project pages.
+  .project-content
+    position: relative
+    transition-duration: 300ms
+  .dev-shortlist, .images
+    animation-duration: 300ms
+    animation-iteration-count: 1
+    animation-fill-mode: forwards
+  images_animate_distance = 1200px
+  @keyframes images-out-left
+    to
+      opacity: 0
+      transform: translate3d(-(images_animate_distance), 0, 0)
+  @keyframes images-in-left
+    from
+      opacity: 0
+      transform: translate3d(images_animate_distance, 0, 0)
+  @keyframes images-out-right
+    to
+      opacity: 0
+      transform: translate3d(images_animate_distance, 0, 0)
+  @keyframes images-in-right
+    from
+      opacity: 0
+      transform: translate3d(-(images_animate_distance), 0, 0)
+
   .bottom
     margin-bottom: 40px
     text-align: center

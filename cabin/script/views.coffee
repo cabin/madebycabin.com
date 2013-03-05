@@ -250,6 +250,7 @@ class WorkView extends HierView
 #### ProjectView
 class ProjectView extends HierView
   fullImageWidth: 1100
+  animationEnd: 'animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd'
 
   initialize: (options) ->
     @router = options.router
@@ -257,11 +258,7 @@ class ProjectView extends HierView
   render: ->
     @tabs = @$('.tab-chooser a')
     @contents = @$('.tab-contents').children()
-    @pageWidth = @$el.width()
-    @heightRatio = @pageWidth / @fullImageWidth
-    @images = @$('.images .placeholder')
-    @loadImages()
-    @setupSlideshow()
+    @initializeImages()
     @pinterestPicker = @$('.pinterest-image-picker')
     shortlist = @$('.dev-shortlist')
     @addChild(new DevShortlistView(el: shortlist)) if shortlist.length
@@ -269,8 +266,12 @@ class ProjectView extends HierView
       if @$('.brief').find('.linkhunter').length is 0
         @$('.brief').append(@renderChild(new LinkhunterView))
 
-  remove: ->
+  cleanup: ->
     clearTimeout(@slideshowTimeout) if @slideshowTimeout?
+    _(@_children).invoke('remove')
+
+  remove: ->
+    @cleanup()
     super()
 
   events:
@@ -291,28 +292,12 @@ class ProjectView extends HierView
     'k': 'previousImage'
     'j': 'nextImage'
 
-  # Some projects should cycle through their images one at a time, rather than
-  # displaying all images at once.
-  setupSlideshow: ->
-    container = @$('.images')
-    return unless container.data('slideshow')
-    @images.hide().first().show()
-    interval = 4000
-    index = 0
-    # If the placeholder has a `.loading-dots` child, the image hasn't yet
-    # loaded. Check in every once in a while, and don't progress the slideshow
-    # until it's ready.
-    cycle = =>
-      next = @images.eq(index)
-      if next.find('.loading-dots').length
-        wait = 200
-      else
-        @images.hide()
-        next.show()
-        index = (index + 1) % @images.length
-        wait = interval
-      @slideshowTimeout = setTimeout(cycle, wait)
-    cycle()
+  initializeImages: ->
+    @pageWidth = @$el.width()
+    @heightRatio = @pageWidth / @fullImageWidth
+    @images = @$('.images .placeholder')
+    @loadImages()
+    @setupSlideshow()
 
   # Because our work images are *huge* and Mobile Safari shows an ugly black
   # background while loading them, we set up placeholders here and swap in the
@@ -340,6 +325,29 @@ class ProjectView extends HierView
         _.delay((-> img.removeAttr('height')), 200)
         loadingView.remove()
       imgLoader.src = realSrc
+
+  # Some projects should cycle through their images one at a time, rather than
+  # displaying all images at once.
+  setupSlideshow: ->
+    container = @$('.images')
+    return unless container.data('slideshow')
+    @images.hide().first().show()
+    interval = 4000
+    index = 0
+    # If the placeholder has a `.loading-dots` child, the image hasn't yet
+    # loaded. Check in every once in a while, and don't progress the slideshow
+    # until it's ready.
+    cycle = =>
+      next = @images.eq(index)
+      if next.find('.loading-dots').length
+        wait = 200
+      else
+        @images.hide()
+        next.show()
+        index = (index + 1) % @images.length
+        wait = interval
+      @slideshowTimeout = setTimeout(cycle, wait)
+    cycle()
 
   selectTab: (event) ->
     # Unselect the previous item; hide its hr temporarily to avoid a shrinking
@@ -429,6 +437,8 @@ class ProjectView extends HierView
       success: (data) => @transitionProject(data, direction)
     @router.navigate(url)
 
+  # When switching between projects, provide custom animations for a handful of
+  # page elements.
   transitionProject: (project, direction) ->
     project = $(project)
     promises = []
@@ -448,12 +458,37 @@ class ProjectView extends HierView
     replace('.info .prev-next')
     replace('.bottom')
     @$('.dev-shortlist, .images')
-      #.css('animation-name', 'project-out-' + direction)
-      .remove()
-    project.find('.dev-shortlist, .images')
-      .insertBefore(@$('.bottom'))
-      #.css('animation-name', 'project-in-' + direction)
-    $.when.apply($, promises).then(=> @render())
+      .css('animation-name', 'images-out-' + direction)
+      .one(@animationEnd, -> $(this).remove())
+    # add position: absolute; visibility: hidden.
+    # check height.
+    # grow container if necessary
+    # remove visibility: hidden
+    # animate in
+    # shrink container if necessary (or remove container explicit height)
+    # remove position: absolute
+    # remove container explicit height
+    @$('.dev-shortlist, .images').css('position', 'absolute')
+      .css('top', 0).css('left', 0)
+    x = project.find('.dev-shortlist, .images')
+      .css(
+        position: 'absolute'
+        visibility: 'hidden'
+        top: 0
+        left: 0
+      )
+      .appendTo(@$('.project-content'))
+    @initializeImages()
+    h = @$('.project-content').height()
+    @$('.project-content').css(height: h)
+
+    
+    console.log 'height', h
+    x
+      .css(visibility: 'visible')
+      .css('animation-name', 'images-in-' + direction)
+      .one(@animationEnd, -> $(this).removeAttr('style'))
+    $.when.apply($, promises).then(=> @cleanup(); @render())
 
   adminProject: ->
     @router.navigate('admin/' + Backbone.history.fragment, trigger: true)
