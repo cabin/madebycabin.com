@@ -18,6 +18,9 @@
           {%- if project.external_url -%}
             <a href="{{ project.external_url }}" target="_blank" class="external"><span class="icon arrow-mini"></span>{{ project.external_url|hostname }}</a>
           {% endif %}
+          {%- if project.title|lower == 'linkhunter' -%}
+            <div class="linkhunter"></div>
+          {% endif %}
         </div>
         {% if project.services -%}
           <ol class="services">

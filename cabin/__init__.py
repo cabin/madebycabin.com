@@ -125,6 +125,7 @@ def register_assets(app):
             '../script/charts.coffee',
             '../script/app.coffee',
             '../script/views.coffee',
+            '../script/project.coffee',
             '../script/admin.coffee',
             filters='coffeescript', output='gen/coffee.js'),
         filters='uglifyjs', output='gen/site-%(version)s.js')
