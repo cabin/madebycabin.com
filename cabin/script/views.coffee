@@ -323,7 +323,7 @@ class ProjectView extends HierView
   # placeholder image should have data-src and data-height attributes, and can
   # have a data-class attribute for a class that will be applied after load.
   loadImages: ->
-    @images.each (i, element) =>
+    @images.not('.sized').each (i, element) =>
       placeholder = $(element)
       loadingView = @addChild(new LoadingView)
       placeholder.prepend(loadingView.render().el)
@@ -331,6 +331,7 @@ class ProjectView extends HierView
       realSrc = img.data('src')
       fullHeight = img.data('height')
       img.attr('height', Math.floor(fullHeight * @heightRatio))
+      placeholder.addClass('sized')
       imgLoader = new Image
       imgLoader.onload = ->
         img.attr

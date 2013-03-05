@@ -308,7 +308,10 @@ body.splash-transition
     &:hover .arrow-mini
       background-color: cabin_hl_light
   .images .placeholder
+    visibility: hidden
     position: relative
+    &.sized
+      visibility: visible
     .loading-dots
       absolute: left 20px top 15px
     .loading-dots + img
