@@ -4,6 +4,173 @@
 ANIMATION_END = 'animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd'
 
 
+#### ProjectPageView
+# The container view for project pages. It handles events and shortcut keys for
+# the currently-displayed project, as well as eager-loading the next and
+# previous projects (our images are big; it's nice to get a head start!) and
+# managing prettier transitions between projects.
+class ProjectPageView extends HierView
+
+  # Only called on "page" transition; i.e., the first time any project is
+  # viewed. Subsequent project views happen in the context of this view.
+  initialize: (options) ->
+    @router = options.router
+    @currentProject = @addChild new ProjectView
+      el: @$('.project').first()
+      container: @$el
+    @currentProject.title = @$el.data('title')
+    # Cache of preloaded projects.
+    @projects = {}
+    @projects[location.pathname] = @currentProject
+    @preloadNeighbors(@currentProject)
+
+  render: ->
+    @currentProject.render()
+
+  preloadNeighbors: (project) ->
+    @preloadProject(project.previousURL())
+    @preloadProject(project.nextURL())
+
+  preloadProject: (url) ->
+    return if url of @projects
+    view = @addChild(new ProjectView(container: @$el))
+    @projects[url] = view
+    $.ajax
+      method: 'GET'
+      url: url
+      data: _pjax: 1
+      headers: {'X-PJAX': 'true'}
+      dataType: 'html'
+      success: (data) -> view.preload(data)
+
+  events:
+    'tapclick .prev-next .arrow-left': 'showPreviousProject'
+    'tapclick .prev-next .arrow-right': 'showNextProject'
+    'tapclick .bottom .arrow-left': 'showPreviousProject'
+    'tapclick .bottom .arrow-right': 'showNextProject'
+
+  shortcuts:
+    'up': 'showPreviousImage'
+    'down': 'showNextImage'
+    'k': 'showPreviousImage'
+    'j': 'showNextImage'
+    'left': 'showPreviousProject'
+    'right': 'showNextProject'
+    '⌥+e': 'adminProject'
+
+  showPreviousImage: (event) ->
+    event.preventDefault()
+    @incrImage(-1)
+
+  showNextImage: (event) ->
+    event.preventDefault()
+    @incrImage()
+
+  showPreviousProject: (event) ->
+    @navigateProject(event, @currentProject.previousURL(), 'right')
+
+  showNextProject: (event) ->
+    @navigateProject(event, @currentProject.nextURL(), 'left')
+
+  adminProject: ->
+    @router.navigate('admin/' + Backbone.history.fragment, trigger: true)
+
+  # Scroll to the top of the `n`th next image. Uses the jQuery 'fx' animation
+  # queue to handle multiple rapid calls; each new position isn't calculated
+  # until the previous animation is complete.
+  incrImage: (n = 1) ->
+    topPadding = @$el.offset().top + parseInt($('.main').css('padding-left'), 10)
+    @currentProject.$el.queue (next) =>
+      # Compile a list of ordered scroll targets for each image, then insert
+      # the current scroll position into the list. Scroll to the current scroll
+      # position's index + n; this handles cases for being between images
+      # nicely.
+      images = @currentProject.$('.images .placeholder')
+      imageTargets = _(images).map (el) -> $(el).offset().top - topPadding
+      scrollY = $(window).scrollTop()
+      pos = _(imageTargets).sortedIndex(scrollY)
+      imageTargets.splice(pos, 0, null)
+      index = pos + n
+      index += n if scrollY is imageTargets[index]
+      # If we're above the first image, scroll to the top of the page. If below
+      # the last image, scroll to the bottom of the page.
+      scrollTo = if index < 0
+        0
+      else if index >= imageTargets.length
+        document.body.scrollHeight
+      else
+        imageTargets[index]
+      # Since we scroll two elements, the callback would be called twice;
+      # that'll bounce us through our animations too fast. We also defer to
+      # ensure the animation is *really* finished; without it, the callback was
+      # being called while the scrollTop was still 1px away from its target!
+      callback = _.once(-> _.defer(next))
+      $('html, body').animate({scrollTop: scrollTo}, 300, callback)
+
+  navigateProject: (event, url, direction) ->
+    # Avoid the site-wide `internalLink` behavior.
+    if event.type is 'tapclick'
+      event.stopPropagation()
+      event.preventDefault()
+    @router.navigate(url)
+    # XXX what to do if not url of @projects?
+    @currentProject.transitionOut(direction)
+    @currentProject = @projects[url]
+    @preloadNeighbors(@currentProject)
+    @currentProject.transitionIn(direction)
+
+
+#### ProjectView
+# Manage a single project, mostly by composing a handful of subviews.
+class ProjectView extends HierView
+  fullImageWidth: 1100
+
+  initialize: (options) ->
+    @container = options.container
+    @infoView = @addChild(new ProjectInfoView)
+    options = fullImageWidth: @fullImageWidth
+    @shareView = @addChild(new ProjectShareView(options))
+    @contentView = @addChild(new ProjectContentView(options))
+
+  preload: (data) ->
+    el = $(data)
+    @title = el.data('title')
+    @setElement(el.find('.project').first())
+    @render(preload: true)
+    this
+
+  render: (options = {}) ->
+    @$el.toggleClass('preload', !!options.preload)
+    @infoView.setElement(@$('.info')).render()
+    @shareView.setElement(@$('.bottom')).render()
+    # ProjectContentView needs to know the width at which it will be displayed,
+    # but sometimes we are rendering into a detached element. Pass the parent's
+    # width instead, as it will always be visible.
+    width = @container.width()
+    @contentView.setElement(@$('.project-content')).render(width)
+
+  # ProjectViews are cached, but some components need to be reset when not in
+  # view (window resize handlers, slideshows, etc.). `cleanup` walks the view
+  # hierarchy calling `cleanup` on any view which has the method.
+  cleanup: ->
+    recurse = (view) ->
+      view.cleanup?()
+      _(view._children).each(recurse)
+    _(@_children).each(recurse)
+
+  # Snarf the neighboring project URLs from the arrow links.
+  previousURL: -> @$('.prev-next a').first().attr('href')
+  nextURL: -> @$('.prev-next a').last().attr('href')
+
+  transitionOut: (direction) ->
+    @cleanup()
+    @$el.detach()
+
+  transitionIn: (direction) ->
+    @container.append(@el)
+    @render()
+
+
 #### ProjectInfoView
 # Handles the tab-like interface at the top of each project (brief, services,
 # cohorts) and swapping between them.
@@ -117,9 +284,11 @@ class ProjectContentView extends HierView
     @imagesView = @addChild(new ProjectImagesView(options))
     @shortlistView = @addChild(new ProjectShortlistView(options))
 
-  render: ->
-    @imagesView.setElement(@$('.images')).render()
-    @shortlistView.setElement(@$('.dev-shortlist')).render()
+  render: (width) ->
+    images = @$('.images')
+    shortlist = @$('.dev-shortlist')
+    @imagesView.setElement(images).render(width) if images.length
+    @shortlistView.setElement(shortlist).render() if shortlist.length
 
 
 #### ProjectImagesView
@@ -128,10 +297,10 @@ class ProjectImagesView extends HierView
   initialize: (options) ->
     @fullImageWidth = options.fullImageWidth
 
-  render: ->
+  render: (width) ->
     @cleanup()  # from any previous renderings
-    @pageWidth = @$el.width()
-    @heightRatio = @pageWidth / @fullImageWidth
+    width or= @$el.width()
+    @heightRatio = width / @fullImageWidth
     @images = @$('.placeholder')
     @loadImages()
     @setupSlideshow() if @$el.data('slideshow')
@@ -197,6 +366,7 @@ class ProjectImagesView extends HierView
 class ProjectShortlistView extends HierView
 
   render: ->
+    return unless @$el.is(':visible')
     items = @$('li')
     @itemCount = items.length
     @closed = true
@@ -236,9 +406,13 @@ class ProjectShortlistView extends HierView
     # CSS hides the content until we've added our styles here.
     @$el.addClass('loaded')
 
-  remove: ->
+  cleanup: ->
     clearInterval(@cycleInterval) if @cycleInterval
+    @$el.removeClass('loaded')
     $(window).off('.dev-shortlist')
+
+  remove: ->
+    @cleanup()
     super()
 
   events:
@@ -279,166 +453,6 @@ class ProjectShortlistView extends HierView
   reposition: ->
     top = if @closed then (@cycleIndex * @itemHeight * -1) else 0
     @$('ul').css(top: top)
-
-
-#### ProjectView
-# Effectively a management view; it mostly hands off responsibility to a
-# handful of subviews. It is also responsible for managing keyboard shortcuts
-# and transitions between projects.
-class ProjectView extends HierView
-  fullImageWidth: 1100
-
-  initialize: (options) ->
-    @router = options.router
-    @infoView = @addChild(new ProjectInfoView)
-    options = fullImageWidth: @fullImageWidth
-    @shareView = @addChild(new ProjectShareView(options))
-    @contentView = @addChild(new ProjectContentView(options))
-
-  render: ->
-    @infoView.setElement(@$('.info')).render()
-    @shareView.setElement(@$('.bottom')).render()
-    @contentView.setElement(@$('.project-content')).render()
-
-  ###
-  events:
-    'tapclick .prev-next .arrow-left': 'previousProject'
-    'tapclick .prev-next .arrow-right': 'nextProject'
-    'tapclick .bottom .arrow-left': 'previousProject'
-    'tapclick .bottom .arrow-right': 'nextProject'
-  ###
-
-  shortcuts:
-    'up': 'previousImage'
-    'down': 'nextImage'
-    'k': 'previousImage'
-    'j': 'nextImage'
-    'left': 'previousProject'
-    'right': 'nextProject'
-    '⌥+e': 'adminProject'
-
-  previousImage: (event) ->
-    event.preventDefault()
-    @incrImage(-1)
-
-  nextImage: (event) ->
-    event.preventDefault()
-    @incrImage()
-
-  adminProject: ->
-    @router.navigate('admin/' + Backbone.history.fragment, trigger: true)
-
-  # Scroll to the top of the `n`th next image. Uses the jQuery 'fx' animation
-  # queue to handle multiple rapid calls; each new position isn't calculated
-  # until the previous animation is complete.
-  incrImage: (n = 1) ->
-    topPadding = @$el.offset().top + parseInt($('.main').css('padding-left'), 10)
-    @$el.queue (next) =>
-      # Compile a list of ordered scroll targets for each image, then insert
-      # the current scroll position into the list. Scroll to the current scroll
-      # position's index + n; this handles cases for being between images
-      # nicely.
-      images = @$('.images .placeholder')
-      imageTargets = _(images).map (el) -> $(el).offset().top - topPadding
-      scrollY = $(window).scrollTop()
-      pos = _(imageTargets).sortedIndex(scrollY)
-      imageTargets.splice(pos, 0, null)
-      index = pos + n
-      index += n if scrollY is imageTargets[index]
-      # If we're above the first image, scroll to the top of the page. If below
-      # the last image, scroll to the bottom of the page.
-      scrollTo = if index < 0
-        0
-      else if index >= imageTargets.length
-        document.body.scrollHeight
-      else
-        imageTargets[index]
-      # Since we scroll two elements, the callback would be called twice;
-      # that'll bounce us through our animations too fast. We also defer to
-      # ensure the animation is *really* finished; without it, the callback was
-      # being called while the scrollTop was still 1px away from its target!
-      callback = _.once(-> _.defer(next))
-      $('html, body').animate({scrollTop: scrollTo}, 300, callback)
-
-  previousProject: (event) ->
-    url = @$('.prev-next a').first().attr('href')
-    @navigateProject(event, url, 'right')
-
-  nextProject: (event) ->
-    url = @$('.prev-next a').last().attr('href')
-    @navigateProject(event, url, 'left')
-
-  navigateProject: (event, url, direction) ->
-    # Avoid the site-wide `internalLink` behavior.
-    if event.type is 'tapclick'
-      event.stopPropagation()
-      event.preventDefault()
-    ###
-    $.ajax
-      method: 'GET'
-      url: url
-      data: _pjax: 1
-      headers: {'X-PJAX': 'true'}
-      dataType: 'html'
-      success: (data) => @transitionProject(data, direction)
-    @router.navigate(url)
-    ###
-    @router.navigate(url, trigger: true)
-
-  ###
-  # When switching between projects, provide custom animations for a handful of
-  # page elements.
-  transitionProject: (project, direction) ->
-    project = $(project)
-    promises = []
-    replace = (selector) ->
-      @$(selector).replaceWith(project.find(selector))
-    replaceFade = (selector) ->
-      d = new jQuery.Deferred()
-      old = @$(selector)
-      old.fadeOut 150, ->
-        old.replaceWith(project.find(selector).fadeIn(150))
-        d.resolve()
-      promises.push(d.promise())
-    @$el.data('title', project.data('title'))
-    @_parent.setTitle(project.data('title'))
-    replaceFade('.info hgroup')
-    replaceFade('.info .tabs')
-    replace('.info .prev-next')
-    replace('.bottom')
-    @$('.dev-shortlist, .images')
-      .css('animation-name', 'images-out-' + direction)
-      .one(@animationEnd, -> $(this).remove())
-    # add position: absolute; visibility: hidden.
-    # check height.
-    # grow container if necessary
-    # remove visibility: hidden
-    # animate in
-    # shrink container if necessary (or remove container explicit height)
-    # remove position: absolute
-    # remove container explicit height
-    @$('.dev-shortlist, .images').css('position', 'absolute')
-      .css('top', 0).css('left', 0)
-    x = project.find('.dev-shortlist, .images')
-      .css(
-        position: 'absolute'
-        visibility: 'hidden'
-        top: 0
-        left: 0
-      )
-      .appendTo(@$('.project-content'))
-    @initializeImages()
-    h = @$('.project-content').height()
-    @$('.project-content').css(height: h)
-
-    
-    console.log 'height', h
-    x
-      .css(visibility: 'visible')
-      .css('animation-name', 'images-in-' + direction)
-      .one(@animationEnd, -> $(this).removeAttr('style'))
-    $.when.apply($, promises).then(=> @cleanup(); @render())
-  ###
 
 
 #### LinkhunterView

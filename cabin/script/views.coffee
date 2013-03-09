@@ -76,7 +76,7 @@ class MainView extends HierView
     @content = @$('.content')
     @views =
       'work': WorkView
-      'project': ProjectView
+      'project': ProjectPageView
       'about': AboutView
       'blog': BlogView
       'admin-project': EditProjectView

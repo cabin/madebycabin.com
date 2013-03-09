@@ -5,61 +5,63 @@
 {% set page_description = project.brief %}
 
 {% block content %}
-  <div class="info">
-    <hgroup>
-      <h1>{{ project.title }}</h1>
-      <h2>{{ project.type }}</h2>
-    </hgroup>
+  <div class="project">
+    <div class="info">
+      <hgroup>
+        <h1>{{ project.title }}</h1>
+        <h2>{{ project.type }}</h2>
+      </hgroup>
 
-    <div class="tabs">
-      <div class="tab-contents">
-        <div class="brief selected">
-          <p>{{ project.brief }}</p>
-          {%- if project.external_url -%}
-            <a href="{{ project.external_url }}" target="_blank" class="external"><span class="icon arrow-mini"></span>{{ project.external_url|hostname }}</a>
-          {% endif %}
-          {%- if project.title|lower == 'linkhunter' -%}
-            <div class="linkhunter"></div>
-          {% endif %}
-        </div>
-        {% if project.services -%}
-          <ol class="services">
-          {% for group, services in project.grouped_services %}
-            <li>{{ group|safe }}
-              <ol>
-              {% for service in services -%}
-                <li>{{ service }}</li>
-              {%- endfor %}
-              </ol>
-            </li>
-          {% endfor %}
-          </ol>
-        {%- endif %}
-        {% if project.cohorts -%}
-          <div class="cohorts">
-            <table>
-            {% for cohort in project.cohorts -%}
-              <tr><td>
-              {%- if cohort.twitter_user -%}
-                <a href="https://twitter.com/{{ cohort.twitter_user }}"
-                  target="_blank"><span class="icon twitter"></span>{{ cohort.name }}</a>
-              {%- else -%}
-                {{ cohort.name }}
-              {%- endif -%}
-              </td><td>{{ cohort.role }}</td></tr>
-            {%- endfor %}
-            </table>
+      <div class="tabs">
+        <div class="tab-contents">
+          <div class="brief selected">
+            <p>{{ project.brief }}</p>
+            {%- if project.external_url -%}
+              <a href="{{ project.external_url }}" target="_blank" class="external"><span class="icon arrow-mini"></span>{{ project.external_url|hostname }}</a>
+            {% endif %}
+            {%- if project.title|lower == 'linkhunter' -%}
+              <div class="linkhunter"></div>
+            {% endif %}
           </div>
-        {%- endif %}
-      </div>
-      <div class="tab-chooser">
-        <a class="selected" data-for="brief"><hr>Brief</a>
-        {% if project.services -%}
-          <a data-for="services"><hr>Services</a>
-        {%- endif %}
-        {% if project.cohorts -%}
-          <a data-for="cohorts"><hr>Cohorts</a>
-        {%- endif %}
+          {% if project.services -%}
+            <ol class="services">
+            {% for group, services in project.grouped_services %}
+              <li>{{ group|safe }}
+                <ol>
+                {% for service in services -%}
+                  <li>{{ service }}</li>
+                {%- endfor %}
+                </ol>
+              </li>
+            {% endfor %}
+            </ol>
+          {%- endif %}
+          {% if project.cohorts -%}
+            <div class="cohorts">
+              <table>
+              {% for cohort in project.cohorts -%}
+                <tr><td>
+                {%- if cohort.twitter_user -%}
+                  <a href="https://twitter.com/{{ cohort.twitter_user }}"
+                    target="_blank"><span class="icon twitter"></span>{{ cohort.name }}</a>
+                {%- else -%}
+                  {{ cohort.name }}
+                {%- endif -%}
+                </td><td>{{ cohort.role }}</td></tr>
+              {%- endfor %}
+              </table>
+            </div>
+          {%- endif %}
+        </div>
+        <div class="tab-chooser">
+          <a class="selected" data-for="brief"><hr>Brief</a>
+          {% if project.services -%}
+            <a data-for="services"><hr>Services</a>
+          {%- endif %}
+          {% if project.cohorts -%}
+            <a data-for="cohorts"><hr>Cohorts</a>
+          {%- endif %}
+        </div>
       </div>
     </div>
 
@@ -67,61 +69,61 @@
       <a class="arrow-left" href="{{ url_for('main.project', slug=project.prev_slug) }}">Previous</a>
       <a class="arrow-right" href="{{ url_for('main.project', slug=project.next_slug) }}">Next</a>
     </div>
-  </div>
 
-  <div class="project-content">
-  {% if project.dev_shortlist %}
-    <div class="dev-shortlist">
-      <h3>Development Shortlist</h3>
-      <a class="dev-shortlist-toggle"><span>Toggle</span></a>
-      <div class="dev-shortlist-window">
-        <ul>
-        {% for item in project.dev_shortlist %}
-          <li>{{ item }}</li>
-        {% endfor %}
-        </ul>
+    <div class="project-content">
+    {% if project.dev_shortlist %}
+      <div class="dev-shortlist">
+        <h3>Development Shortlist</h3>
+        <a class="dev-shortlist-toggle"><span>Toggle</span></a>
+        <div class="dev-shortlist-window">
+          <ul>
+          {% for item in project.dev_shortlist %}
+            <li>{{ item }}</li>
+          {% endfor %}
+          </ul>
+        </div>
       </div>
-    </div>
-  {% else %}
-    <div class="images"{% if project.is_slideshow %} data-slideshow="true"{% endif %}>
-    {% for image in project.images %}
-      <div class="placeholder">
-        <img src="{{ blank_img }}" alt
-          {%- if image.shadow %} data-class="shadow"{% endif %}
-          data-src="{{ image_url(image.file) }}" data-height="{{ image.height }}">
-      </div>
-    {% endfor %}
-    </div>
-  {% endif %}
-  </div>
-
-  <div class="bottom">
-  {% with %}
-    {% set url = url_for('main.project', slug=project.slug, _external=true)|urlquote %}
-    {% set title = ("%s: %s by Cabin" % (project.title, project.type))|urlquote %}
-    {# If there are no project images (dev-only projects), share the thumbnail
-       image, which is required. If there is one image, share that image. If
-       there is more than one image, we'll be popping open the picker, so just
-       use the thumbnail as a placeholder. -#}
-    {% set image_file = project.images[0].file if project.images|length == 1 else project.thumbnail_file %}
-    {% set share_image_url = image_url(image_file)|external_url|urlquote %}
-    <a class="arrow-left" href="{{ url_for('main.project', slug=project.prev_slug) }}">Previous</a>
-    <div class="social">
-      <a href="https://www.facebook.com/sharer/sharer.php?t={{ title -}}&u={{ url }}" class="facebook">Facebook</a>
-      <a href="https://twitter.com/intent/tweet?url={{ url }}&text={{ title }}&hashtags=madebycabin&related=madebycabin" class="twitter">Twitter</a>
-      <a href="http://pinterest.com/pin/create/button/?url={{ url }}&description={{ title }}&media={{ share_image_url }}" class="pinterest">Pinterest</a>
-    </div>
-    {% if project.images|length > 1 %}
-    <div class="pinterest-image-picker" hidden><div>
+    {% else %}
+      <div class="images"{% if project.is_slideshow %} data-slideshow="true"{% endif %}>
       {% for image in project.images %}
-        <a href="http://pinterest.com/pin/create/button/?url={{ url }}&description={{ title }}&media={{ image_url(image.file)|external_url|urlquote }}" data-height="{{ image.height }}">
-          <img src="{{ image_url(image.file) }}" alt>
-          <span class="button-black">Pin it</span>
-        </a>
+        <div class="placeholder">
+          <img src="{{ blank_img }}" alt
+            {%- if image.shadow %} data-class="shadow"{% endif %}
+            data-src="{{ image_url(image.file) }}" data-height="{{ image.height }}">
+        </div>
       {% endfor %}
-    </div></div>
+      </div>
     {% endif %}
-    <a class="arrow-right" href="{{ url_for('main.project', slug=project.next_slug) }}">Next</a>
-  {% endwith %}
+    </div>
+
+    <div class="bottom">
+    {% with %}
+      {% set url = url_for('main.project', slug=project.slug, _external=true)|urlquote %}
+      {% set title = ("%s: %s by Cabin" % (project.title, project.type))|urlquote %}
+      {# If there are no project images (dev-only projects), share the thumbnail
+        image, which is required. If there is one image, share that image. If
+        there is more than one image, we'll be popping open the picker, so just
+        use the thumbnail as a placeholder. -#}
+      {% set image_file = project.images[0].file if project.images|length == 1 else project.thumbnail_file %}
+      {% set share_image_url = image_url(image_file)|external_url|urlquote %}
+      <a class="arrow-left" href="{{ url_for('main.project', slug=project.prev_slug) }}">Previous</a>
+      <div class="social">
+        <a href="https://www.facebook.com/sharer/sharer.php?t={{ title -}}&u={{ url }}" class="facebook">Facebook</a>
+        <a href="https://twitter.com/intent/tweet?url={{ url }}&text={{ title }}&hashtags=madebycabin&related=madebycabin" class="twitter">Twitter</a>
+        <a href="http://pinterest.com/pin/create/button/?url={{ url }}&description={{ title }}&media={{ share_image_url }}" class="pinterest">Pinterest</a>
+      </div>
+      {% if project.images|length > 1 %}
+      <div class="pinterest-image-picker" hidden><div>
+        {% for image in project.images %}
+          <a href="http://pinterest.com/pin/create/button/?url={{ url }}&description={{ title }}&media={{ image_url(image.file)|external_url|urlquote }}" data-height="{{ image.height }}">
+            <img src="{{ image_url(image.file) }}" alt>
+            <span class="button-black">Pin it</span>
+          </a>
+        {% endfor %}
+      </div></div>
+      {% endif %}
+      <a class="arrow-right" href="{{ url_for('main.project', slug=project.next_slug) }}">Next</a>
+    {% endwith %}
+    </div>
   </div>
 {% endblock %}

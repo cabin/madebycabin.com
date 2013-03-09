@@ -277,6 +277,24 @@ body.splash-transition
   background-size: plus_size
   size: plus_size
 
+images_animate_distance = 1200px
+@keyframes images-out-left
+  to
+    opacity: 0
+    transform: translate3d(-(images_animate_distance), 0, 0)
+@keyframes images-in-left
+  from
+    opacity: 0
+    transform: translate3d(images_animate_distance, 0, 0)
+@keyframes images-out-right
+  to
+    opacity: 0
+    transform: translate3d(images_animate_distance, 0, 0)
+@keyframes images-in-right
+  from
+    opacity: 0
+    transform: translate3d(-(images_animate_distance), 0, 0)
+
 .page-project
   overflow-x: hidden
   .info
@@ -343,23 +361,6 @@ body.splash-transition
     animation-duration: 300ms
     animation-iteration-count: 1
     animation-fill-mode: forwards
-  images_animate_distance = 1200px
-  @keyframes images-out-left
-    to
-      opacity: 0
-      transform: translate3d(-(images_animate_distance), 0, 0)
-  @keyframes images-in-left
-    from
-      opacity: 0
-      transform: translate3d(images_animate_distance, 0, 0)
-  @keyframes images-out-right
-    to
-      opacity: 0
-      transform: translate3d(images_animate_distance, 0, 0)
-  @keyframes images-in-right
-    from
-      opacity: 0
-      transform: translate3d(-(images_animate_distance), 0, 0)
 
   .bottom
     margin-bottom: 40px
@@ -404,10 +405,7 @@ body.splash-transition
       transition: transform 250ms ease-in-out
 
     .dev-shortlist-window, li
-      margin-left: -200%
-      margin-right: -200%
-      padding-left: 200%
-      padding-right: 200%
+      desktop-breakout()
 
     .dev-shortlist-window
       clear: left
@@ -794,10 +792,7 @@ body.splash-transition
         background-color: cabin_black
 
     .info
-      position: relative
       margin-bottom: 60px
-      .prev-next
-        absolute: top right
     hgroup
       float: left
       width: 280px
@@ -814,6 +809,11 @@ body.splash-transition
       margin-right: 40px
     .tab-contents
       width: 520px
+
+    .content
+      position: relative
+    .prev-next
+      absolute: top 30px right
 
     .dev-shortlist h3
       font-size: 13px
