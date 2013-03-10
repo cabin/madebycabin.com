@@ -27,6 +27,10 @@
   // Hide these until their image stylesheet is loaded.
   .clients a
     display: none
+  .colophon a
+    color: inherit
+    &:hover
+      color: cabin_hl_light
 
 
 @media mobile
@@ -121,6 +125,8 @@
           body-text()
       .notes
         margin-top: 20px
+      .note
+        min-height: 60px
 
     section.clients
       mobile-breakout()

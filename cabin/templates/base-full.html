@@ -16,9 +16,9 @@
   <meta property="og:url" content="{{ request.url }}">
   <meta property="og:image" content="{{ page_image|default(url_for('static', filename='cabin-symbol-300.png', _external=true)) }}">
   <meta property="og:title" content="Cabin{% if title and not splash %} &middot; {{ title }}{% endif %}">
-  {%- with description = "We are makers. We design and build experiences for people and projects we love." %}
+  {%- with description = "Cabin is a multi-disciplinary design and development studio dedicated to holistic branding, experience design, and web development." %}
     <meta property="og:description" content="{{ page_description|default(description) }}">
-    <meta name="description" content="{{ description }}">
+    <meta name="description" content="{{ page_description|default(description) }}">
   {%- endwith %}
 
   {% assets 'screen.css', 'icons.css' -%}
