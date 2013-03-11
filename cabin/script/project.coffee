@@ -113,11 +113,49 @@ class ProjectPageView extends HierView
       event.stopPropagation()
       event.preventDefault()
     @router.navigate(url)
-    # XXX what to do if not url of @projects?
-    @currentProject.transitionOut(direction)
-    @currentProject = @projects[url]
-    @preloadNeighbors(@currentProject)
-    @currentProject.transitionIn(direction)
+    # Swap in the new project and load neighbors.
+    previous = @currentProject
+    @currentProject = next = @projects[url]
+    @preloadNeighbors(next)
+    @_parent.setTitle(next.title)
+
+    # Scroll to the top first.
+    $('html, body').animate scrollTop: 0, 300, =>
+      # Add the next project to the container (so it can be rendered in order to
+      # compute its height). Transitioning elements are positioned absolutely,
+      # but we need to smoothly transition footer and .bottom between projects.
+      # Set container and project height to the largest of the transitioning
+      # projects.
+      container = @$('.projects').append(next.$el.addClass('transition'))
+      next.render()
+      projectHeight = Math.max(previous.$el.height(), next.$el.height())
+      contentHeight = Math.max(
+        previous.contentView.$el.height(), next.contentView.$el.height())
+      container.height(projectHeight)
+      previous.contentView.$el.height(contentHeight)
+      next.contentView.$el.height(contentHeight)
+      # Now that heights are set, pull the previous element out of static
+      # positioning.
+      previous.$el.addClass('transition')
+
+      # Begin transition animations.
+      previous.$el.addClass("transition-out transition-out-#{direction}")
+      next.$el.addClass("transition-in transition-in-#{direction}")
+
+      # Once all animations are complete (next.infoView gets the longest one),
+      # it's safe to remove the old view and clean up after ourselves.
+      next.infoView.$el.one ANIMATION_END, =>
+        previous.$el.detach()
+        previous.cleanup()
+        previous.$el.add(next.$el).removeClass [
+          "transition"
+          "transition-out transition-out-#{direction}"
+          "transition-in transition-in-#{direction}"
+        ].join(' ')
+        container.height('auto')
+        previous.contentView.$el.height('auto')
+        next.contentView.$el.height('auto')
+        next.render()
 
 
 #### ProjectView
@@ -148,6 +186,7 @@ class ProjectView extends HierView
     # width instead, as it will always be visible.
     width = @container.width()
     @contentView.setElement(@$('.project-content')).render(width)
+    this
 
   # ProjectViews are cached, but some components need to be reset when not in
   # view (window resize handlers, slideshows, etc.). `cleanup` walks the view
@@ -161,14 +200,6 @@ class ProjectView extends HierView
   # Snarf the neighboring project URLs from the arrow links.
   previousURL: -> @$('.prev-next a').first().attr('href')
   nextURL: -> @$('.prev-next a').last().attr('href')
-
-  transitionOut: (direction) ->
-    @cleanup()
-    @$el.detach()
-
-  transitionIn: (direction) ->
-    @container.append(@el)
-    @render()
 
 
 #### ProjectInfoView
@@ -185,6 +216,10 @@ class ProjectInfoView extends HierView
   render: ->
     lhEl = @$('.linkhunter')
     @linkhunterView.setElement(lhEl).render() if lhEl.length
+    this
+
+  cleanup: ->
+    @selectTab(currentTarget: @$('.tab-chooser a')[0])
 
   selectTab: (event) ->
     # Unselect the previous item; hide its hr temporarily to avoid a shrinking
@@ -223,6 +258,7 @@ class ProjectShareView extends HierView
   # of times for transitioning between projects.
   render: ->
     @pinterestPicker = @$('.pinterest-image-picker')
+    this
 
   # Since we don't want to load a thousand external scripts and be forced to
   # display standard share buttons, this method catches clicks on our share
@@ -289,6 +325,7 @@ class ProjectContentView extends HierView
     shortlist = @$('.dev-shortlist')
     @imagesView.setElement(images).render(width) if images.length
     @shortlistView.setElement(shortlist).render() if shortlist.length
+    this
 
 
 #### ProjectImagesView
@@ -304,6 +341,7 @@ class ProjectImagesView extends HierView
     @images = @$('.placeholder')
     @loadImages()
     @setupSlideshow() if @$el.data('slideshow')
+    this
 
   cleanup: ->
     clearTimeout(@slideshowTimeout) if @slideshowTimeout
@@ -367,49 +405,53 @@ class ProjectShortlistView extends HierView
 
   render: ->
     return unless @$el.is(':visible')
-    items = @$('li')
-    @itemCount = items.length
+    @cycleIndex = 0
     @closed = true
-    return unless @itemCount > 0
 
-    # Find the biggest shortlist element by wrapping each one in a `span` (so
-    # we can measure the text width, wrather than the container). Assumes
-    # `nowrap` on the items.
-    biggest = null
-    maxWidth = 0
-    items.wrapInner('<span/>')
-    items.find('span').each ->
-      span = $(this)
-      w = span.width()
-      if w > maxWidth
-        maxWidth = w
-        biggest = span
-    @biggest = biggest
-    @visibleWindow = @$('.dev-shortlist-window')
-    $(window).on('resize.dev-shortlist', @resize); @resize()
+    if not @$el.hasClass('loaded')
+      items = @$('li')
+      @itemCount = items.length
+      return unless @itemCount > 0
 
-    # Each item's opacity differs from the last by a set amount, variable based
-    # on the number of items. The first item will be set to `opacity`, and the
-    # last item will be set to `minOpacity`.
-    opacity = 1
-    minOpacity = 0.2
-    delta = (opacity - minOpacity) / (@itemCount - 1)
-    items.each ->
-      $(this).css('opacity', opacity.toFixed(2))
-      opacity -= delta
+      # Find the biggest shortlist element by wrapping each one in a `span` (so
+      # we can measure the text width, wrather than the container). Assumes
+      # `nowrap` on the items.
+      biggest = null
+      maxWidth = 0
+      items.wrapInner('<span/>')
+      items.find('span').each ->
+        span = $(this)
+        w = span.width()
+        if w > maxWidth
+          maxWidth = w
+          biggest = span
+      @biggest = biggest
+      @visibleWindow = @$('.dev-shortlist-window')
+
+      # Each item's opacity differs from the last by a set amount, variable
+      # based on the number of items. The first item will be set to `opacity`,
+      # and the last item will be set to `minOpacity`.
+      opacity = 1
+      minOpacity = 0.2
+      delta = (opacity - minOpacity) / (@itemCount - 1)
+      items.each ->
+        $(this).css('opacity', opacity.toFixed(2))
+        opacity -= delta
+
+      # CSS hides the content until we've added our styles here.
+      @$el.addClass('loaded')
 
     # Set up styles for and begin the cycle.
-    @cycleIndex = 0
+    $(window).on('resize', @resize); @resize()
     @reposition()
     @toggleClosed(@closed)
-
-    # CSS hides the content until we've added our styles here.
-    @$el.addClass('loaded')
+    this
 
   cleanup: ->
-    clearInterval(@cycleInterval) if @cycleInterval
+    clearInterval(@cycleInterval) if @cycleInterval?
+    @cycleInterval = null
     @$el.removeClass('loaded')
-    $(window).off('.dev-shortlist')
+    $(window).off('resize', @resize)
 
   remove: ->
     @cleanup()
@@ -422,9 +464,10 @@ class ProjectShortlistView extends HierView
     @closed = @$el.toggleClass('closed', value).hasClass('closed')
     @resize()
     if @closed
-      @cycleInterval = setInterval(@cycle, 2000)
+      if not @cycleInterval
+        @cycleInterval = setInterval(@cycle, 2000)
     else
-      clearInterval(@cycleInterval) if @cycleInterval
+      clearInterval(@cycleInterval) if @cycleInterval?
       @cycleInterval = null
       @visibleWindow.css(height: @itemHeight * @itemCount)
     @reposition()
@@ -471,11 +514,12 @@ class LinkhunterView extends HierView
   # we attempt to load a linkhunter resource into a hidden img and report
   # success or failure.
   render: ->
-    return unless window.chrome?.webstore?
+    return this unless window.chrome?.webstore?
     img = new Image
     img.onload = @renderInstalled
     img.onerror = @renderNotInstalled
     img.src = "chrome-extension://#{@extensionID}/#{@logoURL}"
+    this
 
   remove: ->
     @headLink?.remove()

@@ -295,11 +295,23 @@ images_animate_distance = 1200px
     opacity: 0
     transform: translate3d(-(images_animate_distance), 0, 0)
 
+@keyframes fade-out
+  to
+    opacity: 0
+@keyframes fade-in
+  from
+    opacity: 0
+  50%
+    opacity: 0
+
+
 .page-project
   overflow-x: hidden
+  .projects
+    margin-top: 30px
   .info
     clearfix()
-    margin: 30px 0
+    margin-bottom: 30px
   hgroup
     h1
       line-height: 1
@@ -354,13 +366,33 @@ images_animate_distance = 1200px
       hl-background()
 
   // Animations for transitioning between project pages.
-  .project-content
+  .projects
     position: relative
-    transition-duration: 300ms
+  .project.transition
+    position: absolute
+    top: 0
   .dev-shortlist, .images
     animation-duration: 300ms
     animation-iteration-count: 1
     animation-fill-mode: forwards
+  .transition-in .info, .transition-in .dev-shortlist
+    animation-name: fade-in
+    animation-duration: 300ms
+  .transition-in .dev-shortlist
+    animation-delay: 300ms
+    opacity: 0
+  .transition-out .info, .transition-out .dev-shortlist
+    animation-name: fade-out
+    animation-duration: 150ms
+    animation-fill-mode: forwards
+  .transition-out-left .images
+    animation-name: images-out-left
+  .transition-out-right .images
+    animation-name: images-out-right
+  .transition-in-left .images
+    animation-name: images-in-left
+  .transition-in-right .images
+    animation-name: images-in-right
 
   .bottom
     margin-bottom: 40px
