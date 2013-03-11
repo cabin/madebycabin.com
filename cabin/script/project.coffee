@@ -527,8 +527,11 @@ class LinkhunterView extends HierView
     img.src = "chrome-extension://#{@extensionID}/#{@logoURL}"
     this
 
-  remove: ->
+  cleanup: ->
     @headLink?.remove()
+
+  remove: ->
+    @cleanup()
     super()
 
   renderInstalled: =>
@@ -536,11 +539,11 @@ class LinkhunterView extends HierView
 
   # https://developers.google.com/chrome/web-store/docs/inline_installation
   renderNotInstalled: =>
-    l = $('<link rel="chrome-webstore-item">')
-    l.attr('href', "https://chrome.google.com/webstore/detail/#{@extensionID}")
-    $('head').append(l)
-    @headLink = l
-    @$el.append('<button class="lh-install button-hl">Add to Chrome</button>')
+    if not @headLink? or not @headLink.length
+      @headLink = $('<link rel="chrome-webstore-item">').attr(
+        'href', "https://chrome.google.com/webstore/detail/#{@extensionID}")
+      $('head').append(@headLink)
+    @$el.html('<button class="lh-install button-hl">Add to Chrome</button>')
 
   install: (event) ->
     chrome.webstore.install(undefined, @renderInstalled)
