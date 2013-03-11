@@ -119,14 +119,14 @@ class ProjectPageView extends HierView
     @preloadNeighbors(next)
     @_parent.setTitle(next.title)
 
-    # Scroll to the top first.
-    $('html, body').animate scrollTop: 0, 300, =>
-      # Add the next project to the container (so it can be rendered in order to
-      # compute its height). Transitioning elements are positioned absolutely,
-      # but we need to smoothly transition footer and .bottom between projects.
-      # Set container and project height to the largest of the transitioning
-      # projects.
-      container = @$('.projects').append(next.$el.addClass('transition'))
+    container = @$('.projects')
+    transition = ->
+      # Add the next project to the container (so it can be rendered in order
+      # to compute its height). Transitioning elements are positioned
+      # absolutely, but we need to smoothly transition footer and .bottom
+      # between projects. Set container and project height to the largest of
+      # the transitioning projects.
+      container.append(next.$el.addClass('transition'))
       next.render()
       projectHeight = Math.max(previous.$el.height(), next.$el.height())
       contentHeight = Math.max(
@@ -156,6 +156,12 @@ class ProjectPageView extends HierView
         previous.contentView.$el.height('auto')
         next.contentView.$el.height('auto')
         next.render()
+
+    # Scroll to the top first if needed.
+    if $(window).scrollTop() > 0
+      $('html, body').animate(scrollTop: 0, 300, transition)
+    else
+      transition()
 
 
 #### ProjectView
