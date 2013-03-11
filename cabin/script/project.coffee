@@ -108,6 +108,9 @@ class ProjectPageView extends HierView
       $('html, body').animate({scrollTop: scrollTo}, 300, callback)
 
   navigateProject: (event, url, direction) ->
+    # If the next page hasn't loaded yet, ignore the event.
+    next = @projects[url]
+    return unless next?.title?
     # Avoid the site-wide `internalLink` behavior.
     if event.type is 'tapclick'
       event.stopPropagation()
@@ -115,7 +118,7 @@ class ProjectPageView extends HierView
     @router.navigate(url)
     # Swap in the new project and load neighbors.
     previous = @currentProject
-    @currentProject = next = @projects[url]
+    @currentProject = next
     @preloadNeighbors(next)
     @_parent.setTitle(next.title)
 
