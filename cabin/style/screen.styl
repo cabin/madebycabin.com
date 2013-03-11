@@ -828,12 +828,12 @@ images_animate_distance = 1200px
     hgroup
       float: left
       width: 280px
+    .tabs, .prev-next
+      height: 150px
     .tabs
       clearfix()
-      border-right: 1px solid cabin_grey_light
-      height: 150px
       margin-right: 100px
-      padding-right: 39px
+      padding-right: 40px
       > div
         float: right
     .tab-chooser
@@ -846,6 +846,8 @@ images_animate_distance = 1200px
       position: relative
     .prev-next
       absolute: top right
+      border-left: 1px solid cabin_grey_light
+      padding-left: 20px
 
     .dev-shortlist h3
       font-size: 13px
@@ -1245,12 +1247,13 @@ images_animate_distance = 1200px
 // hide the tab-chooser altogether.
 @media only screen and (min-width: 569px) and (max-width: 1159px)
   .page-project .tabs
-    border-right: none
     clear: left
     float: left
     margin-top: 40px
     margin-right: 0
     padding-right: 0
+  .page-project .prev-next
+    border-left: none
 @media only screen and (max-width: 699px)
   .page-project .tab-chooser
     display: none
