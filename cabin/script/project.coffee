@@ -51,9 +51,9 @@ class ProjectPageView extends HierView
 
   shortcuts:
     'up': 'showPreviousImage'
-    'down': 'showNextImage'
+    'down': 'showNextImageOrShortlist'
     'k': 'showPreviousImage'
-    'j': 'showNextImage'
+    'j': 'showNextImageOrShortlist'
     'left': 'showPreviousProject'
     'right': 'showNextProject'
     '⌥+e': 'adminProject'
@@ -62,9 +62,13 @@ class ProjectPageView extends HierView
     event.preventDefault()
     @incrImage(-1)
 
-  showNextImage: (event) ->
+  showNextImageOrShortlist: (event) ->
     event.preventDefault()
-    @incrImage()
+    shortlistView = @currentProject.contentView.shortlistView
+    if shortlistView.closed
+      shortlistView.toggleClosed()
+    else
+      @incrImage()
 
   showPreviousProject: (event) ->
     @navigateProject(event, @currentProject.previousURL(), 'right')
