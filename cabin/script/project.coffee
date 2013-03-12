@@ -66,7 +66,7 @@ class ProjectPageView extends HierView
     event.preventDefault()
     shortlistView = @currentProject.contentView.shortlistView
     if shortlistView.closed
-      shortlistView.toggleClosed()
+      shortlistView.toggleClosed(false)
     else
       @incrImage()
 
@@ -457,10 +457,10 @@ class ProjectShortlistView extends HierView
         opacity -= delta
 
       # CSS hides the content until we've added our styles here.
-      @$el.addClass('loaded')
+      _.defer => @$el.addClass('loaded')
 
     # Set up styles for and begin the cycle.
-    $(window).on('resize', @resize); @resize()
+    $(window).on('resize', @resize)
     @reposition()
     @toggleClosed(@closed)
     this
