@@ -132,8 +132,12 @@ class ProjectPageView extends HierView
       # to compute its height). Transitioning elements are positioned
       # absolutely, but we need to smoothly transition footer and .bottom
       # between projects. Set container and project height to the largest of
-      # the transitioning projects.
+      # the transitioning projects. Set `next` width so sizing works properly,
+      # and `previous` width so nothing falls out of place when it loses its
+      # static positioning.
       container.append(next.$el.addClass('transition'))
+      previous.$el.width(previous.$el.width())
+      next.$el.width(previous.$el.width())
       next.render()
       projectHeight = Math.max(previous.$el.height(), next.$el.height())
       contentHeight = Math.max(
@@ -162,7 +166,8 @@ class ProjectPageView extends HierView
         container.height('auto')
         previous.contentView.$el.height('auto')
         next.contentView.$el.height('auto')
-        next.render()
+        previous.$el.width('auto')
+        next.$el.width('auto')
 
     # Scroll to the top first if needed.
     if $(window).scrollTop() > 0
