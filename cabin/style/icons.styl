@@ -34,12 +34,14 @@ social-icon(network, retina = false)
 
 .social > a
   hide-text()
+  border-radius: 26px
   width: 26px
   height: 26px
 .social > a, .connect li
   &:before
     icon-base(26px)
     absolute: left top
+    border-radius: 26px
     content: ""
 
 icon(arrow-mini)
@@ -126,9 +128,6 @@ social-icon(twitter)
     @extend .icon.private
     &:checked
       @extend .icon.public
-
-  .social > a
-    outline: 1px solid white  // helps to cover up background peeking
 
   // social-icon(behance, true)
   social-icon(email, true)
