@@ -95,7 +95,7 @@ class MainView extends HierView
     'tapclick nav': 'closeSplash'
 
   shortcuts:
-    '⌥+l': -> navigator.id.request()
+    '⌥+l': -> navigator.id.request(siteName: 'Cabin')
 
   render: ->
     @setTitle(@content.data('title'))
