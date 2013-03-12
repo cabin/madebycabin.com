@@ -271,7 +271,8 @@ class AboutView extends HierView
     photos.each ->
       el = $(this)
       src = el.css('background-image').replace(urlMatch, '$1')
-      photos.add($('<img>').attr('src', src))
+      if src and src isnt 'none'
+        photos.add($('<img>').attr('src', src))
     @listenTo(@router, 'showSplash', -> photos.removeClass('loaded'))
     photos.imagesLoaded ->
       body = $('body')
