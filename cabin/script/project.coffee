@@ -116,23 +116,31 @@ class ProjectPageView extends HierView
 
   # Record where the touch began, and reset the movement axis.
   touchstart: (event) ->
-    @touchstartX = event.originalEvent.touches[0].clientX
-    @touchstartY = event.originalEvent.touches[0].clientY
     @swipeAxis = null
+    touches = event.originalEvent.touches
+    @singletouch = touches.length is 1
+    if @singletouch
+      @touchstartX = touches[0].clientX
+      @touchstartY = touches[0].clientY
 
   # If the touch is a single-finger drag horizontally, prevent scrolling and
   # instead slide in a new project.
   touchmove: (event) ->
-    touches = event.originalEvent.touches
-    return unless touches.length is 1
-    t = touches[0]
+    return unless @singletouch
+    t = event.originalEvent.touches[0]
     [deltaX, deltaY] = [t.clientX - @touchstartX, t.clientY - @touchstartY]
     if not @swipeAxis
       @swipeAxis = @determineTouchmoveAxis(deltaX, deltaY)
+      # The first event with a verified horizontal motion needs to set up the
+      # neighboring projects.
+      @setupElementsForSwipe() if @swipeAxis is 'x'
+    # Subsequent events after an initial horizontal motion translate the
+    # underlying element's position.
     if @swipeAxis is 'x'
       event.preventDefault()
-      @currentProject.$el.css
-        'transform': "translateX(#{deltaX}px)"
+      @$('.projects').css(transform: "translateX(#{deltaX}px)")
+      # Save this for use on touchend.
+      @touchDeltaX = deltaX
 
   determineTouchmoveAxis: (dx, dy) ->
     [absX, absY] = [Math.abs(dx), Math.abs(dy)]
@@ -142,11 +150,51 @@ class ProjectPageView extends HierView
       return if absX > absY then 'x' else 'y'
     return null
 
+  setupElementsForSwipe: ->
+    prev = @projects[@currentProject.previousURL()]
+    next = @projects[@currentProject.nextURL()]
+    offset = @$el.parent('.main').outerWidth()
+    @$('.projects')
+      .append(prev.render().el)
+      .append(next.render().el)
+    prev.$el.css
+      position: 'absolute'
+      top: 0
+      transform: "translateX(-#{offset}px)"
+    next.$el.css
+      position: 'absolute'
+      top: 0
+      transform: "translateX(#{offset}px)"
+
+  # If this was a horizontal swipe and it swept far enough, transition to the
+  # next project. Otherwise, revert the position. 
   touchend: (event) ->
-    if @swipeAxis
-      @swipeAxis = false
-      @currentProject.$el.css
-        'transform': "translateX(0)"
+    if @swipeAxis is 'x'
+      threshold = @$el.outerWidth() / 2
+      if Math.abs(@touchDeltaX) >= threshold
+        @navigateProjectSwipe(if @touchDeltaX < 0 then 'next' else 'previous')
+      else
+        @$('.projects').css(transform: "translateX(0)")
+
+  navigateProjectSwipe: (direction) ->
+    url = @currentProject[direction + 'URL']()
+    @currentProject = @projects[url]
+    @preloadNeighbors(@currentProject)
+    @router.navigate(url)
+    @_parent.setTitle(@currentProject.title)
+
+    # TODO everything but this is redundant with navigateProject
+    transition = =>
+      @currentProject.$el.css(transform: "translateX(0)")
+      @$('.projects').css(transform: "translateX(0)").children()
+        .css(position: 'static')
+        .not(@currentProject.$el).detach()
+
+    # Scroll to the top first if needed.
+    if $(window).scrollTop() > 0
+      $('html, body').animate(scrollTop: 0, 300, transition)
+    else
+      transition()
 
   navigateProject: (event, url, direction) ->
     # If the next page hasn't loaded yet, ignore the event.
