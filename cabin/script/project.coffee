@@ -48,6 +48,9 @@ class ProjectPageView extends HierView
     'tapclick .prev-next .arrow-right': 'showNextProject'
     'tapclick .bottom .arrow-left': 'showPreviousProject'
     'tapclick .bottom .arrow-right': 'showNextProject'
+    'touchstart': 'touchstart'
+    'touchmove': 'touchmove'
+    'touchend': 'touchend'
 
   shortcuts:
     'up': 'showPreviousImage'
@@ -110,6 +113,40 @@ class ProjectPageView extends HierView
       # being called while the scrollTop was still 1px away from its target!
       callback = _.once(-> _.defer(next))
       $('html, body').animate({scrollTop: scrollTo}, 300, callback)
+
+  # Record where the touch began, and reset the movement axis.
+  touchstart: (event) ->
+    @touchstartX = event.originalEvent.touches[0].clientX
+    @touchstartY = event.originalEvent.touches[0].clientY
+    @swipeAxis = null
+
+  # If the touch is a single-finger drag horizontally, prevent scrolling and
+  # instead slide in a new project.
+  touchmove: (event) ->
+    touches = event.originalEvent.touches
+    return unless touches.length is 1
+    t = touches[0]
+    [deltaX, deltaY] = [t.clientX - @touchstartX, t.clientY - @touchstartY]
+    if not @swipeAxis
+      @swipeAxis = @determineTouchmoveAxis(deltaX, deltaY)
+    if @swipeAxis is 'x'
+      event.preventDefault()
+      @currentProject.$el.css
+        'transform': "translateX(#{deltaX}px)"
+
+  determineTouchmoveAxis: (dx, dy) ->
+    [absX, absY] = [Math.abs(dx), Math.abs(dy)]
+    distance = Math.sqrt((dx * dx) + (dy * dy))
+    difference = Math.abs(absX - absY)
+    if distance > 6 and difference > 3
+      return if absX > absY then 'x' else 'y'
+    return null
+
+  touchend: (event) ->
+    if @swipeAxis
+      @swipeAxis = false
+      @currentProject.$el.css
+        'transform': "translateX(0)"
 
   navigateProject: (event, url, direction) ->
     # If the next page hasn't loaded yet, ignore the event.
