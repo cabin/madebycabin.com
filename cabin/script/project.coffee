@@ -48,6 +48,9 @@ class ProjectPageView extends HierView
     'tapclick .prev-next .arrow-right': 'showNextProject'
     'tapclick .bottom .arrow-left': 'showPreviousProject'
     'tapclick .bottom .arrow-right': 'showNextProject'
+    'touchstart': 'touchstart'
+    'touchmove': 'touchmove'
+    'touchend': 'touchend'
 
   shortcuts:
     'up': 'showPreviousImage'
@@ -110,6 +113,47 @@ class ProjectPageView extends HierView
       # being called while the scrollTop was still 1px away from its target!
       callback = _.once(-> _.defer(next))
       $('html, body').animate({scrollTop: scrollTo}, 300, callback)
+
+  # Record where the touch began, and reset the movement axis.
+  touchstart: (event) ->
+    @swipeAxis = null
+    touches = event.originalEvent.touches
+    @singletouch = touches.length is 1
+    if @singletouch
+      @touchstartX = touches[0].clientX
+      @touchstartY = touches[0].clientY
+
+  # If the touch is a single-finger drag horizontally, prevent scrolling and
+  # instead slide in a new project.
+  touchmove: (event) ->
+    return unless @singletouch
+    t = event.originalEvent.touches[0]
+    [deltaX, deltaY] = [t.clientX - @touchstartX, t.clientY - @touchstartY]
+    if not @swipeAxis
+      @swipeAxis = @determineTouchmoveAxis(deltaX, deltaY)
+    # We're handling horizontal swipes; prevent the default scroll.
+    event.preventDefault() if @swipeAxis is 'x'
+    # Save this for use on touchend.
+    @touchDeltaX = deltaX
+
+  determineTouchmoveAxis: (dx, dy) ->
+    [absX, absY] = [Math.abs(dx), Math.abs(dy)]
+    distance = Math.sqrt((dx * dx) + (dy * dy))
+    difference = Math.abs(absX - absY)
+    if distance > 6 and difference > 3
+      return if absX > absY then 'x' else 'y'
+    return null
+
+  # If this was a horizontal swipe and it swept far enough, transition to the
+  # appropriate project.
+  touchend: (event) ->
+    if @swipeAxis is 'x'
+      threshold = 100
+      if Math.abs(@touchDeltaX) >= threshold
+        if @touchDeltaX < 0
+          @showNextProject(event)
+        else
+          @showPreviousProject(event)
 
   navigateProject: (event, url, direction) ->
     # If the next page hasn't loaded yet, ignore the event.
