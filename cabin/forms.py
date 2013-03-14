@@ -24,7 +24,7 @@ class CohortForm(SimpleForm):
     twitter_user = StringField('@username')
 
     def validate_twitter_user(self, field):
-        if field.data and not field.data.isalnum():
+        if field.data and 'twitter.com' in field.data:
             raise ValidationError('Just the username, not the whole URL.')
 
     def validate_name(self, field):
