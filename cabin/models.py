@@ -309,8 +309,11 @@ class Tumblr(FeedItem):
         }
         r = requests.get(url, params=params)
         posts = cls.parse_api_response(r.json())
-        for post in posts:
-            post.save()
+        with redis.pipeline() as pipe:
+            pipe.delete(cls.list_key())
+            for post in posts:
+                post.save(pipe)
+            pipe.execute()
 
     @classmethod
     def parse_api_response(cls, data):
