@@ -105,125 +105,6 @@ button, .button
   60%
     visibility: hidden
 
-// nav/splash  {{{2
-
-body > header
-  absolute: top left; right: 0
-  // Absolute path here to prevent Stylus from inlining this image twice.
-  background: cabin_black url(/static/splash-dots.png)
-  .backgroundsize.multiplebgs &
-    background-color: cabin_black
-    background-image:
-      url(/static/splash-dots.png), url(/static/splash.jpg)
-    background-position: center center
-    background-size: auto, cover
-  color: white
-  display: none
-  overflow: hidden
-
-  hgroup
-    absolute: left 50% top 50%
-    width: 420px
-    margin-left: -(@width / 2)
-    height: 240px
-    margin-top: -(@height / 2)
-
-  h1, h2
-    margin: 0 auto
-    text-align: center
-  h1
-    font-size: 80px
-    height: 85px
-    .svg.backgroundsize &
-      replace-text: url('cabin-logo.svg')
-      background-size: contain
-  h2, h3
-    color: cabin_grey_med
-    letter-spacing: 1px
-    text-transform: uppercase
-  h2
-    font: 17px/1.33 body_font
-    white-space: nowrap
-    // Custom linebreaks; "white-space: pre" is added for f/m classes.
-    .br:before
-      content: "\A"
-  h3
-    rule-behind(span, cabin_grey_dark)
-    font: 10px/1 body_font
-    margin: 23px 0
-
-.nav-container
-  standard-shadow(color: transparent)
-  background: white
-  border-bottom: 1px solid cabin_grey_light
-  fixed: top left; right 0
-  transition-property: border, box-shadow
-  transition-duration: 500ms
-  transition-timing-function: ease-in-out
-  z-index: 10
-  .scrolled &
-    standard-shadow()
-    border-bottom-color: transparent
-
-nav
-  user-select: none
-  position: relative
-  .logo
-    hide-text()
-    position: relative
-    &:before
-      background-image: url(/static/cabin-symbol.svg)
-      background-position: 0 0
-      background-size: 200%
-      content: ""
-      display: block
-      position: absolute
-    .no-svg &:before
-      background-image: url('cabin-symbol.png')
-      background-size: auto
-  .links a
-    @extend .small-header-text
-    color: cabin_black
-
-// Make sure the main content is tall enough to cover the splash during
-// transitions, and set up its initial position so animation works.
-html, body
-  height: 100%
-.main
-  background: white
-  box-sizing: border-box
-  min-height: 100%
-  relative: top
-  .iphone &
-    margin-bottom: -60px
-// Avoid page-width jump.
-html
-  overflow-y: scroll
-
-body.splash
-  > header
-    display: block
-  .main
-    absolute: bottom left; top: auto
-    height: 0
-    min-height: @height
-    overflow: hidden
-    padding-bottom: 0
-    width: 100%
-  .nav-container, .page-about .menu
-    position: absolute
-  footer
-    display: none
-
-// Show everyone while transitioning.
-body.splash-transition
-  .nav-container, .page-about .menu
-    position: absolute
-  .main
-    height: auto
-  > header
-    display: block
-
 
 // Work page  {{{2
 
@@ -495,68 +376,6 @@ images_animate_distance = 1200px
 
 // <= iPhone 5 landscape  {{{1
 @media only screen and (max-width: 568px)
-  // nav/splash  {{{2
-  nav_height = mobile_nav_height
-
-  nav
-    display: table
-    width: 100%
-    height: nav_height
-    .logo
-      &:before
-        left: 50%; top: 12px
-        margin-left: -9px
-        size: 18px 16px
-      .no-touch .svg &:hover:before
-        background-position: -18px 0
-      display: table-cell
-      text-indent: -999px
-      width: 25%
-    .links
-      display: table
-      table-layout: fixed
-      margin-bottom: -1px  // Account for the extra-height children.
-      width: 100%
-      a
-        border-left: 1px solid cabin_grey_light
-        display: table-cell
-        text-align: center
-        // Offset for the non-centered font.
-        padding-top: 3px
-        line-height: nav_height - @padding-top
-        // Extend the left border over the container's bottom border; that
-        // allows us to replace the bottom border with a box shadow without
-        // an awkward gap.
-        height: nav_height - @padding-top + 1
-    .toggle, .social
-      display: none
-
-  body > header
-    bottom: nav_height
-  .main
-    padding-top: nav_height
-  .content
-    padding: 0 20px
-
-  body > header hgroup
-    width: 240px
-    margin-left: -(@width / 2)
-    height: 160px
-    margin-top: -(@height / 2)
-    h1
-      font-size: 45px
-      height: 50px
-    h2
-      font-size: 14px
-    h3
-      margin: 17px 0
-    .br.m
-      white-space: pre
-
-  footer
-    display: none
-
-
   // Work page  {{{2
   .single-column .work-thumb
     breakout()
@@ -582,131 +401,6 @@ images_animate_distance = 1200px
 // > iPhone 5 landscape  {{{1
 @media only screen and (min-width: 569px)
   // Common  {{{2
-  nav_height = desktop_nav_height
-  footer_height = 60px
-
-  nav
-    height: (nav_height / 3)
-    line-height: @height
-    padding: @height
-    margin: 0 auto
-
-    .logo
-      float: left
-      size: 35px 30px
-      &:before
-        size: 100%
-      .svg &:hover:before
-        background-position: -35px 0
-    .links
-      float: right
-      overflow: hidden
-      padding-right: 20px  // account for the toggle
-      position: relative
-      > a
-        float: left
-        margin-right: 20px
-        padding: 0 10px
-        &:hover
-          color: cabin_hl_light
-
-    .social
-      transition_duration = 400ms
-      absolute: left 100% top
-      background: white
-      transition: left transition_duration
-      white-space: nowrap
-      width: 100%
-      a
-        background-color: cabin_black
-        float: left
-        margin-right: 10px
-        relative: left 100% top
-        transition: left transition_duration ease transition_duration
-        &:hover
-          hl-background()
-      a:first-child
-        left: 0
-    // Inside the toggle is a `b` used for creating a little border on hover,
-    // and a `span` element for holding the plus image so it can be rotated
-    // independently of the container.
-    .toggle
-      padding = 10px
-      absolute: right (nav_height / 3 - padding) top (nav_height / 3)
-      background: white
-      border-left: 1px solid white
-      padding: 0 padding
-      transition: border-color 500ms
-      .no-touch &:hover
-        border-color: cabin_grey_med
-      span
-        img = 'icons/plus@2x.png'
-        replace-text: url(img)
-        size: (image-size(img)[0] / 2) (image-size(img)[1] / 2)
-        background-size: @width @height
-        display: inline-block
-        transition: transform 250ms ease-in-out 200ms
-      &.transitioning
-        transition-delay: 400ms
-    .touch & .toggle
-      &.transitioning
-        border-color: cabin_grey_med
-        transition-delay: 0
-
-    &.show-social
-      .social
-        &, a
-          left: 0
-          transition-delay: 0
-        a:nth-child(2)
-          transition-delay: 100ms
-        a:nth-child(3)
-          transition-delay: 200ms
-        a:nth-child(4)
-          transition-delay: 300ms
-        a:nth-child(5)
-          transition-delay: 400ms
-        a:nth-child(6)
-          transition-delay: 500ms
-      .toggle span
-        // Scale is increased to improve diagonal line visibility.
-        transform: rotate(45deg) scale(1.1)
-        backface-visibility: hidden
-
-  body > header
-    bottom: nav_height
-  .main
-    padding: 0 30px
-    padding-top: nav_height
-    padding-bottom: footer_height + 40px
-
-  body > header .br.f
-    white-space: pre
-
-  .footer-container
-    standard-shadow(inset: true, y: 2px, spread: -1px)
-    absolute: bottom left; right: 0
-    background: cabin_grey_light
-  footer
-    height: footer_height
-    line-height: @height
-    margin: 0 auto
-    overflow: hidden
-    padding: 0 30px
-    &, a
-      color: cabin_grey_dark
-    ol
-      inline-list()
-    .copyright
-      float: right
-      margin: 0
-    .logout
-      float: right
-      margin: 21px 20px 0 0
-      opacity: .2
-      &:hover
-        opacity: 1
-
   .photo
     background-color: white
     background-position: center center
@@ -1235,6 +929,13 @@ images_animate_distance = 1200px
           display: none
 
 
+// Imports  {{{1
+@import 'nav-splash'
+@import 'pages/about'
+@import 'pages/blog'
+@import 'pages/yoga'
+
+
 // Assorted media queries  {{{1
 
 // Retina images.
@@ -1279,9 +980,3 @@ images_animate_distance = 1200px
       clear: none
     .image:nth-of-type(3n + 1)
       clear: left
-
-
-// Page-specific imports {{{1
-@import 'pages/about'
-@import 'pages/blog'
-@import 'pages/yoga'

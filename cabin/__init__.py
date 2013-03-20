@@ -81,7 +81,7 @@ def register_assets(app):
             filters='cssrewrite', output='gen/fonts.css'),
         Bundle(
             '../style/screen.styl',
-            depends='../style/**/*.styl',
+            depends=['../style/*.styl', '../style/**/*.styl'],
             filters='stylus', output='gen/stylus.css'),
         filters='cssmin', output='gen/screen-%(version)s.css')
 
