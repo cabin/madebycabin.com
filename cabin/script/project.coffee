@@ -91,8 +91,8 @@ class ProjectPageView extends HierView
       # Compile a list of ordered scroll targets for each image, then insert
       # the current scroll position into the list. Scroll to the current scroll
       # position's index + n; this handles cases for being between images
-      # nicely.
-      images = @currentProject.$('.images .placeholder')
+      # nicely. Ignore hidden images, which appear on slideshows.
+      images = @currentProject.$('.images .placeholder:visible')
       imageTargets = _(images).map (el) -> $(el).offset().top - topPadding
       scrollY = $(window).scrollTop()
       pos = _(imageTargets).sortedIndex(scrollY)
