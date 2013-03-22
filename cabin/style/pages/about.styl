@@ -23,7 +23,9 @@
       fill: cabin_hl_light
     .notes
       display: none
-    // XXX fallback png for lame-os
+    .no-inlinesvg &
+      background-repeat: no-repeat
+      background-position: center center
   // Hide these until their image stylesheet is loaded.
   .clients a
     display: none
@@ -127,6 +129,9 @@
         margin-top: 20px
       .note
         min-height: 60px
+      .no-inlinesvg &
+        background-image: url(/static/about-infographic-small.png)
+        min-height: 280px
 
     section.clients
       mobile-breakout()
@@ -312,6 +317,8 @@
         .note
           margin-left: 120px
           width: 300px
+      .no-inlinesvg &
+        background-image: url(/static/about-infographic-large.png)
 
     section.clients
       desktop-breakout()

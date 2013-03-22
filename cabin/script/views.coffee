@@ -293,7 +293,7 @@ class AboutView extends HierView
     @renderChartWhenVisible()
 
   renderChartWhenVisible: =>
-    if @isChartVisible()
+    if @isChartVisible() and Modernizr.inlinesvg
       @chartView = @addChild(new ChartView(el: @sections.filter('.graph')))
       @chartView.render()
       clearInterval(@chartInterval)
@@ -320,7 +320,7 @@ class AboutView extends HierView
     @sections.removeClass('selected')
       .filter(classMap[selectedName]).addClass('selected')
     if selectedName is 'partners'
-      @chartView.reanimate()
+      @chartView?.reanimate()
 
   toggleBio: (event) ->
     $(event.currentTarget).parent('.bio').toggleClass('open')
