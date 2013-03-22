@@ -1,5 +1,6 @@
 import collections
 import urllib2
+import urlparse
 
 import flask
 from flask import abort, Blueprint, redirect, render_template, request, url_for
@@ -68,20 +69,32 @@ def blog():
 
 @main.route('/ie')
 def oldie():
+    # Pinterest's /offsite/ redirector is broken; see issue #93. Until that's
+    # resolved, we have to catch anyone incorrectly directed to the sad browser
+    # page and redirect them to the correct URL.
+    r = urlparse.urlparse(request.referrer or '')
+    if r.netloc.endswith('pinterest.com') and r.path == '/offsite/':
+        intended_url = urlparse.parse_qs(r.query).get('url')
+        if not is_oldie() and len(intended_url) > 0:
+            return redirect(intended_url[0], code=301)
+    # End Pinterest hack. TODO: remove the above.
     if 'be_brave' in request.args:
         flask.session['brave_soul'] = True
         return redirect(url_for('main.index'))
     return render_template('ie.html')
 
 
+def is_oldie():
+    browser, version = util.browser_version()
+    return browser == 'msie' and version < 10
+
+
 @main.before_app_request
 def redirect_oldie():
-    browser, version = util.browser_version()
-    oldie = browser == 'msie' and version < 10
     oldie_path = url_for('main.oldie')
     brave = flask.session.get('brave_soul', False)
     on_ie_page = request.path == oldie_path
-    if oldie and not (on_ie_page or brave):
+    if is_oldie() and not (on_ie_page or brave):
         return redirect(oldie_path)
 
 
