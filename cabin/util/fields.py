@@ -80,14 +80,14 @@ class StringListField(fields.Field):
     """
     widget = widgets.TextArea()
 
-    def process_data(self, value):
-        if value:
-            self.data = '\n'.join(value)
+    def _value(self):
+        if self.data:
+            return u'\n'.join(self.data)
         else:
-            self.data = ''
+            return u''
 
     def process_formdata(self, valuelist):
-        self.data = valuelist[0].splitlines()
-
-    def _value(self):
-        return self.data if self.data else ''
+        if valuelist:
+            self.data = [x.strip() for x in valuelist[0].splitlines()]
+        else:
+            self.data = []
