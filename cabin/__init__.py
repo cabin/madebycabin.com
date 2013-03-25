@@ -1,3 +1,4 @@
+import logging
 import os.path
 
 from flask import Flask, request
@@ -23,13 +24,17 @@ def create_app():
     app = Flask(
         __name__, instance_relative_config=True, instance_path=instance_path)
     app.config.update(
+        ADMINS=['zak@madebycabin.com'],
         ASSETS_URL='/static',
         COFFEE_NO_BARE=True,
+        SMTP_HOST='email-smtp.us-east-1.amazonaws.com',
+        SMTP_FROM='Cabin <xo@madebycabin.com>',
         UPLOAD_QUEUE='uploaded-files',
         UPLOADS_DEFAULT_DEST=app.instance_path,
         UPLOADS_DEFAULT_URL='/u/',
     )
     app.config.from_pyfile('settings.cfg', silent=True)
+    configure_logging(app)
     app.session_interface = util.session.ItsdangerousSessionInterface()
 
     register_assets(app)
@@ -60,6 +65,20 @@ def create_app():
     app.register_blueprint(admin, url_prefix='/admin')
 
     return app
+
+
+def configure_logging(app):
+    if not app.debug:
+        admins = app.config['ADMINS']
+        if isinstance(admins, basestring):
+            admins = [admins]
+        mail_handler = logging.handlers.SMTPHandler(
+            mailhost=app.config['SMTP_HOST'],
+            fromaddr=app.config['SMTP_FROM'], toaddrs=admins,
+            subject='Error',
+            credentials=app.config.get('SMTP_CREDENTIALS'), secure=())
+        mail_handler.setLevel(logging.ERROR)
+        app.logger.addHandler(mail_handler)
 
 
 def register_assets(app):
