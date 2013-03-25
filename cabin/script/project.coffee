@@ -357,7 +357,7 @@ class ProjectShareView extends HierView
       hRatio = hMax / @fullImageWidth
       images.each ->
         a = $(this)
-        marginBottom = hMax - (hRatio * a.data('height'))
+        marginBottom = Math.ceil(hMax - (hRatio * a.data('height')))
         a.css(marginBottom: marginBottom) if marginBottom > 0
       w = images.outerWidth(true)
       extraPadding = 40
