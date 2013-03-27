@@ -180,9 +180,14 @@ class ManageWorkView extends WorkView
     @$('.rearrange').sortable(items: '.work-thumb', forcePlaceholderSize: true)
 
   events:
+    'click .work-thumb img': 'preview'
     'change [name=is_public]': 'togglePublic'
     'change [name=is_featured]': 'toggleFeatured'
     'sortupdate': 'sortupdate'
+
+  preview: (event) ->
+    slug = $(event.target).parent('.work-thumb').data('slug')
+    app.navigate('/work/' + slug, trigger: true)
 
   togglePublic: (event) ->
     target = $(event.target)
