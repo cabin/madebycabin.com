@@ -21,13 +21,7 @@ def grouped_services():
 class CohortForm(SimpleForm):
     name = StringField('Name')
     role = StringField('Role')
-    twitter_user = StringField('@username')
-
-    def validate_twitter_user(self, field):
-        if field.data and 'twitter.com' in field.data:
-            raise ValidationError('Just the username, not the whole URL.')
-        # Remove whitespace and errant leading '@'
-        field.data = field.data.strip().lstrip('@')
+    url = StringField('URL', [URL()])
 
     def validate_name(self, field):
         # Since we can't mark name and role as required on the fields

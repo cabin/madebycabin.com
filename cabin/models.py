@@ -76,7 +76,10 @@ SCHEMAS = {
             'properties': {
                 'name': {'type': 'string', 'required': True},
                 'role': {'type': 'string', 'required': True},
+                # twitter_user was originally all we supported; legacy data
+                # may have that instead of url. TODO: remove
                 'twitter_user': {'type': 'string'},
+                'url': {'type': 'string'},
             },
         },
     },

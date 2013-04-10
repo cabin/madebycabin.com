@@ -42,7 +42,12 @@
               <table>
               {% for cohort in project.cohorts -%}
                 <tr><td>
-                {%- if cohort.twitter_user -%}
+                {%- if cohort.url -%}
+                  <a href="{{ cohort.url }}" target="_blank"
+                    ><span class="icon {{ cohort.url|icon_for_url }}"></span>
+                    {{- cohort.name }}</a>
+                {# TODO: remove #}
+                {%- elif cohort.twitter_user -%}
                   <a href="https://twitter.com/{{ cohort.twitter_user }}"
                     target="_blank"><span class="icon twitter"></span>{{ cohort.name }}</a>
                 {%- else -%}

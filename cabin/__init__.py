@@ -51,6 +51,7 @@ def create_app():
     app.jinja_env.filters['external_url'] = util.external_url
     app.jinja_env.filters['hostname'] = util.hostname
     app.jinja_env.filters['urlquote'] = util.urlquote
+    app.jinja_env.filters['icon_for_url'] = util.icon_for_url
 
     from cabin.main import main
     app.register_blueprint(main)

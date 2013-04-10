@@ -31,3 +31,14 @@ def browser_version():
         ua.browser,
         ua.version and int(ua.version.split('.')[0]),
     ]
+
+
+def icon_for_url(url):
+    icons = {
+        'facebook.com': 'facebook',
+        'github.com': 'github',
+        'instagram.com': 'instagram',
+        'twitter.com': 'twitter',
+    }
+    host = hostname(url)
+    return icons.get(host, 'XXX')
