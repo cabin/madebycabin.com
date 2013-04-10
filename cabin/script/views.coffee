@@ -21,7 +21,10 @@ class SplashView extends HierView
     iphone = ~ua.indexOf('iPhone') or ~ua.indexOf('iPod')
     chrome = ~ua.indexOf('CriOS')
     fullscreen = navigator.standalone
-    if iphone and not fullscreen and not chrome
+    # TODO: figure out what Chrome on Android does
+    if chrome
+      window.scrollTo(0, 0)
+    else if iphone and not fullscreen
       de = document.documentElement
       htmlWrapper = $('html')
       fullHeightElements = $('body, body > header')
