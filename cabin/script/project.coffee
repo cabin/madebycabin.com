@@ -53,25 +53,27 @@ class ProjectPageView extends HierView
     'touchend': 'touchend'
 
   shortcuts:
-    'up': 'showPreviousImage'
+    'up': 'showPreviousImageOrHideShortlist'
     'down': 'showNextImageOrShortlist'
-    'k': 'showPreviousImage'
+    'k': 'showPreviousImageOrHideShortlist'
     'j': 'showNextImageOrShortlist'
     'left': 'showPreviousProject'
     'right': 'showNextProject'
     '⌥+e': 'adminProject'
 
-  showPreviousImage: (event) ->
-    event.preventDefault()
-    @incrImage(-1)
-
-  showNextImageOrShortlist: (event) ->
+  incrImageOrToggleShortlist: (event, opts) ->
     event.preventDefault()
     shortlistView = @currentProject.contentView.shortlistView
-    if shortlistView.closed
-      shortlistView.toggleClosed(false)
+    if shortlistView.$el.is(':visible')
+      shortlistView.toggleClosed(opts.close)
     else
-      @incrImage()
+      @incrImage(opts.incrBy)
+
+  showPreviousImageOrHideShortlist: (event) ->
+    @incrImageOrToggleShortlist(event, close: true, incrBy: -1)
+
+  showNextImageOrShortlist: (event) ->
+    @incrImageOrToggleShortlist(event, close: false)
 
   showPreviousProject: (event) ->
     @navigateProject(event, @currentProject.previousURL(), 'right')
