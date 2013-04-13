@@ -21,7 +21,7 @@ def grouped_services():
 class CohortForm(SimpleForm):
     name = StringField('Name')
     role = StringField('Role')
-    url = StringField('URL', [URL()])
+    url = StringField('URL', [Optional(), URL()])
 
     def validate_name(self, field):
         # Since we can't mark name and role as required on the fields
