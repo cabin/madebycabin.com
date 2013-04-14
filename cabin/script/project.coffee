@@ -165,7 +165,9 @@ class ProjectPageView extends HierView
     if event.type is 'tapclick'
       event.stopPropagation()
       event.preventDefault()
+    # Navigate to the new path and let the router know where we are.
     @router.navigate(url)
+    @router.currentPath = url
     # Swap in the new project and load neighbors.
     previous = @currentProject
     @currentProject = next
