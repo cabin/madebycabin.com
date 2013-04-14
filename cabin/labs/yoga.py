@@ -1,6 +1,7 @@
 from collections import defaultdict
 from datetime import datetime, timedelta
 import json
+import re
 
 import lxml.html
 import pytz
@@ -59,10 +60,13 @@ def parse_schedule(schedule_node):
 
 def parse_class_type(class_type):
     class_type, duration = class_type.lower().split('(')
-    duration = duration.split(' ')[0]
+    duration = re.split('[ -]', duration)[0]
     for t in ('hatha', 'vinyasa', 'yin'):
         if t in class_type:
             class_type = t
+            break
+    else:
+        class_type = '?'
     return class_type, duration
 
 
