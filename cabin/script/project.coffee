@@ -62,6 +62,7 @@ class ProjectPageView extends HierView
     '⌥+e': 'adminProject'
 
   incrImageOrToggleShortlist: (event, opts) ->
+    @currentProject.disableKeyboardHints()
     event.preventDefault()
     shortlistView = @currentProject.contentView.shortlistView
     if shortlistView.$el.is(':visible')
@@ -165,6 +166,9 @@ class ProjectPageView extends HierView
     if event.type is 'tapclick'
       event.stopPropagation()
       event.preventDefault()
+    # If this was triggered by a keyboard shortcut, no need to show hints.
+    else if event.type is 'keydown'
+      @currentProject.disableKeyboardHints()
     # Navigate to the new path and let the router know where we are.
     @router.navigate(url)
     @router.currentPath = url
@@ -228,6 +232,8 @@ class ProjectPageView extends HierView
 # Manage a single project, mostly by composing a handful of subviews.
 class ProjectView extends HierView
   fullImageWidth: 1100
+  keyboardHintStorageKey: 'keyboardHintShown'
+  maxShowKeyboardHint: 3
 
   initialize: (options) ->
     @container = options.container
@@ -244,7 +250,8 @@ class ProjectView extends HierView
     this
 
   render: (options = {}) ->
-    @$el.toggleClass('preload', !!options.preload)
+    preloading = !!options.preload
+    @$el.toggleClass('preload', preloading)
     @infoView.setElement(@$('.info')).render()
     @shareView.setElement(@$('.bottom')).render()
     # ProjectContentView needs to know the width at which it will be displayed,
@@ -252,7 +259,27 @@ class ProjectView extends HierView
     # width instead, as it will always be visible.
     width = @container.width()
     @contentView.setElement(@$('.project-content')).render(width)
+    @showKeyboardHint() unless preloading
     this
+
+  showKeyboardHint: ->
+    # Keep track of how many times this browser has seen the hint using
+    # localStorage. If the browser doesn't support localStorage, it's probably
+    # better to not show the hint at all rather than to show it forever. Don't
+    # show keyboard hints on touch devices.
+    return unless Modernizr.localstorage and not Modernizr.touch
+    count = Number(localStorage.getItem(@keyboardHintStorageKey))
+    return unless count < @maxShowKeyboardHint
+    localStorage.setItem(@keyboardHintStorageKey, 1 + count)
+    hints = @$('.keyboard-hints').addClass('shown')
+    _.delay((-> hints.removeClass('shown')), 3000)
+
+  # Called by the parent view upon use of a keyboard shortcut; no need to keep
+  # displaying hints once they've been used.
+  disableKeyboardHints: ->
+    return unless Modernizr.localstorage and not Modernizr.touch
+    # Pad maxShowKeyboardHint a little in case of later increases.
+    localStorage.setItem(@keyboardHintStorageKey, @maxShowKeyboardHint + 10)
 
   # ProjectViews are cached, but some components need to be reset when not in
   # view (window resize handlers, slideshows, etc.). `cleanup` walks the view

@@ -70,6 +70,15 @@
     <div class="prev-next">
       <a class="arrow-left" href="{{ url_for('main.project', slug=project.prev_slug) }}">Previous</a>
       <a class="arrow-right" href="{{ url_for('main.project', slug=project.next_slug) }}">Next</a>
+      <div class="keyboard-hints">
+        <div class="kb-pic">
+          <span class="kb-up"></span>
+          <span class="kb-left"></span>
+          <span class="kb-down"></span>
+          <span class="kb-right"></span>
+        </div>
+        <p>keyboard</p>
+      </div>
     </div>
 
     <div class="project-content">
