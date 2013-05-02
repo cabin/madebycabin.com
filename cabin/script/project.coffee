@@ -598,21 +598,36 @@ class ProjectShortlistView extends HierView
 class LinkhunterView extends HierView
   extensionID: 'ndjggnnohdkheiijjhbklkanjcpibbng'
   logoURL: 'browser-action.png'
+  safariURL: 'https://s3-us-west-2.amazonaws.com/linkhunter.madebycabin.com/Linkhunter-1.3.2.safariextz'
 
   events:
     'click .lh-install': 'install'
+
+  render: ->
+    contains = (haystack, needle) -> haystack.indexOf(needle) != -1
+    isChrome = window.chrome?.webstore?
+    isSafari = contains(navigator.userAgent, 'Safari') and contains(navigator.vendor, 'Apple')
+    if isChrome
+      @renderChrome()
+    else if isSafari
+      @renderSafari()
+    this
 
   # There's no great way to check whether a Chrome extension is installed; apps
   # get a chrome.app.isInstalled, but it doesn't work for extensions. Instead,
   # we attempt to load a linkhunter resource into a hidden img and report
   # success or failure.
-  render: ->
-    return this unless window.chrome?.webstore?
+  renderChrome: ->
     img = new Image
     img.onload = @renderInstalled
     img.onerror = @renderNotInstalled
     img.src = "chrome-extension://#{@extensionID}/#{@logoURL}"
-    this
+
+  # There's no way at all to check whether a Safari extension is installed
+  # without colluding with the extension, which seems excessive in this case. A
+  # link to the downloadable file is all we can do.
+  renderSafari: ->
+    @$el.html("<a class='lh-install button-hl' href='#{@safariURL}'>Download for Safari</a>")
 
   cleanup: ->
     @headLink?.remove()
@@ -633,4 +648,4 @@ class LinkhunterView extends HierView
     @$el.html('<button class="lh-install button-hl">Add to Chrome</button>')
 
   install: (event) ->
-    chrome.webstore.install(undefined, @renderInstalled)
+    chrome?.webstore?.install?(undefined, @renderInstalled)
