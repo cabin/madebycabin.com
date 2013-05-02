@@ -57,7 +57,7 @@ def lab():
     return render_template('lab.html')
 
 
-@main.route('/blog')
+@main.route('/life')
 def blog():
     return render_template(
         'blog.html',
