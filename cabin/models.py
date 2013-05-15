@@ -363,11 +363,15 @@ class Instagram(FeedItem):
     def sync(cls):
         url = 'https://api.instagram.com/v1/users/%d/media/recent/'
         params = {'access_token': app.config['INSTAGRAM_ACCESS_TOKEN']}
+        media = []
         for user_id in cls.user_ids:
             r = requests.get(url % user_id, params=params)
-            media = cls.parse_api_response(r.json())
+            media.extend(cls.parse_api_response(r.json()))
+        with redis.pipeline() as pipe:
+            pipe.delete(cls.list_key())
             for m in media:
-                m.save()
+                m.save(pipe)
+            pipe.execute()
 
     @classmethod
     def parse_api_response(cls, data):
