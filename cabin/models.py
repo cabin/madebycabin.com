@@ -1,6 +1,7 @@
 import collections
 from itertools import groupby
 import json
+import urllib
 
 from flask import current_app as app
 import requests
@@ -362,11 +363,40 @@ class Instagram(FeedItem):
     @classmethod
     def sync(cls):
         url = 'https://api.instagram.com/v1/users/%d/media/recent/'
-        params = {'access_token': app.config['INSTAGRAM_ACCESS_TOKEN']}
-        media = []
+        params = {
+            'access_token': app.config['INSTAGRAM_ACCESS_TOKEN'],
+            'count': 100,
+        }
+        # Because Instagram doesn't have an API endpoint for photos by a user
+        # with a tag, we have to grab all user photos and search for the tag by
+        # hand. Because the user-recent-media endpoint has a low cutoff, we
+        # have to handle pagination.
+        url = '%s?%s' % (url, urllib.urlencode(params))
+        # next_urls maps user_ids to the next paginated url to fetch;
+        # initialize by simply building the default url.
+        next_urls = {}
         for user_id in cls.user_ids:
-            r = requests.get(url % user_id, params=params)
-            media.extend(cls.parse_api_response(r.json()))
+            next_urls[user_id] = url % user_id
+        # Our goal is to have a total of 30 images amongst all the given users,
+        # but we also want to avoid spending all day spinning through old
+        # pages; limit the number of iterations.
+        media = []
+        iterations = 0
+        while len(media) < 30 and iterations < 5:
+            iterations += 1
+            # Iterating through next_urls might make more sense, but we need to
+            # modify that dict in the body.
+            for user_id in cls.user_ids:
+                url = next_urls.get(user_id)
+                if not url:
+                    continue
+                r = requests.get(url)
+                media.extend(cls.parse_api_response(r.json()))
+                next_url = r.json()['pagination'].get('next_url')
+                if next_url:
+                    next_urls[user_id] = next_url
+                else:
+                    del next_urls[user_id]
         with redis.pipeline() as pipe:
             pipe.delete(cls.list_key())
             for m in media:
