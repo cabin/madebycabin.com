@@ -429,7 +429,7 @@ class Flickr(FeedItem):
 
     @classmethod
     def sync(cls):
-        url = 'http://api.flickr.com/services/rest/'
+        url = 'https://api.flickr.com/services/rest/'
         params = {
             'api_key': app.config['FLICKR_API_KEY'],
             'method': 'flickr.photosets.getPhotos',
