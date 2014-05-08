@@ -267,7 +267,8 @@ Charts.aboutInfographic = ->
       d.sort((a, b) -> d3.descending(a.year, b.year)).map (item, i) ->
         lastItem = d[i - 1] or null
         start = item.year
-        end = lastItem?.year or now
+        # subtract a tiny amount to allow for no overlap
+        end = (lastItem?.year or now) - .0000001
         height = (end - start) * pixelsPerYear
         item.y0 = if lastItem? then lastItem.y1 + opts.padding else 0
         item.y1 = item.y0 + height
