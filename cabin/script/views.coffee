@@ -318,7 +318,8 @@ class @ChartView extends HierView
     [2008.66, 'New York City', "Bek returns to New York, this time to lead design at Etsy. Zak and Bek meet."]
     [2010, 'Los Angeles', "Back to the best coast to lead design at GOOD."]
     [2011.33, 'Idyllwild', "An excursion to the woods to build Cabin."]
-    [2011.83, 'Portland', "Silicon Forest—home to our favorite espresso, exquisite cuisine, and us."]
+    [2011.83, 'Portland', "Silicon Forest—home to our favorite espresso, exquisite cuisine, and unstoppable green."]
+    [2014, 'Los Angeles', "Hello again, sunshine! Some things are just too good not to play on repeat."]
   ]
   zakData: [
     [1980.33, 'Brisbane, AU', "Zak springs forth, product of the unholy union between an Aussie and an American."]
@@ -328,7 +329,8 @@ class @ChartView extends HierView
     [2004.33, 'San Francisco', "Venturing at last into full-time web development, Zak takes a job at Etsy, and later begins consulting."]
     [2010.75, 'Los Angeles', "Zak joins Bek at GOOD, having been lured back to southern California."]
     [2011.33, 'Idyllwild', "An excursion to the woods to build Cabin."]
-    [2011.83, 'Portland', "Silicon Forest—home to our favorite espresso, exquisite cuisine, and us."]
+    [2011.83, 'Portland', "Silicon Forest—home to our favorite espresso, exquisite cuisine, and unstoppable green."]
+    [2014, 'Los Angeles', "Hello again, sunshine! Some things are just too good not to play on repeat."]
   ]
   abbrCities:
     'Brisbane, AU': 'BNE'
