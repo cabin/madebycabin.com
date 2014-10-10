@@ -23,7 +23,6 @@ SERVICE_TYPES = [
     ServiceType('dev', 'Development'),
 ]
 SERVICES = [
-    Service( 3, 'pln', 'Design strategy XXX'),
     Service( 2, 'pln', 'Design strategy'),
     Service( 1, 'pln', 'Research and audits'),
     Service( 5, 'pln', 'Idea generation'),
