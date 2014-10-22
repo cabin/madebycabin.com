@@ -94,13 +94,14 @@ class EditProjectView extends HierView
       onUpload: (data) =>
         _(data.files).each (file, n) ->
           sizes[n].then (width, height) ->
-            # Rudimentary sanity-check.
-            if width isnt 1100
-              return alert("Width was #{width}!")
+            # Rudimentary sanity-check. Allow for 2200-wide images for retina
+            # displays, but reduce ProjectImage height accordingly.
+            if width not in [1100, 2200]
+              return alert("Width was #{width}! Should be 1100 or 2200.")
             indexes = collection.pluck('index')
             model = new ProjectImage
               file: file
-              height: height
+              height: if width is 2200 then height / 2 else height
               index: Math.max.apply(null, indexes.concat([0])) + 1
             collection.add(model)
       onRead: (dataURL, i) ->
