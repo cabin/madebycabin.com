@@ -101,7 +101,7 @@ class EditProjectView extends HierView
             indexes = collection.pluck('index')
             model = new ProjectImage
               file: file
-              height: if width is 2200 then height / 2 else height
+              height: if width is 2200 then Math.floor(height / 2) else height
               index: Math.max.apply(null, indexes.concat([0])) + 1
             collection.add(model)
       onRead: (dataURL, i) ->
