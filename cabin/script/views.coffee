@@ -320,6 +320,7 @@ class @ChartView extends HierView
     [2011.33, 'Idyllwild', "An excursion to the woods to build Cabin."]
     [2011.83, 'Portland', "Silicon Forest—home to our favorite espresso, exquisite cuisine, and unstoppable green."]
     [2014, 'Los Angeles', "Hello again, sunshine! Some things are just too good not to play on repeat."]
+    [2014.9, 'San Francisco', "The verdict is in! San Francisco, we're yours."]
   ]
   zakData: [
     [1980.33, 'Brisbane, AU', "Zak springs forth, product of the unholy union between an Aussie and an American."]
@@ -331,6 +332,7 @@ class @ChartView extends HierView
     [2011.33, 'Idyllwild', "An excursion to the woods to build Cabin."]
     [2011.83, 'Portland', "Silicon Forest—home to our favorite espresso, exquisite cuisine, and unstoppable green."]
     [2014, 'Los Angeles', "Hello again, sunshine! Some things are just too good not to play on repeat."]
+    [2014.9, 'San Francisco', "The verdict is in! San Francisco, we're yours."]
   ]
   abbrCities:
     'Brisbane, AU': 'BNE'
