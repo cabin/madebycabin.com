@@ -13,8 +13,3 @@ def update_feeds(signum):
         models.Tumblr.sync()
         models.Instagram.sync()
         models.Flickr.sync()
-
-
-@timer(3 * HOUR)
-def update_yoga(signum):
-    yoga.sync_schedule(redis)
