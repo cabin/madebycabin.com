@@ -86,7 +86,7 @@ def oldie():
 
 def is_oldie():
     browser, version = util.browser_version()
-    return browser == 'msie' and version < 10
+    return browser == 'msie' and version is not None and version < 10
 
 
 @main.before_app_request

@@ -27,10 +27,11 @@ def urlquote(s):
 
 def browser_version():
     ua = request.user_agent
-    return [
-        ua.browser,
-        ua.version and int(ua.version.split('.')[0]),
-    ]
+    try:
+        version = ua.version and int(ua.version.split('.')[0])
+    except ValueError:
+        version = None
+    return [ua.browser, version]
 
 
 def icon_for_url(url):
