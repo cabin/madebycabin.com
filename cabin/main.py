@@ -17,13 +17,13 @@ def index():
     return work(splash=True)
 
 
-@main.route('/work')
+@main.route('/work/')
 def work(splash=False):
     projects = Project.get_summaries()
     return render_template('work.html', splash=splash, projects=projects)
 
 
-@main.route('/work/<slug>')
+@main.route('/work/<slug>/')
 def project(slug):
     is_admin = get_current_user().is_admin
     project = Project.get_by_slug(slug, allow_private=is_admin)
@@ -35,7 +35,7 @@ def project(slug):
     return render_template('project.html', project=project)
 
 
-@main.route('/about')
+@main.route('/about/')
 def about():
     Client = collections.namedtuple('Client', 'name, url')
     clients = (
@@ -52,12 +52,12 @@ def about():
         'about.html', clients=clients, grouped_services=grouped_services())
 
 
-@main.route('/lab')
-def lab():
-    return render_template('lab.html')
+# @main.route('/lab')
+# def lab():
+#     return render_template('lab.html')
 
 
-@main.route('/life')
+@main.route('/life/')
 def blog():
     return render_template(
         'blog.html',
@@ -67,7 +67,7 @@ def blog():
     )
 
 
-@main.route('/ie')
+@main.route('/ie/')
 def oldie():
     # Pinterest's /offsite/ redirector is broken; see issue #93. Until that's
     # resolved, we have to catch anyone incorrectly directed to the sad browser

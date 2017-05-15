@@ -56,14 +56,14 @@ def create_app():
     from cabin.main import main
     app.register_blueprint(main)
 
-    from cabin.auth import auth
-    app.register_blueprint(auth, url_prefix='/auth')
+    # from cabin.auth import auth
+    # app.register_blueprint(auth, url_prefix='/auth')
 
-    from cabin.labs.views import labs
-    app.register_blueprint(labs, url_prefix='/labs')
+    # from cabin.labs.views import labs
+    # app.register_blueprint(labs, url_prefix='/labs')
 
-    from cabin.admin import admin
-    app.register_blueprint(admin, url_prefix='/admin')
+    # from cabin.admin import admin
+    # app.register_blueprint(admin, url_prefix='/admin')
 
     return app
 

@@ -75,15 +75,7 @@
 
     <div class="footer-container">
       <footer>
-        <p class="copyright">&copy; Cabin 2016</p>
-        {% if current_user %}
-          <a onclick="navigator.id.logout()" class="icon logout"></a>
-        {% endif %}
-        <ol>
-          <li><a href="mailto:xo@madebycabin.com">xo@madebycabin.com</a></li>
-          <li class="address"><a href="http://maps.apple.com/?q=688+42nd+St,+94609" target="_blank">
-            688 42nd St &middot; Oakland, CA 94609</a></li>
-        </ol>
+        <p class="copyright">&copy; Cabin 2015</p>
       </footer>
     </div>
   </div>
@@ -106,12 +98,6 @@
         window.app = new AppRouter;
         $(function () {
           Backbone.history.start({pushState: true, hashChange: false});
-        });
-        Modernizr.load({
-          load: 'https://login.persona.org/include.js',
-          complete: function () {
-            new PersonaHandler({{ current_user.email|tojson|safe }});
-          }
         });
       },
     },
