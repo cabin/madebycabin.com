@@ -10,7 +10,7 @@ from fabric.contrib.project import rsync_project
 
 env.app_name = 'cabin'
 env.branch = 'master'
-env.hosts = ['nox.cx']  # XXX
+env.hosts = ['madebycabin.com']  # XXX
 
 env.user = 'root'
 env.key_filename = os.path.expanduser('~/.ssh/cabin.pem')
