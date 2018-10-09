@@ -27,4 +27,9 @@ module.exports = {
     }),
     new MiniCssExtractPlugin(),
   ],
+
+  devServer: {
+    allowedHosts: ['webpack.test'],
+    host: '0.0.0.0',
+  }
 };
