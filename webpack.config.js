@@ -3,6 +3,9 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   entry: './index.js',
+  output: {
+    filename: 'main.[hash].js',
+  },
 
   module: {
     rules: [
@@ -26,7 +29,9 @@ module.exports = {
       favicon: __dirname + '/assets/favicon.ico',
       template: './index.html',
     }),
-    new MiniCssExtractPlugin(),
+    new MiniCssExtractPlugin({
+      filename: 'main.[hash].css',
+    }),
   ],
 
   devServer: {
