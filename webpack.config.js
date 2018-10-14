@@ -1,3 +1,5 @@
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
@@ -11,7 +13,10 @@ module.exports = {
     rules: [
       {
         test: /\.(ttf|woff)$/,
-        loader: 'url-loader',
+        use: {
+          loader: 'url-loader',
+          options: {limit: 32768},
+        },
       }, {
         test: /\.styl$/,
         use: [
@@ -25,10 +30,13 @@ module.exports = {
   },
 
   plugins: [
+    new CopyWebpackPlugin(['assets/*.jpg', 'assets/*.mp4']),
     new HtmlWebpackPlugin({
       favicon: __dirname + '/assets/favicon.ico',
+      inlineSource: '\.(js|css)$',
       template: './index.html',
     }),
+    new HtmlWebpackInlineSourcePlugin(),
     new MiniCssExtractPlugin({
       filename: 'main.[hash].css',
     }),
