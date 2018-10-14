@@ -89,21 +89,20 @@
     {% if not debug %}{# no need for analytics in dev #}
     window._gaq = [['_setAccount', 'UA-26897868-1']];
     {% endif %}
-    Modernizr.load([{
-      {% set comma = joiner(',') -%}
-      load: [{% assets 'vendor.js', 'site.js' %}
-        {{- comma() }}'{{ ASSET_URL }}'
-      {%- endassets %}],
-      complete: function () {
-        window.app = new AppRouter;
-        $(function () {
-          Backbone.history.start({pushState: true, hashChange: false});
-        });
-      },
-    },
-    {% assets 'client-logos.css' %}'{{ ASSET_URL }}',{% endassets %}
-    ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js']);
   </script>
+  <script async defer src="//www.google-analytics.com/ga.js"></script>
+  {% assets 'vendor.js', 'site.js' %}
+    <script src="{{ ASSET_URL }}"></script>
+  {% endassets %}
+  <script>
+    window.app = new AppRouter;
+    $(function () {
+      Backbone.history.start({pushState: true, hashChange: false});
+    });
+  </script>
+  {% assets 'client-logos.css' %}
+    <link href="{{ ASSET_URL }}">
+  {% endassets %}
   {% block scripts %}{% endblock %}
   {%- if debug -%}
     <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
