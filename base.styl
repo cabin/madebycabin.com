@@ -1,15 +1,5 @@
 $cabin-black = #2b2b2b
 $cabin-grey-light = #f2f2f2
-$cabin-hl-light = #ab7050
-$cabin-hl-dark = #8a5a3a
-
-// TODO: remove
-// cabin_black = #2b2b2b
-// cabin_grey_dark = #929292
-// cabin_grey_med = #d2d2d2
-// cabin_grey_light = #f2f2f2
-// cabin_hl_light = #ab7050
-// cabin_hl_dark = #8a5a3a
 
 $mobile = "only screen and (max-width: 568px)"
 $desktop = "only screen and (min-width: 569px)"
@@ -27,117 +17,65 @@ $desktop = "only screen and (min-width: 569px)"
 
 body
   background $cabin-black
-  color $cabin-grey-light
-  display grid
-  font-family ProximaNova, sans-serif
-  grid-template-areas \
-    "text" \
-    "logo"
-  height 100vh
   margin 0
-  padding 60px 30px
-  @media $desktop
-    grid-template-areas \
-      "text ...." \
-      ".... logo"
-    grid-template-columns 2fr 1fr
-    grid-template-rows 2fr 1fr
-    padding 13% 10% 10% 10%
+  overflow hidden
 
-#background
-  height 100vh
-  left 0
-  opacity 0
+.background
+  height auto
+  left 50%
+  min-height 100%
+  min-width 100%
+  overflow hidden
   position fixed
-  top 0
-  width 100vw
+  top 50%
+  transform translate(-50%, -50%)
+  width auto
   z-index -1
-  &.visible
-    opacity 1
+  @media (max-aspect-ratio 3/4)
+    transform translate(-60%, -50%)
 
-h1
-  align-self end
-  grid-area logo
-  height 50px
-  margin 0
-  position relative
-  @media $desktop
-    height 85px
-  > svg
-    animation-duration 1.5s
-    fill $cabin-grey-light
-    height 100%
-    position absolute
-    right 0
-    &:nth-child(1)
-      z-index 1
-    &:nth-child(2), &:nth-child(3)
-      clip-path inset(100% 0 0 0)
-    &:nth-child(2)
-      fill darken($cabin-grey-light, 10%)
-      right 2px
-      .glitch &
-        animation-name glitch-1
-    &:nth-child(3)
-      animation-delay 500ms
-      fill darken($cabin-grey-light, 20%)
-      right -2px
-      .glitch &
-        animation-name glitch-2
-
-@keyframes glitch-1
-  0%
-    clip-path inset(33% 0 42% 0)
-  10%
-    clip-path inset(34% 0 33% 0)
-  20%
-    clip-path inset(0% 0 72% 0)
-  30%
-    clip-path inset(3% 0 71% 0)
-  40%
-    clip-path inset(65% 0 7% 0)
-  50%
-    clip-path inset(53% 0 16% 0)
-  60%
-    clip-path inset(59% 0 14% 0)
-  70%
-    clip-path inset(54% 0 12% 0)
-  80%
-    clip-path inset(13% 0 60% 0)
-  90%
-    clip-path inset(65% 0 0% 0)
-  100%
-    clip-path inset(56% 0 10% 0)
-
-@keyframes glitch-2
-  0%
-    clip-path inset(16% 0 44% 0)
-  10%
-    clip-path inset(24% 0 41% 0)
-  20%
-    clip-path inset(29% 0 27% 0)
-  30%
-    clip-path inset(45% 0 15% 0)
-  40%
-    clip-path inset(57% 0 4% 0)
-  50%
-    clip-path inset(28% 0 30% 0)
-  60%
-    clip-path inset(2% 0 60% 0)
-  70%
-    clip-path inset(54% 0 5% 0)
-  80%
-    clip-path inset(4% 0 56% 0)
-  90%
-    clip-path inset(32% 0 28% 0)
-  100%
-    clip-path inset(14% 0 50% 0)
+.background-overlay
+  background #000
+  bottom 0
+  left 0
+  opacity .5
+  position fixed
+  right 0
+  top 0
+  z-index 0
 
 main
-  font-size 24px
-  grid-area text
-  max-width 35em
-  text-shadow 0 0 10px $cabin-black
+  align-items center
+  color $cabin-grey-light
+  display flex
+  flex-direction column
+  font-family ProximaNova, sans-serif
+  font-size 16px
+  height 100vh
+  justify-content center
+  position relative  // for stacking context
+  white-space nowrap
+  z-index 1
+  @media $desktop
+    font-size 20px
+
+p
+  margin 10px 0
+  text-align right
+  @media $desktop
+    margin 12px 0
+
+h1
+  margin 0
+  .hidden
+    display none
+
+.logo
+  display block
+  fill $cabin-grey-light
+  height 70px
+  @media $desktop
+    height 90px
 
 a
   color $cabin-grey-light

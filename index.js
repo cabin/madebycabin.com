@@ -1,24 +1,40 @@
 import './base.styl';
 
-import StaticCanvas from './static-canvas';
+const videoEl = document.querySelector('.background');
+const loopStart = 8.1;
+const loopEnd = 11.5;  // videoLength = videoEl.seekable.end(videoEl.seekable.length - 1);
+let direction = 1;  // 1 for forward, -1 for backward
+let iterationStart;
 
-const body = document.querySelector('body');
-const staticCanvas = new StaticCanvas(body.querySelector('#background'));
-
-function randInt(min, max) {
-  return Math.random() * (max - min) + min;
+function waitForLoopStart() {
+  let fn = waitForLoopStart;
+  if (videoEl.currentTime >= loopStart) {
+    iterationStart = performance.now();
+    videoEl.pause();
+    fn = loopVideo;
+  }
+  requestAnimationFrame(fn);
 }
 
-function glitchCanvas() {
-  staticCanvas.cycle(randInt(200, 700));
-  setTimeout(glitchCanvas, randInt(4000, 15000));
+function loopVideo() {
+  const now = performance.now();
+  const delta = (now - iterationStart) / 1000 * direction;
+  const newTime = (direction > 0 ? loopStart : loopEnd) + delta;
+  if (newTime >= loopEnd || newTime <= loopStart) {
+    iterationStart = now;
+    direction *= -1;
+  }
+  else {
+    videoEl.currentTime = newTime;
+  }
+  requestAnimationFrame(loopVideo);
 }
 
-function glitchLogo() {
-  body.classList.remove('glitch');
-  setTimeout(() => body.classList.add('glitch'), 0);
-  setTimeout(glitchLogo, randInt(6000, 16000));
-}
+videoEl.addEventListener('loadeddata', waitForLoopStart);
 
-setTimeout(glitchCanvas, randInt(1000, 4000));
-setTimeout(glitchLogo, randInt(2000, 5000))
+// Hack for Mobile Safari; 100vh doesn't account for header/footer, so the page still scrolls.
+if (window.innerHeight && window.screen && window.screen.availHeight && window.innerHeight < window.screen.availHeight) {
+  const resize = () => document.querySelector('main').style.height = window.innerHeight + 'px';
+  window.addEventListener('orientationchange', resize);
+  resize();
+}
