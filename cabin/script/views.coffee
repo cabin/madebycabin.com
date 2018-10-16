@@ -25,20 +25,22 @@ class SplashView extends HierView
     @visible = true
     _.defer -> window.scrollTo(0, 0)
     @$el.addClass(@transitionClass)
-    @main.animate(top: @topOffset(), @endTransition)
+    # @main.animate(top: @topOffset(), @endTransition)
+    @main.animate(marginTop: @topOffset(), @endTransition)
 
   hide: ->
     return false unless @visible
     @visible = false
     @$el.addClass(@transitionClass)
-    @main.css(top: @topOffset()).animate(top: 0, @endTransition)
+    # @main.css(top: @topOffset()).animate(top: 0, @endTransition)
+    @main.css(marginTop: @topOffset()).animate(marginTop: 0, @endTransition)
 
   # `show` and `hide` animate `.main` using its `style` attribute, leaving the
   # `visibleClass` setting alone. Once the transition is complete, we can rely
   # on CSS to keep things in the same position.
   endTransition: =>
     @$el.toggleClass(@visibleClass, @visible).removeClass(@transitionClass)
-    @main.removeAttr('style')
+    # @main.removeAttr('style')
 
 
 #### MainView

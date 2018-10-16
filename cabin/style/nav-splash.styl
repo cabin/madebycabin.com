@@ -1,5 +1,5 @@
 body > header
-  absolute: top left; right: 0
+  fixed: top left; right: 0
   // Absolute path here to prevent Stylus from inlining this image twice.
   background: cabin_black url(/static/splash-dots.png)
   .backgroundsize.multiplebgs &
@@ -47,7 +47,7 @@ body > header
   standard-shadow(color: transparent)
   background: white
   border-bottom: 1px solid cabin_grey_light
-  fixed: top left; right 0
+  // fixed: top left; right 0
   transition-property: border, box-shadow
   transition-duration: 500ms
   transition-timing-function: ease-in-out
@@ -82,7 +82,7 @@ html, body
   background: white
   box-sizing: border-box
   min-height: 100%
-  relative: top
+  relative: top left
   .iphone &
     margin-bottom: -60px
 // Avoid page-width jump.
@@ -92,6 +92,7 @@ html
 body.splash
   > header
     display: block
+  /*
   .main
     absolute: bottom left; top: auto
     height: 0
@@ -99,6 +100,7 @@ body.splash
     overflow: hidden
     padding-bottom: 0
     width: 100%
+  */
   .nav-container, .page-about .menu
     position: absolute
   footer
